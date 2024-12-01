@@ -1,12 +1,16 @@
 import {useEffect, useState} from 'react'
 import axios from "axios";
+import DataGrid from "react-data-grid";
+import { ModEntriesAPI, PostsAPI } from './components/interfaces';
+import Header from './components/Header';
+import Footer from './components/Footer';
 import "./css/global.css";
 import "react-data-grid/lib/styles.css";
-import DataGrid from "react-data-grid";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 const postsColumns = [
+	{ key: "expander", name: ""},
 	{ key: "title", name: "Title" },
 	{ key: "author", name: "Author" },
 	{ key: "flair", name: "Flair" },
@@ -23,59 +27,15 @@ const postsColumns = [
 // ];
 
 const fetchPosts = async () => {
-	console.info(API_URL)
+	// console.info(API_URL);
 	return await axios.get(`${API_URL}/posts`).then(response => response.data).catch(reason => console.error(reason));
 }
 
-// const fetchModEntries = async (modEntriesURL: string) => {
-// 	console.info(modEntriesURL);
-// 	return await axios.get(`${modEntriesURL}`).then(response => response.data).catch(reason => console.error(reason));
-// }
-
-interface Post {
-	title: string;
-	author: string;
-	flair: string;
-	score: number;
-	comments: number;
-	_links: {
-		self: string;
-		post: string;
-		modEntries: string;
-	};
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	modEntries: any[];
-}
-
-interface Page {
-	size: number;
-	totalElements: number;
-	totalPages: number;
-	number: number;
-}
-
-interface PostsAPI {
-	_embedded: {
-		posts: Post[];
-	};
-	_links: {
-		first: {
-			href: string;
-		};
-		self: {
-			href: string;
-		};
-		next: {
-			href: string;
-		};
-		last: {
-			href: string;
-		};
-		profile: {
-			href: string;
-		};
-	};
-	page: Page;
+const fetchModEntries = async (modEntriesURL: string) => {
+	// console.info(modEntriesURL);
+	// urls in APIs are returned with http, not https -> throwing CORS error
+	const moddedURL = modEntriesURL.replace(/^http:\/\//, 'https://');
+	return await axios.get(moddedURL).then(response => response.data).catch(reason => console.error(reason));
 }
 
 function App() {
@@ -84,7 +44,12 @@ function App() {
 	useEffect(() => {
 		const fetchData = async () => {
 			const data: PostsAPI = await fetchPosts();
-			console.log(data);
+		
+			data._embedded.posts.forEach(async post => {
+				const modEntriesData: ModEntriesAPI = await fetchModEntries(post._links.modEntries.href);
+				post.modEntries = modEntriesData;
+			});
+
 			setData(data);
 		}
 
@@ -93,17 +58,15 @@ function App() {
 
 	return (
 		<>
-			<header>
-				<h1>r/Slovakia ModLog</h1>
-			</header>
+			<Header/>
 
 			<main>
 				<div className='grid-wrapper'>
-					<DataGrid columns={postsColumns} rows={data!._embedded.posts} className='rdg-dark'/>
+					<DataGrid columns={postsColumns} rows={data!._embedded.posts} className='rdg-dark data-grid'/>
 				</div>
 			</main>
 
-			<footer></footer>
+			<Footer/>
 		</>
 	)
 }
