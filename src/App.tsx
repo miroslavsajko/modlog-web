@@ -11,7 +11,7 @@ const postsColumns = [
 	{ key: "author", name: "Author" },
 	{ key: "flair", name: "Flair" },
 	{ key: "comments", name: "Comments" },
-	{ key: "upvotes", name: "Upvotes" }
+	{ key: "score", name: "Upvotes" }
 ];
 
 // const modEntriesColumns = [
@@ -99,7 +99,7 @@ function App() {
 
 			<main>
 				<div className='grid-wrapper'>
-					<DataGrid columns={postsColumns} rows={data!._embedded.posts}/>
+					<DataGrid columns={postsColumns} rows={data!._embedded.posts} className='rdg-dark'/>
 				</div>
 			</main>
 
