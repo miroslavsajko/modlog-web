@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react'
+import { useEffect, useState } from 'react'
 import axios from "axios";
 import DataGrid from "react-data-grid";
 import { ModEntriesAPI, PostsAPI } from './components/interfaces';
@@ -10,7 +10,7 @@ import "react-data-grid/lib/styles.css";
 const API_URL = import.meta.env.VITE_API_URL;
 
 const postsColumns = [
-	{ key: "expander", name: ""},
+	// { key: "expander", name: ""},
 	{ key: "title", name: "Title" },
 	{ key: "author", name: "Author" },
 	{ key: "flair", name: "Flair" },
@@ -44,7 +44,7 @@ function App() {
 	useEffect(() => {
 		const fetchData = async () => {
 			const data: PostsAPI = await fetchPosts();
-		
+
 			data._embedded.posts.forEach(async post => {
 				const modEntriesData: ModEntriesAPI = await fetchModEntries(post._links.modEntries.href);
 				post.modEntries = modEntriesData;
@@ -58,15 +58,16 @@ function App() {
 
 	return (
 		<>
-			<Header/>
+			<Header />
 
 			<main>
 				<div className='grid-wrapper'>
-					<DataGrid columns={postsColumns} rows={data!._embedded.posts} className='rdg-dark data-grid'/>
+					{data == null ? "Loading..." :
+						<DataGrid columns={postsColumns} rows={data._embedded.posts} className='rdg-dark data-grid' />}
 				</div>
 			</main>
 
-			<Footer/>
+			<Footer />
 		</>
 	)
 }
