@@ -1,59 +1,33 @@
+// libs
 import { useEffect, useState } from 'react'
-import axios from "axios";
-import { ModEntriesAPI, PostsAPI } from './components/interfaces';
+import DataGrid, { CellClickArgs } from "react-data-grid";
+// components
+import { API_URL, fetchModEntries, fetchPosts, modEntriesColumns, postsColumns } from './components/api';
+import { ModEntriesAPI, Post, PostsAPI } from './components/interfaces';
 import Header from './components/Header';
 import Footer from './components/Footer';
+// css
 import "./css/global.css";
-// datagrid
-import DataGrid from "react-data-grid";
 import "react-data-grid/lib/styles.css";
-
-const API_URL: string = import.meta.env.VITE_API_URL;
-const DEBUG_MODE: boolean = import.meta.env.DEBUG === 1 ? true : false;
-
-const postsColumns = [
-	{ key: "title", name: "Title" },
-	{ key: "author", name: "Author" },
-	{ key: "flair", name: "Flair" },
-	{ key: "comments", name: "Comments" },
-	{ key: "score", name: "Upvotes" },
-];
-
-// const modEntriesColumns = [
-// 	{ key: "action", name: "Action" },
-// 	{ key: "mod", name: "Moderator" },
-// 	{ key: "details", name: "Details" },
-// 	{ key: "description", name: "Description" },
-// 	{ key: "timestamp", name: "Timestamp" }
-// ];
-
-const fetchPosts = async (requestedURL: string) => {
-	if(DEBUG_MODE)
-		console.info(API_URL);
-	return await axios.get(`${requestedURL}`).then(response => response.data).catch(reason => console.error(reason));
-}
-
-const fetchModEntries = async (modEntriesURL: string) => {
-	if(DEBUG_MODE)
-		console.info(modEntriesURL);
-	// urls in APIs are returned with http, not https -> throwing CORS error
-	const moddedURL = modEntriesURL.replace(/^http:\/\//, 'https://');
-	return await axios.get(moddedURL).then(response => response.data).catch(reason => console.error(reason));
-}
 
 function App() {
 	const [data, setData] = useState<PostsAPI | null>(null);
 	const [pageURL, setPageURL] = useState<string>(`${API_URL}/posts`);
 	const [pageNum, setPageNum] = useState<number>(0);
+	const [detailContent, setDetailContent] = useState<Post | null>(null);
 
 	function handlePaginator(page: number) {
-		const pageSize = 20;
+		const pageSize = 20; // add customizable pagesize in future?
 
 		if(!data)
 			return;
 
-		setPageURL(`https://modlog-api.up.railway.app/posts?page=${page}&size=${pageSize}`);
+		setPageURL(`${API_URL}/posts?page=${page}&size=${pageSize}`);
 		setPageNum(page);
+	}
+
+	function handleRowSelect(rows: CellClickArgs<NoInfer<Post>, unknown>) {
+		setDetailContent(rows.row);
 	}
 
 	useEffect(() => {
@@ -77,8 +51,11 @@ function App() {
 
 			<main>
 				<div className='grid-wrapper'>
-					{data == null ? "Loading..." :
-						<DataGrid columns={postsColumns} rows={data._embedded.posts} className='rdg-dark data-grid' />}
+					{data === null ? "Loading..." :
+						<DataGrid columns={postsColumns} 
+							rows={data._embedded.posts} 
+							onCellClick={(data) => handleRowSelect(data)} 
+							className='rdg-dark data-grid'/>}
 				</div>
 
 				<div className='paginator'>
@@ -86,6 +63,16 @@ function App() {
 						<p className={pageNum === idx ? 'paginator-num selected' : 'paginator-num'} 
 							key={idx} onClick={() => handlePaginator(idx)}>{idx+1}</p>
 					))}
+				</div>
+
+				<div className='grid-detail-wrapper'>
+					{detailContent === null ? "No Post Selected..." :
+						<>
+							<h3>{detailContent.title}</h3>
+							<DataGrid columns={modEntriesColumns} 
+							rows={detailContent.modEntries._embedded.modentries} 
+							className='rdg-dark data-grid'/>
+						</>}
 				</div>
 			</main>
 

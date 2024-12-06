@@ -1,6 +1,8 @@
 function Footer() {
 	return (
-		<footer></footer>
+		<footer>
+			<p>made for r/Slovakia</p>
+		</footer>
 	);
 }
 
