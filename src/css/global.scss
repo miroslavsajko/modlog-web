@@ -7,9 +7,46 @@
 	display: grid;
 	grid-template-rows: auto 1fr auto;
 	min-height: 100vh;
+	justify-content: center;
+	justify-items: center;
+}
+
+main {
+	display: grid;
+	grid-auto-flow: row;
+	align-content: start;
+	gap: 16px;
 }
 
 .grid-wrapper {
 	width: 98vw;
 	justify-self: center;
+}
+
+.paginator {
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: center;
+	gap: 8px;
+
+	.paginator-num {
+		cursor: pointer;
+		font-size: 20px;
+		padding: 4px;
+		width: 24px;
+		height: 24px;
+		text-align: center;
+		transition: .05s ease-in-out;
+		border-radius: 20px;
+
+		&:hover {
+			background: black;
+			color: gold;
+		}
+	}
+
+	.selected {
+		background: black;
+		color: white;
+	}
 }

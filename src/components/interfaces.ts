@@ -41,7 +41,7 @@ export interface PostsAPI {
 
 // Mod Entries API
 
-interface ModEntry {
+export interface ModEntry {
 	action: string;
 	mod: string;
 	details: string;
