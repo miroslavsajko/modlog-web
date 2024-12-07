@@ -43,6 +43,11 @@ main {
 }
 
 .grid-detail-wrapper {
+	display: grid;
+	grid-auto-flow: row;
+	align-content: start;
+	gap: 4px;
+
 	color: white;
 	text-align: center;
 }
@@ -92,5 +97,16 @@ main {
 		.rdg-cell {
 			background: black;
 		}
+	}
+}
+
+.post-link {
+	color: violet;
+	text-decoration: none;
+	transition: .05s ease-in-out;
+	justify-self: center;
+
+	&:hover {
+		color: white;
 	}
 }

@@ -88,6 +88,9 @@ function App() {
 					{detailContent === null ? "No Post Selected..." :
 						<>
 							<h3>{detailContent.title}</h3>
+							<a className='post-link'
+								href={`https://www.reddit.com/r/Slovakia/comments/${detailContent.postId}`}
+								target='_blank'>Post Link</a>
 							<DataGrid columns={modEntriesColumns} 
 							rows={detailContent.modEntries._embedded.modentries} 
 							className='rdg-dark data-grid'/>
