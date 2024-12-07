@@ -91,9 +91,6 @@ function App() {
 							<a className='post-link'
 								href={`https://www.reddit.com/r/Slovakia/comments/${detailContent.postId}`}
 								target='_blank'>Post Link</a>
-							<a className='post-link'
-								href={`https://www.reddit.com/r/Slovakia/s/${detailContent.postId}`}
-								target='_blank'>Post Link (Mod View)</a>
 							<DataGrid columns={modEntriesColumns} 
 							rows={detailContent.modEntries._embedded.modentries} 
 							className='rdg-dark data-grid'/>
