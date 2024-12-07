@@ -8,6 +8,7 @@ export const postsColumns = [
 	{ key: "flair", name: "Flair" },
 	{ key: "comments", name: "Comments" },
 	{ key: "score", name: "Upvotes" },
+	{ key: "timestamp", name: "Date"}
 ];
 
 export const modEntriesColumns = [

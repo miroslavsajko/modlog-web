@@ -8,8 +8,10 @@ export interface Post {
 	title: string;
 	author: string;
 	flair: string;
+	timestamp: string;
 	score: number;
 	comments: number;
+	postId: string;
 	_links: {
 		self: Href;
 		post: Href;
