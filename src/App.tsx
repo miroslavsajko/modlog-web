@@ -10,9 +10,22 @@ import Footer from './components/Footer';
 import "./css/global.css";
 import "react-data-grid/lib/styles.css";
 
+function convertDateTime(isoDateTime: string) {
+	const timeFormat = new Intl.DateTimeFormat("sk-SK", {
+		year: "numeric",
+		month: "2-digit",
+		day: "2-digit",
+		hour: "2-digit",
+		minute: "2-digit",
+		second: "2-digit",
+	})
+
+	return timeFormat.format(new Date(isoDateTime));
+}
+
 function App() {
 	const [data, setData] = useState<PostsAPI | null>(null);
-	const [pageURL, setPageURL] = useState<string>(`${API_URL}/posts`);
+	const [pageURL, setPageURL] = useState<string>(`${API_URL}/posts?sort=timestamp,desc`);
 	const [pageNum, setPageNum] = useState<number>(0);
 	const [detailContent, setDetailContent] = useState<Post | null>(null);
 
@@ -22,7 +35,7 @@ function App() {
 		if(!data)
 			return;
 
-		setPageURL(`${API_URL}/posts?page=${page}&size=${pageSize}`);
+		setPageURL(`${API_URL}/posts?sort=timestamp,desc&page=${page}&size=${pageSize}`);
 		setPageNum(page);
 	}
 
@@ -35,8 +48,14 @@ function App() {
 			const data: PostsAPI = await fetchPosts(pageURL);
 
 			data._embedded.posts.forEach(async post => {
+				post.timestamp = convertDateTime(post.timestamp);
+
 				const modEntriesData: ModEntriesAPI = await fetchModEntries(post._links.modEntries.href);
 				post.modEntries = modEntriesData;
+
+				post.modEntries._embedded.modentries.forEach(modEntry => {
+					modEntry.timestamp = convertDateTime(modEntry.timestamp);
+				})
 			});
 
 			setData(data);
