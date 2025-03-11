@@ -32,13 +32,9 @@ function App() {
 
 	function Paginator() {
 		if (data === null) return ("");
-
-		const pagesCount = data.page.totalPages;
 		const visiblePagesIdx = [];
 
-		for (let i = Math.max(0, pageNum - 2); i <= Math.min(pagesCount - 1, pageNum + 2); i++) {
-			if (i === 0 || i === pagesCount - 1)
-				continue;
+		for (let i = pageNum-2; i <= pageNum + 2; i++) {
 			visiblePagesIdx.push(i);
 		}
 
@@ -50,11 +46,11 @@ function App() {
 
 				{/* Page Numbers */}
 				{visiblePagesIdx.map(idx => (
-					<p key={idx}
-						className={`paginator-num ${pageNum === idx ? 'selected' : ''}`}
-						onClick={() => handlePaginator(idx)}>
-						{idx + 1}
-					</p>
+					(idx+1) <= 1 || (idx+1 >= data.page.totalPages) ? <p className='paginator-void'></p> : <p key={idx}
+					className={`paginator-num ${pageNum === idx ? 'selected' : ''}`}
+					onClick={() => handlePaginator(idx)}>
+					{idx + 1}
+				</p>
 				))}
 
 				{/* Last */}
