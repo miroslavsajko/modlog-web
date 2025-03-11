@@ -7,7 +7,7 @@ import { ModEntriesAPI, Post, PostsAPI } from './components/interfaces';
 import Header from './components/Header';
 import Footer from './components/Footer';
 // css
-import "./css/global.css";
+import "./css/global.scss";
 import "react-data-grid/lib/styles.css";
 
 function convertDateTime(isoDateTime: string) {
@@ -24,7 +24,7 @@ function convertDateTime(isoDateTime: string) {
 }
 
 function App() {
-	const pageSize = 8;
+	const pageSize = 15;
 	const [data, setData] = useState<PostsAPI | null>(null);
 	const [pageURL, setPageURL] = useState<string>(`${API_URL}/posts?sort=timestamp,desc&page=0&size=${pageSize}`);
 	const [pageNum, setPageNum] = useState<number>(0);
@@ -46,7 +46,7 @@ function App() {
 
 				{/* Page Numbers */}
 				{visiblePagesIdx.map(idx => (
-					(idx+1) <= 1 || (idx+1 >= data.page.totalPages) ? <p className='paginator-void'></p> : <p key={idx}
+					(idx+1) <= 1 || (idx+1 >= data.page.totalPages) ? <p key={idx} className='paginator-void'></p> : <p key={idx}
 					className={`paginator-num ${pageNum === idx ? 'selected' : ''}`}
 					onClick={() => handlePaginator(idx)}>
 					{idx + 1}
@@ -79,7 +79,7 @@ function App() {
 		const fetchData = async () => {
 			const data: PostsAPI = await fetchPosts(pageURL);
 
-			data._embedded.posts.forEach(async post => {
+			for (const post of data._embedded.posts) {
 				post.timestamp = convertDateTime(post.timestamp);
 
 				const modEntriesData: ModEntriesAPI = await fetchModEntries(post._links.modEntries.href);
@@ -88,7 +88,7 @@ function App() {
 				post.modEntries._embedded.modentries.forEach(modEntry => {
 					modEntry.timestamp = convertDateTime(modEntry.timestamp);
 				})
-			});
+			}
 
 			setData(data);
 		}
@@ -106,7 +106,7 @@ function App() {
 						<DataGrid columns={postsColumns}
 							rows={data._embedded.posts}
 							onCellClick={(data) => handleRowSelect(data)}
-							className='rdg-dark data-grid' />}
+							className='rdg-dark data-grid data-posts' />}
 				</div>
 
 				{data === null ? "" : <Paginator />}
@@ -120,7 +120,7 @@ function App() {
 								target='_blank'>Post Link</a>
 							<DataGrid columns={modEntriesColumns}
 								rows={detailContent.modEntries._embedded.modentries}
-								className='rdg-dark data-grid' />
+								className='rdg-dark data-grid data-modentries' />
 						</>}
 				</div>
 			</main>
