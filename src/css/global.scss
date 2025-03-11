@@ -55,21 +55,20 @@ main {
 // Paginator
 
 .paginator {
-	display: flex;
-	flex-flow: row wrap;
-	justify-content: center;
+	display: grid;
+	justify-self: center;
+	grid-template-columns: 2fr repeat(5, 1fr) 2fr;
 	gap: 8px;
 
 	.paginator-num {
 		cursor: pointer;
 		font-size: 20px;
-		padding: 4px;
-		width: 24px;
-		height: 24px;
+		padding: 4px 10px;
 		text-align: center;
 		transition: .05s ease-in-out;
 		border-radius: 20px;
 		color: white;
+		justify-self: center;
 
 		&:hover {
 			background: black;
