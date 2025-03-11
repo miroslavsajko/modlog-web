@@ -1,6 +1,6 @@
 // libs
 import { useEffect, useState } from 'react'
-import DataGrid, { CellClickArgs } from "react-data-grid";
+import { DataGrid, CellClickArgs } from "react-data-grid";
 // components
 import { API_URL, fetchModEntries, fetchPosts, modEntriesColumns, postsColumns } from './components/api';
 import { ModEntriesAPI, Post, PostsAPI } from './components/interfaces';
