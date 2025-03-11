@@ -24,15 +24,51 @@ function convertDateTime(isoDateTime: string) {
 }
 
 function App() {
+	const pageSize = 8;
 	const [data, setData] = useState<PostsAPI | null>(null);
-	const [pageURL, setPageURL] = useState<string>(`${API_URL}/posts?sort=timestamp,desc`);
+	const [pageURL, setPageURL] = useState<string>(`${API_URL}/posts?sort=timestamp,desc&page=0&size=${pageSize}`);
 	const [pageNum, setPageNum] = useState<number>(0);
 	const [detailContent, setDetailContent] = useState<Post | null>(null);
 
-	function handlePaginator(page: number) {
-		const pageSize = 20; // add customizable pagesize in future?
+	function Paginator() {
+		if (data === null) return ("");
 
-		if(!data)
+		const pagesCount = data.page.totalPages;
+		const visiblePagesIdx = [];
+
+		for (let i = Math.max(0, pageNum - 2); i <= Math.min(pagesCount - 1, pageNum + 2); i++) {
+			if (i === 0 || i === pagesCount - 1)
+				continue;
+			visiblePagesIdx.push(i);
+		}
+
+		return (
+			<div className='paginator'>
+				{/* First */}
+				<p className={pageNum === 0 ? 'paginator-num selected' : 'paginator-num'}
+					key={0} onClick={() => handlePaginator(0)}>First</p>
+
+				{/* Page Numbers */}
+				{visiblePagesIdx.map(idx => (
+					<p key={idx}
+						className={`paginator-num ${pageNum === idx ? 'selected' : ''}`}
+						onClick={() => handlePaginator(idx)}>
+						{idx + 1}
+					</p>
+				))}
+
+				{/* Last */}
+				<p className={pageNum === data.page.totalPages - 1 ? 'paginator-num selected' : 'paginator-num'}
+					key={data?.page.totalPages} onClick={() => {
+						// if(data === null) return;
+						handlePaginator(data.page.totalPages - 1);
+					}}>Last</p>
+			</div>
+		);
+	}
+
+	function handlePaginator(page: number) {
+		if (!data)
 			return;
 
 		setPageURL(`${API_URL}/posts?sort=timestamp,desc&page=${page}&size=${pageSize}`);
@@ -71,18 +107,13 @@ function App() {
 			<main>
 				<div className='grid-wrapper'>
 					{data === null ? "Loading..." :
-						<DataGrid columns={postsColumns} 
-							rows={data._embedded.posts} 
-							onCellClick={(data) => handleRowSelect(data)} 
-							className='rdg-dark data-grid'/>}
+						<DataGrid columns={postsColumns}
+							rows={data._embedded.posts}
+							onCellClick={(data) => handleRowSelect(data)}
+							className='rdg-dark data-grid' />}
 				</div>
 
-				<div className='paginator'>
-					{data && Array.from({ length: data?.page.totalPages }, (_, idx: number) => (
-						<p className={pageNum === idx ? 'paginator-num selected' : 'paginator-num'} 
-							key={idx} onClick={() => handlePaginator(idx)}>{idx+1}</p>
-					))}
-				</div>
+				{data === null ? "" : <Paginator />}
 
 				<div className='grid-detail-wrapper'>
 					{detailContent === null ? "No Post Selected..." :
@@ -91,9 +122,9 @@ function App() {
 							<a className='post-link'
 								href={`https://www.reddit.com/r/Slovakia/comments/${detailContent.postId}`}
 								target='_blank'>Post Link</a>
-							<DataGrid columns={modEntriesColumns} 
-							rows={detailContent.modEntries._embedded.modentries} 
-							className='rdg-dark data-grid'/>
+							<DataGrid columns={modEntriesColumns}
+								rows={detailContent.modEntries._embedded.modentries}
+								className='rdg-dark data-grid' />
 						</>}
 				</div>
 			</main>

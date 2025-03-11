@@ -63,9 +63,7 @@ main {
 	.paginator-num {
 		cursor: pointer;
 		font-size: 20px;
-		padding: 4px;
-		width: 24px;
-		height: 24px;
+		padding: 4px 10px;
 		text-align: center;
 		transition: .05s ease-in-out;
 		border-radius: 20px;
@@ -74,6 +72,10 @@ main {
 		&:hover {
 			background: black;
 			color: gold;
+		}
+
+		&:first-child, &:last-child {
+			margin: 0px 16px;
 		}
 	}
 
