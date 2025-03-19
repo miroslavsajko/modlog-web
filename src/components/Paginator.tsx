@@ -13,6 +13,8 @@ interface PaginatorInterface {
 export function Paginator({ data, pageNum, pageSize, setPageURL, setData, setPageNum, }: PaginatorInterface) {
 	function handlePaginator(page: number) {
 		if (!data) return;
+		if (page === pageNum) return;
+		if (page < 0 || page >= data.page.totalPages) return;
 
 		setData(null);
 		setPageURL(`${API_URL}/posts?sort=timestamp,desc&page=${page}&size=${pageSize}`);
@@ -20,24 +22,21 @@ export function Paginator({ data, pageNum, pageSize, setPageURL, setData, setPag
 	}
 
 	if (data === null) return null;
+	
 	const visiblePagesIdx = [];
-
 	for (let i = pageNum - 2; i <= pageNum + 2; i++) {
 		visiblePagesIdx.push(i);
 	}
 
 	return (
 		<div className="paginator">
-			<p
-				className={pageNum === 0 ? "paginator-num selected" : "paginator-num"}
-				key={0}
-				onClick={() => handlePaginator(0)}
-			>
-				First
-			</p>
+			{pageNum === 0 ? <p key={0} className="paginator-void"></p> :
+				<p className="paginator-num" key={0} onClick={() => handlePaginator(0)} aria-label="First Page">
+					{"<<"}
+				</p>}
 
 			{visiblePagesIdx.map((idx) =>
-				idx + 1 <= 1 || idx + 1 >= data.page.totalPages ? (
+				idx + 1 < 1 || idx + 1 > data.page.totalPages ? (
 					<p key={idx} className="paginator-void"></p>
 				) : (
 					<p
@@ -50,19 +49,11 @@ export function Paginator({ data, pageNum, pageSize, setPageURL, setData, setPag
 				)
 			)}
 
-			<p
-				className={
-					pageNum === data.page.totalPages - 1
-						? "paginator-num selected"
-						: "paginator-num"
-				}
-				key={data?.page.totalPages}
-				onClick={() => {
-					handlePaginator(data.page.totalPages - 1);
-				}}
-			>
-				Last
-			</p>
+			{pageNum === data.page.totalPages - 1 ? <p key={data?.page.totalPages} className="paginator-void"></p> :
+				<p className="paginator-num" key={data?.page.totalPages}
+					onClick={() => { handlePaginator(data.page.totalPages - 1); }} aria-label="Last Page">
+					{">>"}
+				</p>}
 		</div>
 	);
 }
