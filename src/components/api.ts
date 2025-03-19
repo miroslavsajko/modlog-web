@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ModEntriesAPI, PostsAPI } from "./interfaces";
+import { ModEntriesAPI, Post, PostsAPI } from "./interfaces";
 import { convertDateTime } from "./dateTimeConverter";
 export const API_URL: string = import.meta.env.VITE_API_URL;
 const DEBUG_MODE = 0;
@@ -37,30 +37,38 @@ export const fetchModEntries = async (modEntriesURL: string) => {
 	return await axios.get(moddedURL).then(response => response.data).catch(reason => console.error(reason));
 }
 
-interface FetchInterface {
+interface FetchPostsInterface {
 	pageURL: string;
 	setData: React.Dispatch<React.SetStateAction<PostsAPI | null>>;
+}
+
+interface fetchModEntriesInterface {
+	post: Post;
+	setDetailedModEntries: React.Dispatch<React.SetStateAction<ModEntriesAPI | null>>;
 }
 
 function truncateString(str: string, maxLength: number): string {
 	return str.length > maxLength ? str.substring(0, maxLength) + "..." : str;
 }
 
-export async function fetchApiData({ pageURL, setData }: FetchInterface) {
+export async function fetchApiData({ pageURL, setData }: FetchPostsInterface) {
 	const data: PostsAPI = await fetchPosts(pageURL);
 
 	for (const post of data._embedded.posts) {
 		post.timestamp = convertDateTime(post.timestamp);
 		post.title = truncateString(post.title, MAX_TITLE_LENGTH);
 		post.author = truncateString(post.author, MAX_USERNAME_LENGTH);
-
-		const modEntriesData: ModEntriesAPI = await fetchModEntries(post._links.modEntries.href);
-		post.modEntries = modEntriesData;
-
-		post.modEntries._embedded.modentries.forEach(modEntry => {
-			modEntry.timestamp = convertDateTime(modEntry.timestamp);
-		});
 	}
 
 	setData(data);
+}
+
+export async function fetchModEntriesData({ post, setDetailedModEntries: setDetailedPostModEntries }: fetchModEntriesInterface) {
+	const modEntriesData: ModEntriesAPI = await fetchModEntries(post._links.modEntries.href);
+
+	modEntriesData._embedded.modentries.forEach(modEntry => {
+		modEntry.timestamp = convertDateTime(modEntry.timestamp);
+	});
+
+	setDetailedPostModEntries(modEntriesData);
 }
