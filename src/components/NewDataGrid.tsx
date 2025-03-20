@@ -1,11 +1,15 @@
 import "../css/datagrid.scss";
+import { fetchModEntriesData } from "./api";
 import { ModEntriesAPI, ModEntry, Post, PostsAPI } from "./interfaces";
 
 interface MasterDetailGridInterface {
 	data: PostsAPI;
+	selectedPosts: string[] | null;
+	setSelectedPosts: React.Dispatch<React.SetStateAction<string[] | null>>
+	setData: React.Dispatch<React.SetStateAction<PostsAPI | null>>;
 }
 
-export function MasterDetailGrid({ data }: MasterDetailGridInterface) {
+export function MasterDetailGrid({ data, selectedPosts, setSelectedPosts, setData }: MasterDetailGridInterface) {
 	if (data === null) return <LoadingIcon />;
 
 	return (
@@ -21,7 +25,7 @@ export function MasterDetailGrid({ data }: MasterDetailGridInterface) {
 
 			<div className="dg-body">
 				{data._embedded.posts.map((post, idx) => (
-					<MasterGridRow key={idx} post={post}/>
+					<MasterGridRow key={idx} post={post} data={data} setData={setData} selectedPosts={selectedPosts} setSelectedPosts={setSelectedPosts} />
 				))}
 			</div>
 		</div>
@@ -29,12 +33,30 @@ export function MasterDetailGrid({ data }: MasterDetailGridInterface) {
 }
 
 interface MasterGridRowInterface {
+	data: PostsAPI;
 	post: Post;
+	selectedPosts: string[] | null;
+	setSelectedPosts: React.Dispatch<React.SetStateAction<string[] | null>>
+	setData: React.Dispatch<React.SetStateAction<PostsAPI | null>>;
 }
 
-function MasterGridRow({ post }: MasterGridRowInterface) {
+function MasterGridRow({ data, post, selectedPosts, setSelectedPosts, setData }: MasterGridRowInterface) {
+	async function handleRowClick() {
+		if (post.modEntries === null) await fetchModEntriesData({ data, post, setData });
+
+		if (selectedPosts === null) {
+			setSelectedPosts([post.postId]);
+		} else if (selectedPosts.includes(post.postId)) {
+			setSelectedPosts(selectedPosts.filter(id => id !== post.postId));
+		} else if (!selectedPosts.includes(post.postId)) {
+			setSelectedPosts([...selectedPosts, post.postId]);
+		} else {
+			console.error("Something went wrong with the selectedPosts state...");
+		}
+	}
+
 	return (
-		<div className="dg-row">
+		<div className="dg-row" onClick={handleRowClick}>
 			<div className="dg-row-master">
 				<div className="dg-cell">{post.title}</div>
 				<div className="dg-cell">{post.author}</div>
@@ -44,7 +66,9 @@ function MasterGridRow({ post }: MasterGridRowInterface) {
 				<div className="dg-cell">{post.timestamp}</div>
 			</div>
 			<div className="dg-row-detail">
-				<DetailGrid entries={null} /> {/* need to add modentries to post struct */}
+				{selectedPosts === null ? "" :
+					!selectedPosts?.includes(post.postId) ? "" :
+						post.modEntries === null ? <LoadingIcon /> : <DetailGrid entries={post.modEntries} />}
 			</div>
 		</div>
 	)
@@ -55,7 +79,7 @@ interface DetailGridInterface {
 }
 
 function DetailGrid({ entries: modEntries }: DetailGridInterface) {
-	if(modEntries === null) return <LoadingIcon />;
+	if (modEntries === null) return <LoadingIcon />;
 
 	return (
 		<div className="dtg-wrapper">

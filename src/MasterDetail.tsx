@@ -16,6 +16,7 @@ function MasterDetail() {
 	const pageSize = 15;
 	const [data, setData] = useState<PostsAPI | null>(null);
 	const [pageURL, setPageURL] = useState<string>(`${API_URL}/posts?sort=timestamp,desc&page=0&size=${pageSize}`);
+	const [selectedPosts, setSelectedPosts] = useState<string[] | null>(null);
 	// const [pageNum, setPageNum] = useState<number>(0);
 	// const [detailedPost, setDetailedPost] = useState<Post | null>(null);
 	// const [detailedModEntries, setDetailedModEntries] = useState<ModEntriesAPI | null>(null);
@@ -34,7 +35,7 @@ function MasterDetail() {
 			<Header />
 		
 			<main>
-				{data === null ? <LoadingIcon /> : <MasterDetailGrid data={data}/>}
+				{data === null ? <LoadingIcon /> : <MasterDetailGrid data={data} selectedPosts={selectedPosts} setSelectedPosts={setSelectedPosts} setData={setData} />}
 			</main>
 
 			<Footer />
