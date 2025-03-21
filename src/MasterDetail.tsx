@@ -1,10 +1,10 @@
 // libs
 import { useEffect, useState } from 'react'
 // components
-import { API_URL, fetchApiData, fetchModEntriesData } from './components/api';
-import { ModEntriesAPI, Post, PostsAPI } from './components/interfaces';
+import { API_URL, fetchApiData } from './components/api';
+import { PostsAPI } from './components/interfaces';
 import { Paginator } from './components/Paginator';
-import { DetailGrid, LoadingIcon, MainDataGrid, NoPostSelected } from './components/DataGrids';
+import { LoadingIcon } from './components/DataGrids';
 import Header from './components/Header';
 import Footer from './components/Footer';
 // css
