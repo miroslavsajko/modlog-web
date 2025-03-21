@@ -7,7 +7,7 @@ $shadow: 0px 0px 5px rgba($color: black, $alpha: 0.5);
 .dg-wrapper {
 	display: grid;
 	grid-auto-flow: row;
-	width: 95vw;
+	width: 99vw;
 
 	* {color: white;}
 
@@ -20,10 +20,6 @@ $shadow: 0px 0px 5px rgba($color: black, $alpha: 0.5);
 		border-radius: 16px;
 		margin-bottom: 12px;
 		box-shadow: $shadow;
-
-		.dg-header-cell {
-			padding: 8px 12px;
-		}
 	}
 
 	.dg-body {
@@ -45,10 +41,6 @@ $shadow: 0px 0px 5px rgba($color: black, $alpha: 0.5);
 				grid-template-columns: 6fr 2fr 2fr 1fr 1fr 1fr;
 				gap: 4px;
 				align-items: center;
-
-				.dg-cell {
-					padding: 8px 12px;
-				}
 			}
 			
 			transition: .05s ease-in-out;
@@ -57,6 +49,10 @@ $shadow: 0px 0px 5px rgba($color: black, $alpha: 0.5);
 				filter: brightness(1.2);
 			}
 		}
+	}
+
+	.dg-header-cell, .dg-cell {
+		padding: 6px 10px;
 	}
 
 	.row-selected {
@@ -84,10 +80,6 @@ $shadow: 0px 0px 5px rgba($color: black, $alpha: 0.5);
 		border-radius: 16px;
 		margin-bottom: 12px;
 		box-shadow: $shadow;
-
-		.dtg-header-cell {
-			padding: 6px 10px;
-		}
 	}
 
 	.dtg-body {
@@ -104,11 +96,11 @@ $shadow: 0px 0px 5px rgba($color: black, $alpha: 0.5);
 			box-shadow: $shadow;
 			gap: 4px;
 			align-items: center;
-
-			.dtg-cell {
-				padding: 6px 10px;
-			}
 		}
+	}
+
+	.dtg-header-cell, .dtg-cell {
+		padding: 6px 8px;
 	}
 }
 
@@ -140,7 +132,7 @@ $shadow: 0px 0px 5px rgba($color: black, $alpha: 0.5);
 	text-align: center;
 	font-weight: 900;
 
-	@media(min-width: 768px) {
+	@media(min-width: 1280px) {
 		display: none;
 	}
 }
