@@ -54,7 +54,7 @@ $shadow: 0px 0px 5px rgba($color: black, $alpha: 0.5);
 			transition: .05s ease-in-out;
 			&:hover {
 				cursor: pointer;
-				filter: brightness(1.5);
+				filter: brightness(1.2);
 			}
 		}
 	}
@@ -78,28 +78,43 @@ $shadow: 0px 0px 5px rgba($color: black, $alpha: 0.5);
 	.dtg-header {
 		display: grid;
 		grid-template-columns: 1fr 1fr 1fr 2fr 1fr;
+		gap: 4px;
+		background: rgba($color: $colorD, $alpha: 0.25);
+		border: 1px solid $colorD;
+		border-radius: 16px;
+		margin-bottom: 12px;
+		box-shadow: $shadow;
 
 		.dtg-header-cell {
-
+			padding: 6px 10px;
 		}
 	}
 
 	.dtg-body {
 		display: grid;
 		grid-auto-flow: row;
+		gap: 6px;
 
 		.dtg-row {
 			display: grid;
 			grid-template-columns: 1fr 1fr 1fr 2fr 1fr;
+			background: rgba($color: $colorC, $alpha: 0.25);
+			border: 1px solid $colorC;
+			border-radius: 16px;
+			box-shadow: $shadow;
+			gap: 4px;
+			align-items: center;
 
 			.dtg-cell {
-
+				padding: 6px 10px;
 			}
 		}
 	}
 }
 
 .loading-icon {
+	justify-self: center;
+	margin: 8px;
 	width: 50px;
 	height: 50px;
 	border: 5px solid rgba(255, 255, 255, 0.3);
