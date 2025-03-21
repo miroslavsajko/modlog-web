@@ -3,8 +3,8 @@ import { ModEntriesAPI, Post, PostsAPI } from "./interfaces";
 import { convertDateTime } from "./dateTimeConverter";
 export const API_URL: string = import.meta.env.VITE_API_URL;
 const DEBUG_MODE = 0;
-const MAX_TITLE_LENGTH = 128;
-const MAX_USERNAME_LENGTH = 24;
+const MAX_TITLE_LENGTH = 100;
+const MAX_USERNAME_LENGTH = 20;
 
 export const postsColumns = [
 	{ key: "title", name: "Title" },

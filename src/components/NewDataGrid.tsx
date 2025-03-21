@@ -18,8 +18,8 @@ export function MasterDetailGrid({ data, selectedPosts, setSelectedPosts, setDat
 				<div className="dg-header-cell">Title</div>
 				<div className="dg-header-cell">Author</div>
 				<div className="dg-header-cell">Flair</div>
-				<div className="dg-header-cell">Comments</div>
-				<div className="dg-header-cell">Upvotes</div>
+				<div className="dg-header-cell dg-center">Comments</div>
+				<div className="dg-header-cell dg-center">Upvotes</div>
 				<div className="dg-header-cell">Date</div>
 			</div>
 
@@ -62,8 +62,8 @@ function MasterGridRow({ data, post, selectedPosts, setSelectedPosts, setData }:
 				<div className="dg-cell">{post.title}</div>
 				<div className="dg-cell">{post.author}</div>
 				<div className="dg-cell">{post.flair}</div>
-				<div className="dg-cell">{post.comments}</div>
-				<div className="dg-cell">{post.score}</div>
+				<div className="dg-cell dg-center">{post.comments}</div>
+				<div className="dg-cell dg-center">{post.score}</div>
 				<div className="dg-cell">{post.timestamp}</div>
 			</div>
 			<div className="dg-row-detail">
@@ -123,4 +123,13 @@ export function LoadingIcon() {
 			<div className='loading-icon'></div>
 		</div>
 	);
+}
+
+export function MobileWarning() {
+	return (
+		<div className="mobile-warning">
+			<p>Sorry, this page is not optimized for mobile devices.</p>
+			<p>Please view this page on a desktop or laptop computer for optimal experience.</p>
+		</div>
+	)
 }

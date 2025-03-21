@@ -10,7 +10,7 @@ import Footer from './components/Footer';
 // css
 import "./css/global.scss";
 import "react-data-grid/lib/styles.css";
-import { MasterDetailGrid } from './components/NewDataGrid';
+import { MasterDetailGrid, MobileWarning } from './components/NewDataGrid';
 
 function MasterDetail() {
 	const pageSize = 15;
@@ -28,6 +28,8 @@ function MasterDetail() {
 			<Header />
 		
 			<main>
+				<MobileWarning/>
+
 				{data === null ? <LoadingIcon /> : <MasterDetailGrid data={data} selectedPosts={selectedPosts} setSelectedPosts={setSelectedPosts} setData={setData} />}
 
 				{data && <Paginator data={data} pageNum={pageNum} pageSize={pageSize} setPageURL={setPageURL} setData={setData} setPageNum={setPageNum} />}
