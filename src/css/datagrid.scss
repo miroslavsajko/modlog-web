@@ -78,14 +78,14 @@ $shadow: 0px 0px 5px rgba($color: black, $alpha: 0.5);
 		background: rgba($color: $colorD, $alpha: 0.25);
 		border: 1px solid $colorD;
 		border-radius: 16px;
-		margin-bottom: 12px;
+		margin-bottom: 8px;
 		box-shadow: $shadow;
 	}
 
 	.dtg-body {
 		display: grid;
 		grid-auto-flow: row;
-		gap: 6px;
+		gap: 4px;
 
 		.dtg-row {
 			display: grid;

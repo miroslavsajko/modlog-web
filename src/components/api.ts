@@ -72,6 +72,12 @@ export async function fetchModEntriesData({ data, post, setData }: fetchModEntri
 		modEntry.timestamp = convertDateTime(modEntry.timestamp);
 	});
 
-	data._embedded.posts.filter(post => post.postId === post.postId)[0].modEntries = modEntriesData;
+	const assignedPost = data._embedded.posts.find(p => p.postId === post.postId);
+
+	if(assignedPost === null || assignedPost === undefined) {
+		return;
+	}
+
+	assignedPost.modEntries = modEntriesData;
 	setData(data);
 }

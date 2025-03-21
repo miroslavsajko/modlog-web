@@ -25,6 +25,11 @@ header {
 	height: 64px;
 }
 
+footer {
+	text-align: center;
+	padding: 8px;
+}
+
 #root {
 	display: grid;
 	grid-template-rows: auto 1fr auto;

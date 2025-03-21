@@ -69,7 +69,7 @@ function MasterGridRow({ data, post, selectedPosts, setSelectedPosts, setData }:
 			<div className="dg-row-detail">
 				{selectedPosts === null ? "" :
 					!selectedPosts?.includes(post.postId) ? "" :
-						post.modEntries === null ? <LoadingIcon /> : <DetailGrid entries={post.modEntries} />}
+						<DetailGrid entries={post.modEntries} />}
 			</div>
 		</div>
 	)
