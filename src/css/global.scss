@@ -1,12 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
+$colorA: #0A2647;
+$colorB: #144272;
+$colorC: #205295;
+$colorD: #2C74B3;
+
 * {
 	padding: 0;
 	margin: 0;
 	font-family: "Roboto", sans-serif;
 }
 
-h1,h2,h3,p {
+h1, h2, h3, p {
 	color: white;
 	text-shadow: 2px 2px 5px rgba($color: #000000, $alpha: 0.5);
 }
@@ -16,43 +21,30 @@ h1,h2,h3,p {
 header {
 	display: grid;
 	align-items: center;
+	text-align: center;
 	height: 64px;
+}
+
+footer {
+	text-align: center;
+	padding: 8px;
 }
 
 #root {
 	display: grid;
 	grid-template-rows: auto 1fr auto;
 	min-height: 100vh;
-	justify-content: center;
-	justify-items: center;
-
-	background: #444;
+	background: $colorA;
+	// background: linear-gradient(135deg, $colorA 0%, $colorB 45%, $colorC 100%);
 }
 
 main {
 	display: grid;
 	grid-auto-flow: row;
 	align-content: space-between;
+	justify-content: center;
 	gap: 16px;
 	padding: 32px 0px;
-}
-
-.grid-wrapper {
-	display: grid;
-	width: 98vw;
-	justify-self: center;
-	justify-content: center;
-	color: white;
-}
-
-.grid-detail-wrapper {
-	display: grid;
-	grid-auto-flow: row;
-	align-content: start;
-	gap: 4px;
-
-	color: white;
-	text-align: center;
 }
 
 // Paginator
@@ -68,70 +60,18 @@ main {
 		font-size: 20px;
 		padding: 4px 10px;
 		text-align: center;
-		transition: .05s ease-in-out;
+		transition: .1s ease-in-out;
 		border-radius: 20px;
 		color: white;
 		justify-self: center;
+		background: $colorB;
 
 		&:hover {
-			background: black;
-			color: gold;
+			background: $colorD;
 		}
 	}
 
 	.selected {
 		background: black;
-		color: white;
-	}
-}
-
-// DataGridCSS
-
-.data-grid {
-	background: none;
-
-	.rdg-cell {
-		padding: 4px;
-		border-radius: 4px;
-	}
-
-	.rdg-header-row {
-		.rdg-cell {
-			background: black;
-		}
-	}
-}
-
-.data-grid.data-posts {
-	height: 580px;
-	width: 95vw;
-}
-
-.post-link {
-	color: cyan;
-	text-decoration: none;
-	transition: .05s ease-in-out;
-	justify-self: center;
-
-	&:hover {
-		color: white;
-	}
-}
-
-.loading-icon {
-	width: 50px;
-	height: 50px;
-	border: 5px solid rgba(255, 255, 255, 0.3);
-	border-top: 5px solid white;
-	border-radius: 50%;
-	animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-	from {
-		transform: rotate(0deg);
-	}
-	to {
-		transform: rotate(360deg);
 	}
 }

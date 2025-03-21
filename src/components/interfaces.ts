@@ -17,6 +17,7 @@ export interface Post {
 		post: Href;
 		modEntries: Href;
 	};
+	modEntries: ModEntriesAPI | null;
 }
 
 export interface Page {

@@ -3,8 +3,8 @@ import { ModEntriesAPI, Post, PostsAPI } from "./interfaces";
 import { convertDateTime } from "./dateTimeConverter";
 export const API_URL: string = import.meta.env.VITE_API_URL;
 const DEBUG_MODE = 0;
-const MAX_TITLE_LENGTH = 128;
-const MAX_USERNAME_LENGTH = 24;
+const MAX_TITLE_LENGTH = 80;
+const MAX_USERNAME_LENGTH = 20;
 
 export const postsColumns = [
 	{ key: "title", name: "Title" },
@@ -43,8 +43,9 @@ interface FetchPostsInterface {
 }
 
 interface fetchModEntriesInterface {
+	data: PostsAPI;
 	post: Post;
-	setDetailedModEntries: React.Dispatch<React.SetStateAction<ModEntriesAPI | null>>;
+	setData: React.Dispatch<React.SetStateAction<PostsAPI | null>>;
 }
 
 function truncateString(str: string, maxLength: number): string {
@@ -58,17 +59,25 @@ export async function fetchApiData({ pageURL, setData }: FetchPostsInterface) {
 		post.timestamp = convertDateTime(post.timestamp);
 		post.title = truncateString(post.title, MAX_TITLE_LENGTH);
 		post.author = truncateString(post.author, MAX_USERNAME_LENGTH);
+		post.modEntries = null;
 	}
 
 	setData(data);
 }
 
-export async function fetchModEntriesData({ post, setDetailedModEntries: setDetailedPostModEntries }: fetchModEntriesInterface) {
+export async function fetchModEntriesData({ data, post, setData }: fetchModEntriesInterface) {
 	const modEntriesData: ModEntriesAPI = await fetchModEntries(post._links.modEntries.href);
 
 	modEntriesData._embedded.modentries.forEach(modEntry => {
 		modEntry.timestamp = convertDateTime(modEntry.timestamp);
 	});
 
-	setDetailedPostModEntries(modEntriesData);
+	const assignedPost = data._embedded.posts.find(p => p.postId === post.postId);
+
+	if(assignedPost === null || assignedPost === undefined) {
+		return;
+	}
+
+	assignedPost.modEntries = modEntriesData;
+	setData(data);
 }
