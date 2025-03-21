@@ -16,6 +16,7 @@ h1,h2,h3,p {
 header {
 	display: grid;
 	align-items: center;
+	text-align: center;
 	height: 64px;
 }
 
@@ -23,9 +24,6 @@ header {
 	display: grid;
 	grid-template-rows: auto 1fr auto;
 	min-height: 100vh;
-	justify-content: center;
-	justify-items: center;
-
 	background: #444;
 }
 
@@ -33,26 +31,9 @@ main {
 	display: grid;
 	grid-auto-flow: row;
 	align-content: space-between;
+	justify-content: center;
 	gap: 16px;
 	padding: 32px 0px;
-}
-
-.grid-wrapper {
-	display: grid;
-	width: 98vw;
-	justify-self: center;
-	justify-content: center;
-	color: white;
-}
-
-.grid-detail-wrapper {
-	display: grid;
-	grid-auto-flow: row;
-	align-content: start;
-	gap: 4px;
-
-	color: white;
-	text-align: center;
 }
 
 // Paginator
@@ -81,39 +62,6 @@ main {
 
 	.selected {
 		background: black;
-		color: white;
-	}
-}
-
-// DataGridCSS
-
-.data-grid {
-	background: none;
-
-	.rdg-cell {
-		padding: 4px;
-		border-radius: 4px;
-	}
-
-	.rdg-header-row {
-		.rdg-cell {
-			background: black;
-		}
-	}
-}
-
-.data-grid.data-posts {
-	height: 580px;
-	width: 95vw;
-}
-
-.post-link {
-	color: cyan;
-	text-decoration: none;
-	transition: .05s ease-in-out;
-	justify-self: center;
-
-	&:hover {
 		color: white;
 	}
 }

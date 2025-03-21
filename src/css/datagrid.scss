@@ -1,12 +1,59 @@
+.dg-wrapper {
+	display: grid;
+	grid-auto-flow: row;
+	width: 95vw;
+
+	.dg-header {
+		display: grid;
+		grid-template-columns: 3fr 1fr 1fr 1fr 1fr 1fr;
+
+		.dg-header-cell {
+
+		}
+	}
+
+	.dg-body {
+		display: grid;
+		grid-auto-flow: row;
+
+		.dg-row {
+			display: grid;
+			grid-template-rows: auto 1fr;
+
+			.dg-row-master {
+				display: grid;
+				grid-template-columns: 3fr 1fr 1fr 1fr 1fr 1fr;
+
+				.dg-cell {
+	
+				}
+			}
+		}
+	}
+}
+
 .dtg-wrapper {
+	display: grid;
+	grid-auto-flow: row;
+	padding: 16px;
+
 	.dtg-header {
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr 2fr 1fr;
+
 		.dtg-header-cell {
 
 		}
 	}
 
 	.dtg-body {
+		display: grid;
+		grid-auto-flow: row;
+		
 		.dtg-row {
+			display: grid;
+			grid-template-columns: 1fr 1fr 1fr 2fr 1fr;
+
 			.dtg-cell {
 
 			}

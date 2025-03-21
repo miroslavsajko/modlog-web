@@ -56,7 +56,8 @@ function MasterGridRow({ data, post, selectedPosts, setSelectedPosts, setData }:
 	}
 
 	return (
-		<div className="dg-row" onClick={handleRowClick}>
+		<div className={selectedPosts === null ? "dg-row" :
+			selectedPosts.includes(post.postId) ? "dg-row row-selected" : "dg-row"} onClick={handleRowClick}>
 			<div className="dg-row-master">
 				<div className="dg-cell">{post.title}</div>
 				<div className="dg-cell">{post.author}</div>
