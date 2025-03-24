@@ -48,7 +48,6 @@ $shadow: 0px 0px 5px rgba($color: black, $alpha: 0.5);
 			transition: .05s ease-in-out;
 
 			&:hover {
-				cursor: pointer;
 				filter: brightness(1.2);
 			}
 		}
@@ -73,6 +72,7 @@ $shadow: 0px 0px 5px rgba($color: black, $alpha: 0.5);
 		width: 16px;
 		height: 16px;
 		margin-left: 6px;
+		cursor: pointer;
 
 		svg {
 			fill: white;
@@ -123,23 +123,14 @@ $shadow: 0px 0px 5px rgba($color: black, $alpha: 0.5);
 	.dtg-cell {
 		padding: 6px 8px;
 	}
+}
 
-	.dtg-post-details {
-		margin-left: 16px;
-		margin-bottom: 16px;
-		transition: .2s ease-in-out;
+.post-link {
+	transition: .2s ease-in-out;
+	text-decoration: none;
 
-		.post-link {
-			text-decoration: none;
-		}
-
-		&:hover {
-			color: $colorD;
-
-			.post-link {
-				color: $colorD;
-			}
-		}
+	&:hover {
+		color: $colorD;
 	}
 }
 

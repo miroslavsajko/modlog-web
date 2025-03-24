@@ -58,11 +58,15 @@ function MasterGridRow({ data, post, selectedPosts, setSelectedPosts, setData }:
 
 	return (
 		<div className={selectedPosts === null ? "dg-row" :
-			selectedPosts.includes(post.postId) ? "dg-row row-selected" : "dg-row"} onClick={handleRowClick}>
+			selectedPosts.includes(post.postId) ? "dg-row row-selected" : "dg-row"}>
 			<div className="dg-row-master">
-				<ExpandTriangle isOpen={selectedPosts === null ? false :
+				<ExpandTriangle onClick={handleRowClick} isOpen={selectedPosts === null ? false :
 					selectedPosts.includes(post.postId)} />
-				<div className="dg-cell">{post.title}</div>
+				<div className="dg-cell">
+					<a className='post-link'
+						href={`https://www.reddit.com/r/Slovakia/comments/${post.postId}`}
+						target='_blank'>{post.title}</a>
+				</div>
 				<div className="dg-cell dg-center">{post.author}</div>
 				<div className="dg-cell dg-center">{post.flair}</div>
 				<div className="dg-cell dg-center">{post.comments}</div>
@@ -87,12 +91,6 @@ function DetailGrid({ post }: DetailGridInterface) {
 
 	return (
 		<div className="dtg-wrapper">
-			<div className="dtg-post-details">
-				<a className='post-link'
-					href={`https://www.reddit.com/r/Slovakia/comments/${post.postId}`}
-					target='_blank'>Post Link</a>
-			</div>
-
 			<div className="dtg-header">
 				<div className="dtg-header-cell">Action</div>
 				<div className="dtg-header-cell">Moderator</div>
@@ -127,9 +125,10 @@ function DetailGridRow({ modEntry }: DetailGridRowInterface) {
 	)
 }
 
-function ExpandTriangle({ isOpen }: { isOpen: boolean }) {
+function ExpandTriangle({ isOpen, onClick }: { isOpen: boolean; onClick?: () => void }) {
 	return (
-		<div className={isOpen ? "expand-triangle triangle-expanded" : "expand-triangle"}>
+		<div className={isOpen ? "expand-triangle triangle-expanded" : "expand-triangle"}
+			onClick={onClick}>
 			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
 		</div>
 	)

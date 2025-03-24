@@ -11,7 +11,10 @@ $colorD: #2C74B3;
 	font-family: "Roboto", sans-serif;
 }
 
-h1, h2, h3, p {
+h1,
+h2,
+h3,
+p {
 	color: white;
 	text-shadow: 2px 2px 5px rgba($color: #000000, $alpha: 0.5);
 }
@@ -73,5 +76,27 @@ main {
 
 	.selected {
 		background: black;
+	}
+}
+
+.guide {
+	justify-self: center;
+	display: grid;
+	grid-auto-flow: row;
+	gap: 16px;
+
+	.guide-tip {
+		h3 {
+			text-align: center;
+		}
+
+		.guide-text {
+			margin-top: 4px;
+
+			ul, ol, li {
+				list-style-position: inside;
+				color: $colorD;
+			}
+		}
 	}
 }

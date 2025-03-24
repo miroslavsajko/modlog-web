@@ -5,6 +5,7 @@ import { API_URL, fetchApiData } from './components/api';
 import { PostsAPI } from './components/interfaces';
 import { LoadingIcon, MasterDetailGrid, MobileWarning } from './components/DataGrid';
 import { Paginator } from './components/Paginator';
+import { Guide } from './components/Guide';
 import Header from './components/Header';
 import Footer from './components/Footer';
 // css
@@ -31,6 +32,8 @@ function MasterDetail() {
 				{data === null ? <LoadingIcon /> : <MasterDetailGrid data={data} selectedPosts={selectedPosts} setSelectedPosts={setSelectedPosts} setData={setData} />}
 
 				{data && <Paginator data={data} pageNum={pageNum} pageSize={pageSize} setPageURL={setPageURL} setData={setData} setPageNum={setPageNum} />}
+
+				<Guide/>
 			</main>
 
 			<Footer />
