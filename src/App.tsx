@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 // components
 import { API_URL, fetchApiData } from './components/api';
 import { PostsAPI } from './components/interfaces';
-import { LoadingIcon, MasterDetailGrid, MobileWarning } from './components/NewDataGrid';
+import { LoadingIcon, MasterDetailGrid, MobileWarning } from './components/DataGrid';
 import { Paginator } from './components/Paginator';
 import Header from './components/Header';
 import Footer from './components/Footer';

@@ -1,6 +1,6 @@
 import "../css/datagrid.scss";
 import { fetchModEntriesData } from "./api";
-import { ModEntriesAPI, ModEntry, Post, PostsAPI } from "./interfaces";
+import { ModEntry, Post, PostsAPI } from "./interfaces";
 
 interface MasterDetailGridInterface {
 	data: PostsAPI;
@@ -15,12 +15,13 @@ export function MasterDetailGrid({ data, selectedPosts, setSelectedPosts, setDat
 	return (
 		<div className="dg-wrapper">
 			<div className="dg-header">
+				<div className="dg-header-cell"></div>
 				<div className="dg-header-cell">Title</div>
-				<div className="dg-header-cell">Author</div>
-				<div className="dg-header-cell">Flair</div>
+				<div className="dg-header-cell dg-center">Author</div>
+				<div className="dg-header-cell dg-center">Flair</div>
 				<div className="dg-header-cell dg-center">Comments</div>
 				<div className="dg-header-cell dg-center">Upvotes</div>
-				<div className="dg-header-cell">Date</div>
+				<div className="dg-header-cell dg-center">Date</div>
 			</div>
 
 			<div className="dg-body">
@@ -59,31 +60,39 @@ function MasterGridRow({ data, post, selectedPosts, setSelectedPosts, setData }:
 		<div className={selectedPosts === null ? "dg-row" :
 			selectedPosts.includes(post.postId) ? "dg-row row-selected" : "dg-row"} onClick={handleRowClick}>
 			<div className="dg-row-master">
+				<ExpandTriangle isOpen={selectedPosts === null ? false :
+					selectedPosts.includes(post.postId)} />
 				<div className="dg-cell">{post.title}</div>
-				<div className="dg-cell">{post.author}</div>
-				<div className="dg-cell">{post.flair}</div>
+				<div className="dg-cell dg-center">{post.author}</div>
+				<div className="dg-cell dg-center">{post.flair}</div>
 				<div className="dg-cell dg-center">{post.comments}</div>
 				<div className="dg-cell dg-center">{post.score}</div>
-				<div className="dg-cell">{post.timestamp}</div>
+				<div className="dg-cell dg-center">{post.timestamp}</div>
 			</div>
 			<div className="dg-row-detail">
 				{selectedPosts === null ? "" :
 					!selectedPosts?.includes(post.postId) ? "" :
-						<DetailGrid entries={post.modEntries} />}
+						<DetailGrid post={post} />}
 			</div>
 		</div>
 	)
 }
 
 interface DetailGridInterface {
-	entries: ModEntriesAPI | null;
+	post: Post | null;
 }
 
-function DetailGrid({ entries: modEntries }: DetailGridInterface) {
-	if (modEntries === null) return <LoadingIcon />;
+function DetailGrid({ post }: DetailGridInterface) {
+	if (post === null) return <LoadingIcon />;
 
 	return (
 		<div className="dtg-wrapper">
+			<div className="dtg-post-details">
+				<a className='post-link'
+					href={`https://www.reddit.com/r/Slovakia/comments/${post.postId}`}
+					target='_blank'>Post Link</a>
+			</div>
+
 			<div className="dtg-header">
 				<div className="dtg-header-cell">Action</div>
 				<div className="dtg-header-cell">Moderator</div>
@@ -93,9 +102,10 @@ function DetailGrid({ entries: modEntries }: DetailGridInterface) {
 			</div>
 
 			<div className="dtg-body">
-				{modEntries._embedded.modentries.map((entry, idx) => (
-					<DetailGridRow modEntry={entry} key={idx} />
-				))}
+				{post.modEntries === null ? <LoadingIcon /> :
+					post.modEntries._embedded.modentries.map((entry, idx) => (
+						<DetailGridRow modEntry={entry} key={idx} />
+					))}
 			</div>
 		</div>
 	)
@@ -113,6 +123,14 @@ function DetailGridRow({ modEntry }: DetailGridRowInterface) {
 			<div className="dtg-cell">{modEntry.details}</div>
 			<div className="dtg-cell">{modEntry.description}</div>
 			<div className="dtg-cell">{modEntry.timestamp}</div>
+		</div>
+	)
+}
+
+function ExpandTriangle({ isOpen }: { isOpen: boolean }) {
+	return (
+		<div className={isOpen ? "expand-triangle triangle-expanded" : "expand-triangle"}>
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
 		</div>
 	)
 }
