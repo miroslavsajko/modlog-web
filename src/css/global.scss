@@ -78,25 +78,3 @@ main {
 		background: black;
 	}
 }
-
-.guide {
-	justify-self: center;
-	display: grid;
-	grid-auto-flow: row;
-	gap: 16px;
-
-	.guide-tip {
-		h3 {
-			text-align: center;
-		}
-
-		.guide-text {
-			margin-top: 4px;
-
-			ul, ol, li {
-				list-style-position: inside;
-				color: $colorD;
-			}
-		}
-	}
-}

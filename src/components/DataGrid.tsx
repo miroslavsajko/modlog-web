@@ -1,6 +1,7 @@
+import { useEffect, useState } from "react";
 import "../css/datagrid.scss";
 import { fetchModEntriesData } from "./api";
-import { ModEntry, Post, PostsAPI } from "./interfaces";
+import { ModEntriesAPI, ModEntry, Post, PostsAPI } from "./interfaces";
 
 interface MasterDetailGridInterface {
 	data: PostsAPI;
@@ -43,8 +44,6 @@ interface MasterGridRowInterface {
 
 function MasterGridRow({ data, post, selectedPosts, setSelectedPosts, setData }: MasterGridRowInterface) {
 	async function handleRowClick() {
-		if (post.modEntries === null) await fetchModEntriesData({ data, post, setData });
-
 		if (selectedPosts === null) {
 			setSelectedPosts([post.postId]);
 		} else if (selectedPosts.includes(post.postId)) {
@@ -76,18 +75,27 @@ function MasterGridRow({ data, post, selectedPosts, setSelectedPosts, setData }:
 			<div className="dg-row-detail">
 				{selectedPosts === null ? "" :
 					!selectedPosts?.includes(post.postId) ? "" :
-						<DetailGrid post={post} />}
+						<DetailGrid post={post} data={data} setData={setData}/>}
 			</div>
 		</div>
 	)
 }
 
 interface DetailGridInterface {
+	data: PostsAPI;
 	post: Post | null;
+	setData: React.Dispatch<React.SetStateAction<PostsAPI | null>>;
 }
 
 function DetailGrid({ post }: DetailGridInterface) {
-	if (post === null) return <LoadingIcon />;
+	const [modEntries, setModEntries] = useState<ModEntriesAPI | null>(null);
+
+	useEffect(() => {
+		if(post === null) return;
+		if(modEntries === null) fetchModEntriesData({ post, setModEntries });
+	}, [modEntries, post]);
+
+	if(post === null) return <LoadingIcon />;
 
 	return (
 		<div className="dtg-wrapper">
@@ -100,8 +108,8 @@ function DetailGrid({ post }: DetailGridInterface) {
 			</div>
 
 			<div className="dtg-body">
-				{post.modEntries === null ? <LoadingIcon /> :
-					post.modEntries._embedded.modentries.map((entry, idx) => (
+				{modEntries === null ? <LoadingIcon /> :
+					modEntries._embedded.modentries.map((entry, idx) => (
 						<DetailGridRow modEntry={entry} key={idx} />
 					))}
 			</div>

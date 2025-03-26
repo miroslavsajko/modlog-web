@@ -43,9 +43,8 @@ interface FetchPostsInterface {
 }
 
 interface fetchModEntriesInterface {
-	data: PostsAPI;
 	post: Post;
-	setData: React.Dispatch<React.SetStateAction<PostsAPI | null>>;
+	setModEntries: React.Dispatch<React.SetStateAction<ModEntriesAPI | null>>;
 }
 
 function truncateString(str: string, maxLength: number): string {
@@ -65,19 +64,12 @@ export async function fetchApiData({ pageURL, setData }: FetchPostsInterface) {
 	setData(data);
 }
 
-export async function fetchModEntriesData({ data, post, setData }: fetchModEntriesInterface) {
+export async function fetchModEntriesData({ post, setModEntries }: fetchModEntriesInterface) {
 	const modEntriesData: ModEntriesAPI = await fetchModEntries(post._links.modEntries.href);
 
 	modEntriesData._embedded.modentries.forEach(modEntry => {
 		modEntry.timestamp = convertDateTime(modEntry.timestamp);
 	});
 
-	const assignedPost = data._embedded.posts.find(p => p.postId === post.postId);
-
-	if(assignedPost === null || assignedPost === undefined) {
-		return;
-	}
-
-	assignedPost.modEntries = modEntriesData;
-	setData(data);
+	setModEntries(modEntriesData);
 }
