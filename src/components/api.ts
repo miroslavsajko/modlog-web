@@ -1,6 +1,10 @@
 import axios from "axios";
+import { ModEntriesAPI, Post, PostsAPI } from "./interfaces";
+import { convertDateTime } from "./dateTimeConverter";
 export const API_URL: string = import.meta.env.VITE_API_URL;
 const DEBUG_MODE = 0;
+const MAX_TITLE_LENGTH = 80;
+const MAX_USERNAME_LENGTH = 20;
 
 export const postsColumns = [
 	{ key: "title", name: "Title" },
@@ -28,7 +32,44 @@ export const fetchPosts = async (requestedURL: string) => {
 export const fetchModEntries = async (modEntriesURL: string) => {
 	if(DEBUG_MODE)
 		console.info(modEntriesURL);
-	// urls in APIs are returned with http, not https -> throwing CORS error
+	
 	const moddedURL = modEntriesURL.replace(/^http:\/\//, 'https://');
 	return await axios.get(moddedURL).then(response => response.data).catch(reason => console.error(reason));
+}
+
+interface FetchPostsInterface {
+	pageURL: string;
+	setData: React.Dispatch<React.SetStateAction<PostsAPI | null>>;
+}
+
+interface fetchModEntriesInterface {
+	post: Post;
+	setModEntries: React.Dispatch<React.SetStateAction<ModEntriesAPI | null>>;
+}
+
+function truncateString(str: string, maxLength: number): string {
+	return str.length > maxLength ? str.substring(0, maxLength) + "..." : str;
+}
+
+export async function fetchApiData({ pageURL, setData }: FetchPostsInterface) {
+	const data: PostsAPI = await fetchPosts(pageURL);
+
+	for (const post of data._embedded.posts) {
+		post.timestamp = convertDateTime(post.timestamp);
+		post.title = truncateString(post.title, MAX_TITLE_LENGTH);
+		post.author = truncateString(post.author, MAX_USERNAME_LENGTH);
+		post.modEntries = null;
+	}
+
+	setData(data);
+}
+
+export async function fetchModEntriesData({ post, setModEntries }: fetchModEntriesInterface) {
+	const modEntriesData: ModEntriesAPI = await fetchModEntries(post._links.modEntries.href);
+
+	modEntriesData._embedded.modentries.forEach(modEntry => {
+		modEntry.timestamp = convertDateTime(modEntry.timestamp);
+	});
+
+	setModEntries(modEntriesData);
 }
