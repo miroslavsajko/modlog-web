@@ -44,10 +44,10 @@ footer {
 main {
 	display: grid;
 	grid-auto-flow: row;
-	align-content: space-between;
+	align-content: start;
 	justify-content: center;
 	gap: 16px;
-	padding: 32px 0px;
+	padding: 32px 0;
 }
 
 // Paginator
