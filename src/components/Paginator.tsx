@@ -1,30 +1,24 @@
-import { API_URL } from "./api";
-import { PostsAPI } from "./interfaces";
+import { PostsAPIResponse } from "../types/interfaces.ts";
 
 interface PaginatorInterface {
-	data: PostsAPI | null;
+	data: PostsAPIResponse | null;
 	pageNum: number;
-	pageSize: number;
-	setPageURL: React.Dispatch<React.SetStateAction<string>>;
-	setData: React.Dispatch<React.SetStateAction<PostsAPI | null>>;
 	setPageNum: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export function Paginator({ data, pageNum, pageSize, setPageURL, setData, setPageNum, }: PaginatorInterface) {
+export function Paginator({ data, pageNum, setPageNum }: PaginatorInterface) {
 	function handlePaginator(page: number) {
 		if (!data) return;
 		if (page === pageNum) return;
 		if (page < 0 || page >= data.page.totalPages) return;
 
-		setData(null);
-		setPageURL(`${API_URL}/posts?sort=timestamp,desc&page=${page}&size=${pageSize}`);
 		setPageNum(page);
 	}
 
-	if (data === null) return null;
+	if (data === null) return <></>;
 	
 	const visiblePagesIdx = [];
-	for (let i = pageNum - 2; i <= pageNum + 2; i++) {
+	for (let i = Math.max(pageNum - 2, 0); i <= Math.min(pageNum + 2, data.page.totalPages - 1); i++) {
 		visiblePagesIdx.push(i);
 	}
 
@@ -36,17 +30,13 @@ export function Paginator({ data, pageNum, pageSize, setPageURL, setData, setPag
 				</p>}
 
 			{visiblePagesIdx.map((idx) =>
-				idx + 1 < 1 || idx + 1 > data.page.totalPages ? (
-					<p key={idx} className="paginator-void"></p>
-				) : (
-					<p
-						key={idx}
-						className={`paginator-num ${pageNum === idx ? "selected" : ""}`}
-						onClick={() => handlePaginator(idx)}
-					>
-						{idx + 1}
-					</p>
-				)
+				<p
+					key={idx}
+					className={`paginator-num ${pageNum === idx ? "selected" : ""}`}
+					onClick={() => handlePaginator(idx)}
+				>
+					{idx + 1}
+				</p>
 			)}
 
 			{pageNum === data.page.totalPages - 1 ? <p key={data?.page.totalPages} className="paginator-void"></p> :
