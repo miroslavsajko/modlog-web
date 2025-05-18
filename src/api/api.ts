@@ -7,10 +7,11 @@ export interface FetchPostsParams {
 	sort?: string,
 	sortDirection?: string,
 	page?: number,
-	pageSize?: number
+	pageSize?: number,
+	filter?: string
 }
 
-export const fetchPosts = async ({sort = 'timestamp', sortDirection = 'desc', page = 0, pageSize = 15}: FetchPostsParams) => {
+export const fetchPosts = async ({sort = 'timestamp', sortDirection = 'desc', page = 0, pageSize = 15, filter}: FetchPostsParams) => {
 
 	const baseUrl = new URL(`${API_URL}/posts`);
 	const urlSearchParams = new URLSearchParams();
@@ -18,6 +19,9 @@ export const fetchPosts = async ({sort = 'timestamp', sortDirection = 'desc', pa
 	urlSearchParams.set('order', sortDirection)
 	urlSearchParams.set('page', `${page}`)
 	urlSearchParams.set('pageSize', `${pageSize}`)
+	if (filter && filter.length > 0) {
+		urlSearchParams.set('filter', `${filter}`)
+	}
 	baseUrl.search = urlSearchParams.toString()
 
 	const postsApiUrl = baseUrl.toString();
