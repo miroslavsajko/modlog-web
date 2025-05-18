@@ -12,19 +12,41 @@ const MAX_USERNAME_LENGTH = 20;
 
 export function PostsGrid() {
     const [pageNum, setPageNum] = useState<number>(0);
+    const [filterValue, setFilterValue] = useState<string>('');
+    const [filterDebouncedValue, setFilterDebouncedValue] = useState<string>(filterValue)
     const [data, setData] = useState<PostsAPIResponse | null>(null);
 
     useEffect(() => {
         setData(null)
         fetchPosts({
-            page: pageNum
+            page: pageNum,
+            filter: filterDebouncedValue
         }).then(setData)
             .catch((reason) => {
                 console.error(reason)
             });
-    }, [pageNum]);
+    }, [pageNum, filterDebouncedValue]);
+
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setFilterDebouncedValue(filterValue)
+        }, 500)
+
+        return () => {
+            clearTimeout(handler)
+        }
+    }, [filterValue])
 
     return (<>
+            <input type="text" placeholder="Filter by title, author or flair"  className='filter-input'
+                   onChange={(e) => {
+                const value = (e.target.value ?? '').trim();
+                if (value.length < 3) {
+                    setFilterValue('');
+                } else {
+                    setFilterValue(value);
+                }
+            }} />
             <div className="dg-wrapper">
                 <div className="dg-header">
                     <div className="dg-header-cell"></div>
