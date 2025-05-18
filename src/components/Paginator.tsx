@@ -15,7 +15,7 @@ export function Paginator({ data, pageNum, setPageNum }: PaginatorInterface) {
 		setPageNum(page);
 	}
 
-	if (data === null) return <></>;
+	if (data === null || data.page.totalPages < 1) return <></>;
 	
 	const visiblePagesIdx = [];
 	for (let i = Math.max(pageNum - 2, 0); i <= Math.min(pageNum + 2, data.page.totalPages - 1); i++) {
