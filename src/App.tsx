@@ -1,25 +1,21 @@
-// libs
-// components
-import Header from './components/Header';
-import Footer from './components/Footer';
-// css
-import "./css/global.scss";
-import {PostsGrid} from "./components/PostsGrid.tsx";
-import {MobileWarning} from "./components/MobileWarning.tsx";
+import {Link, Route, Routes} from "react-router-dom";
+import PostsPage from "./pages/PostsPage.tsx";
+import ChartPage from "./pages/ChartPage.tsx";
+// import "./App.scss"
 
-function MasterDetail() {
+function App() {
 	return (
 		<>
-			<Header />
-		
-			<main>
-				<MobileWarning/>
-				<PostsGrid />
-			</main>
-
-			<Footer />
+			<nav style={{ padding: 10 }}>
+				<Link to="/" style={{ marginRight: 10 }}>New Modlog</Link>
+				<Link to="/chart">Chart</Link>
+			</nav>
+			<Routes>
+				<Route path="/" element={<PostsPage />} />
+				<Route path="/chart" element={<ChartPage />} />
+			</Routes>
 		</>
 	)
 }
 
-export default MasterDetail;
+export default App;
