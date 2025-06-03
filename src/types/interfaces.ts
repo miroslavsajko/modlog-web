@@ -20,6 +20,11 @@ export interface PostsAPIResponse {
 	page: Page;
 }
 
+export interface ModlogAPIResponse {
+	posts: ModLogEntry[];
+	page: Page;
+}
+
 export interface ModEntry {
 	action: string;
 	mod: string;
@@ -31,3 +36,15 @@ export interface ModEntry {
 export interface ModEntriesAPIResponse {
 	modEntries: ModEntry[];
 }
+
+export type ModLogEntry = {
+	modlogentryid: string;
+	action: string;
+	mod: string;
+	details: string;
+	description: string;
+	timestamp: string;
+	commentId?: string;
+	postId?: string;
+	target?: string;
+};

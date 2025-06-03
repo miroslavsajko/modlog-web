@@ -1,6 +1,6 @@
 import {ModEntry, Post} from "../types/interfaces.ts";
 import {useEffect, useState} from "react";
-import {fetchModEntries} from "../api/api.ts";
+import {fetchModEntriesForPost} from "../api/api.ts";
 import {convertDateTime} from "../util/dateTimeConverter.ts";
 import "../css/custom.scss";
 import {LoadingIcon} from "./LoadingIcon.tsx";
@@ -19,7 +19,7 @@ export function ModEntriesGrid({ post }: MasterGridRowInterface) {
         if(modEntries !== null) {
             return;
         }
-        fetchModEntries(post.postid)
+        fetchModEntriesForPost(post.postid)
             .then((data) => setModEntries(data))
             .catch((reason)=> console.error(reason));
     }, [modEntries, post]);

@@ -1,18 +1,18 @@
 import {useCallback, useEffect, useMemo, useState} from 'react';
-import {TextField, Box, debounce, Link, useMediaQuery} from '@mui/material';
+import {TextField, Box, debounce, useMediaQuery} from '@mui/material';
 import {
     DataGrid,
     GridColDef, GridPaginationModel,
     GridRenderCellParams,
 } from '@mui/x-data-grid';
-import {fetchPosts} from "../api/api.ts";
-import {Post} from "../types/interfaces.ts";
+import {fetchModEntries} from "../api/api.ts";
+import { ModLogEntry} from "../types/interfaces.ts";
 import {convertDateTime} from "../util/dateTimeConverter.ts";
 
 const defaultPagination: GridPaginationModel = {page: 0, pageSize: 20};
 
-export default function PostsPage() {
-    const [rows, setRows] = useState<Post[]>([]);
+export default function ModlogPage() {
+    const [rows, setRows] = useState<ModLogEntry[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [searchInput, setSearchInput] = useState<string>('')
     const [filter, setFilter] = useState<string>('');
@@ -22,7 +22,7 @@ export default function PostsPage() {
 
     const fetchData = useCallback(async () => {
         setLoading(true);
-        const data = await fetchPosts({
+        const data = await fetchModEntries({
             page: pagination.page,
             pageSize: pagination.pageSize,
             filter: filter
@@ -51,51 +51,54 @@ export default function PostsPage() {
 
     let columns: GridColDef[] = []
 
+    // action: string;
+    // mod: string;
+    // details: string;
+    // description: string;
     if (isMobile) {
         columns = [
             {
-                field: 'title',
-                headerName: 'Name',
-                flex: 6,
-                filterable: false,
-                sortable: false,
-                renderCell: (params: GridRenderCellParams) =>
-                    (<Link href={`https://www.reddit.com/r/Slovakia/comments/${params.row.postid}/`}
-                           target="_blank">{params.value}</Link>)
-            },
-            {
-                field: 'author',
-                headerName: 'Author',
+                field: 'mod',
+                headerName: 'Mod',
                 flex: 2,
                 filterable: false,
                 sortable: false,
                 align: 'center',
                 headerAlign: 'center'
-            }]
+            },{
+                field: 'action',
+                headerName: 'Action',
+                flex: 6,
+                filterable: false,
+                sortable: false
+            },
+            ]
     } else {
         columns = [
             {
-                field: 'title',
-                headerName: 'Name',
-                flex: 6,
+                field: 'mod',
+                headerName: 'Mod',
+                flex: 2,
                 filterable: false,
                 sortable: false,
-                renderCell: (params: GridRenderCellParams) =>
-                    (<Link href={`https://www.reddit.com/r/Slovakia/comments/${params.row.postid}/`}
-                           target="_blank">{params.value}</Link>)
+            },{
+                field: 'action',
+                headerName: 'Action',
+                flex: 2,
+                filterable: false,
+                sortable: false
             },
             {
-                field: 'author',
-                headerName: 'Author',
+                field: 'details',
+                headerName: 'Details',
                 flex: 2,
                 filterable: false,
                 sortable: false,
                 align: 'center',
                 headerAlign: 'center'
-            },
-            {
-                field: 'flair',
-                headerName: 'Flair',
+            },{
+                field: 'description',
+                headerName: 'Desc',
                 flex: 2,
                 filterable: false,
                 sortable: false,
@@ -114,24 +117,6 @@ export default function PostsPage() {
                     convertDateTime(params.value)
                 )
             },
-            {
-                field: 'score',
-                headerName: 'Score',
-                flex: 1,
-                filterable: false,
-                sortable: false,
-                align: 'center',
-                headerAlign: 'center'
-            },
-            {
-                field: 'comments',
-                headerName: 'Comments',
-                flex: 1,
-                filterable: false,
-                sortable: false,
-                align: 'center',
-                headerAlign: 'center'
-            },
         ];
     }
 
@@ -149,7 +134,7 @@ export default function PostsPage() {
             />
             <DataGrid
                 rows={rows}
-                getRowId={(row: Post) => row.postid}
+                getRowId={(row: ModLogEntry) => row.modlogentryid}
                 columns={columns}
                 rowCount={rowCount}
                 paginationMode="server"
