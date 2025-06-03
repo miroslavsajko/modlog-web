@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useMemo, useState} from 'react';
-import {TextField, Box, debounce, useMediaQuery} from '@mui/material';
+import {TextField, Box, debounce, useMediaQuery, CssBaseline} from '@mui/material';
 import {
     DataGrid,
     GridColDef, GridPaginationModel,
@@ -123,6 +123,7 @@ export default function ModlogPage() {
 
     return (
         <Box sx={{height: 500, padding: 2}}>
+            <CssBaseline />
             <TextField
                 label="Filter"
                 placeholder="Filter by title, author or flair"
