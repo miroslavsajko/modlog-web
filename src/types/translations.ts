@@ -31,7 +31,7 @@ export const modActions: Translation = {
     wikirevise: 'revised a wiki page',
 };
 
-export const modlogDetails = {
+export const modlogDetails: Translation  = {
     confirm_ham: 'Not spam',
     unspam: 'Not spam',
     remove: 'Remove',

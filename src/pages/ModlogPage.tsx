@@ -92,42 +92,40 @@ export default function ModlogPage() {
             }, {
                 field: 'action',
                 headerName: 'Action',
-                flex: 2,
+                flex: 1,
                 filterable: false,
                 sortable: false,
                 valueGetter: value => modActions[value] ?? value
             }, {
                 field: 'timestamp',
                 headerName: 'Timestamp',
-                flex: 2,
+                flex: 1,
                 filterable: false,
                 sortable: false,
                 align: 'center',
                 headerAlign: 'center',
-                valueGetter: value =>convertDateTime(value)
-            },
-            {
-                field: 'description',
-                headerName: 'Desc',
-                flex: 2,
-                filterable: false,
-                sortable: false,
-                align: 'center',
-                headerAlign: 'center',
-            },
-            {
-                field: 'details',
-                headerName: 'Detail',
-                flex: 2,
-                filterable: false,
-                sortable: false,
-                align: 'center',
-                headerAlign: 'center',
-                valueGetter: value => modlogDetails[value] ?? value
+                valueGetter: value => convertDateTime(value)
             }, {
+                field: 'description',
+                headerName: 'Details',
+                flex: 2,
+                filterable: false,
+                sortable: false,
+                align: 'center',
+                headerAlign: 'center',
+                valueGetter: (_value, row: ModLogEntry) => {
+                    const description = row.description;
+                    const details = modlogDetails[row.details] ?? row.details;
+                    let middle = ''
+                    if (description.length > 0 && details.length > 0) {
+                        middle = ' - '
+                    }
+                    return `${description}${middle}${details}`;
+                }
+            },  {
                 field: 'target',
                 headerName: 'Link',
-                flex: 2,
+                flex: 1,
                 filterable: false,
                 sortable: false,
                 align: 'center',
@@ -150,7 +148,6 @@ export default function ModlogPage() {
                     return ''
                 }
             },
-
         ];
     }
 
@@ -160,13 +157,14 @@ export default function ModlogPage() {
 
     if (isMobile) {
         mobileDataGridProps.rowHeight = 75
+        mobileDataGridProps.columnHeaderHeight = 1
     }
 
     return (
         <Box sx={{padding: 2}}>
             <TextField
                 label="Filter"
-                placeholder="Filter by title, author or flair"
+                placeholder="Filter by mod, action or reason"
                 variant="outlined"
                 value={searchInput}
                 onChange={(e) => handleSearchChange(e.target.value)}
