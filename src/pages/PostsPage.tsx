@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useMemo, useState} from 'react';
-import {TextField, Box, debounce, Link, useMediaQuery} from '@mui/material';
+import {TextField, Box, debounce, Link, useMediaQuery, Typography} from '@mui/material';
 import {
     DataGrid,
     GridColDef, GridPaginationModel,
@@ -128,44 +128,46 @@ export default function PostsPage() {
                 sortable: false,
                 align: 'center',
                 headerAlign: 'center'
-            },{
+            }, {
                 field: 'postid',
                 headerName: '',
                 flex: 1,
                 filterable: false,
                 sortable: false,
                 align: 'center',
-                renderCell: (params:GridRenderCellParams) =>
+                renderCell: (params: GridRenderCellParams) =>
                     (<Link href={`https://www.reddit.com/r/Slovakia/comments/${params.row.postid}/`}
-                          target="_blank">Link</Link>)
+                           target="_blank">Link</Link>)
 
             }
         ];
     }
 
 
-    return (
-        <Box sx={{padding: 2}}>
-            <TextField
-                label="Filter"
-                placeholder="Filter by title, author or flair"
-                variant="outlined"
-                value={searchInput}
-                onChange={(e) => handleSearchChange(e.target.value)}
-                fullWidth
-                sx={{mb: 2}}
-            />
-            <DataGrid
-                rows={rows}
-                getRowId={(row: Post) => row.postid}
-                columns={columns}
-                rowCount={rowCount}
-                paginationMode="server"
-                paginationModel={pagination}
-                onPaginationModelChange={setPagination}
-                loading={loading}
-                pageSizeOptions={[10, 20, 40]}
-            />
-        </Box>
+    return (<>
+            <Typography variant="h3">Modlog by posts</Typography>
+            <Box sx={{padding: 2}}>
+                <TextField
+                    label="Filter"
+                    placeholder="Filter by title, author or flair"
+                    variant="outlined"
+                    value={searchInput}
+                    onChange={(e) => handleSearchChange(e.target.value)}
+                    fullWidth
+                    sx={{mb: 2}}
+                />
+                <DataGrid
+                    rows={rows}
+                    getRowId={(row: Post) => row.postid}
+                    columns={columns}
+                    rowCount={rowCount}
+                    paginationMode="server"
+                    paginationModel={pagination}
+                    onPaginationModelChange={setPagination}
+                    loading={loading}
+                    pageSizeOptions={[10, 20, 40]}
+                />
+            </Box>
+        </>
     );
 }
