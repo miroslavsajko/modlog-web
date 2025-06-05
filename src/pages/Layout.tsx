@@ -15,19 +15,21 @@ import {
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useState } from 'react';
-import { Link, Outlet } from 'react-router-dom';
+import {Link, Outlet, useLocation} from 'react-router-dom';
 
 const drawerWidth = 240;
 
 const navItems = [
     { label: 'Modlog', path: '/' },
     { label: 'Modlog by Posts', path: '/modlog-posts' },
-    { label: 'Chart', path: '/chart' },
+    { label: 'Charts', path: '/charts' },
 ];
 
 export default function Layout() {
     const [mobileOpen, setMobileOpen] = useState(false);
     const isMobile = useMediaQuery('(max-width:600px)');
+
+    const location = useLocation();
 
     const drawer = (
         <div>
@@ -38,8 +40,8 @@ export default function Layout() {
             <List>
                 {navItems.map((item) => (
                     <ListItem key={item.label} disablePadding>
-                        <ListItemButton component={Link} to={item.path} onClick={() => setMobileOpen(false)}>
-                            <ListItemText primary={item.label} />
+                        <ListItemButton component={Link} to={item.path} selected={location.pathname === item.path} onClick={() => setMobileOpen(false)}>
+                            <ListItemText primary={item.label}/>
                         </ListItemButton>
                     </ListItem>
                 ))}

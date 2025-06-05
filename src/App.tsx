@@ -11,7 +11,7 @@ function App() {
 			<Route path="/" element={<Layout/>} >
 				<Route index element={<ModlogPage />}/>
 				<Route path="/modlog-posts" element={<PostsPage />} />
-				<Route path="/chart" element={<ChartPage />} />
+				<Route path="/charts" element={<ChartPage />} />
 			</Route>
 		</Routes>
 	)

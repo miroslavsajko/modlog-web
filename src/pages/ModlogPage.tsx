@@ -160,31 +160,29 @@ export default function ModlogPage() {
         mobileDataGridProps.columnHeaderHeight = 1
     }
 
-    return (<>
-            <Typography variant="h3">Modlog</Typography>
-            <Box sx={{padding: 2}}>
-                <TextField
-                    label="Filter"
-                    placeholder="Filter by mod, action or reason"
-                    variant="outlined"
-                    value={searchInput}
-                    onChange={(e) => handleSearchChange(e.target.value)}
-                    fullWidth
-                    sx={{mb: 2}}
-                />
-                <DataGrid
-                    {...mobileDataGridProps}
-                    rows={rows}
-                    getRowId={(row: ModLogEntry) => row.modlogentryid}
-                    columns={columns}
-                    rowCount={rowCount}
-                    paginationMode="server"
-                    paginationModel={pagination}
-                    onPaginationModelChange={setPagination}
-                    loading={loading}
-                    pageSizeOptions={[10, 20, 50]}
-                />
-            </Box>
-        </>
+    return (
+        <Box sx={{padding: 2}}>
+            <TextField
+                label="Filter"
+                placeholder="Filter by mod, action or reason"
+                variant="outlined"
+                value={searchInput}
+                onChange={(e) => handleSearchChange(e.target.value)}
+                fullWidth
+                sx={{mb: 2}}
+            />
+            <DataGrid
+                {...mobileDataGridProps}
+                rows={rows}
+                getRowId={(row: ModLogEntry) => row.modlogentryid}
+                columns={columns}
+                rowCount={rowCount}
+                paginationMode="server"
+                paginationModel={pagination}
+                onPaginationModelChange={setPagination}
+                loading={loading}
+                pageSizeOptions={[10, 20, 50]}
+            />
+        </Box>
     );
 }

@@ -1,7 +1,7 @@
 import {useCallback, useEffect, useMemo, useState} from 'react';
-import {TextField, Box, debounce, Link, useMediaQuery, Typography} from '@mui/material';
+import {TextField, Box, debounce, Link, useMediaQuery} from '@mui/material';
 import {
-    DataGrid,
+    DataGrid, DataGridProps,
     GridColDef, GridPaginationModel,
     GridRenderCellParams,
 } from '@mui/x-data-grid';
@@ -143,31 +143,38 @@ export default function PostsPage() {
         ];
     }
 
+    const mobileDataGridProps: DataGridProps = {
+        columns: []
+    }
 
-    return (<>
-            <Typography variant="h3">Modlog by posts</Typography>
-            <Box sx={{padding: 2}}>
-                <TextField
-                    label="Filter"
-                    placeholder="Filter by title, author or flair"
-                    variant="outlined"
-                    value={searchInput}
-                    onChange={(e) => handleSearchChange(e.target.value)}
-                    fullWidth
-                    sx={{mb: 2}}
-                />
-                <DataGrid
-                    rows={rows}
-                    getRowId={(row: Post) => row.postid}
-                    columns={columns}
-                    rowCount={rowCount}
-                    paginationMode="server"
-                    paginationModel={pagination}
-                    onPaginationModelChange={setPagination}
-                    loading={loading}
-                    pageSizeOptions={[10, 20, 40]}
-                />
-            </Box>
-        </>
+    if (isMobile) {
+        mobileDataGridProps.rowHeight = 75
+        mobileDataGridProps.columnHeaderHeight = 1
+    }
+
+    return (
+        <Box sx={{padding: 2}}>
+            <TextField
+                label="Filter"
+                placeholder="Filter by title, author or flair"
+                variant="outlined"
+                value={searchInput}
+                onChange={(e) => handleSearchChange(e.target.value)}
+                fullWidth
+                sx={{mb: 2}}
+            />
+            <DataGrid
+                {...mobileDataGridProps}
+                rows={rows}
+                getRowId={(row: Post) => row.postid}
+                columns={columns}
+                rowCount={rowCount}
+                paginationMode="server"
+                paginationModel={pagination}
+                onPaginationModelChange={setPagination}
+                loading={loading}
+                pageSizeOptions={[10, 20, 40]}
+            />
+        </Box>
     );
 }

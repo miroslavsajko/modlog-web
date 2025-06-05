@@ -1,5 +1,4 @@
 import {BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer} from 'recharts';
-import {Typography} from "@mui/material";
 
 const data = [
     {name: 'Page A', value: 400},
@@ -8,18 +7,16 @@ const data = [
 ];
 
 export default function ChartPage() {
-    return (<>
-            <Typography variant="h3">Charts</Typography>
-            <div style={{width: '100%', height: 400, padding: 20}}>
-                <ResponsiveContainer>
-                    <BarChart data={data}>
-                        <XAxis dataKey="name"/>
-                        <YAxis/>
-                        <Tooltip/>
-                        <Bar dataKey="value" fill="#1976d2"/>
-                    </BarChart>
-                </ResponsiveContainer>
-            </div>
-        </>
+    return (
+        <div style={{width: '100%', height: 400, padding: 20}}>
+            <ResponsiveContainer>
+                <BarChart data={data}>
+                    <XAxis dataKey="name"/>
+                    <YAxis/>
+                    <Tooltip/>
+                    <Bar dataKey="value" fill="#1976d2"/>
+                </BarChart>
+            </ResponsiveContainer>
+        </div>
     );
 }
