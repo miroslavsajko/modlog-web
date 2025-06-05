@@ -44,7 +44,7 @@ export type ModLogEntry = {
 	details: string;
 	description: string;
 	timestamp: string;
-	commentId?: string;
-	postId?: string;
+	commentid?: string;
+	postid?: string;
 	target?: string;
 };

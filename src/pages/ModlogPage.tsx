@@ -1,13 +1,13 @@
 import {useCallback, useEffect, useMemo, useState} from 'react';
-import {TextField, Box, debounce, useMediaQuery, CssBaseline} from '@mui/material';
+import {TextField, Box, Link, debounce, useMediaQuery, Typography} from '@mui/material';
 import {
-    DataGrid,
+    DataGrid, DataGridProps,
     GridColDef, GridPaginationModel,
-    GridRenderCellParams,
 } from '@mui/x-data-grid';
 import {fetchModEntries} from "../api/api.ts";
-import { ModLogEntry} from "../types/interfaces.ts";
+import {ModLogEntry} from "../types/interfaces.ts";
 import {convertDateTime} from "../util/dateTimeConverter.ts";
+import {modActions, modlogDetails} from "../types/translations.ts";
 
 const defaultPagination: GridPaginationModel = {page: 0, pageSize: 20};
 
@@ -51,61 +51,52 @@ export default function ModlogPage() {
 
     let columns: GridColDef[] = []
 
-    // action: string;
-    // mod: string;
-    // details: string;
-    // description: string;
     if (isMobile) {
         columns = [
             {
                 field: 'mod',
-                headerName: 'Mod',
-                flex: 2,
+                headerName: '',
+                flex: 1,
                 filterable: false,
                 sortable: false,
-                align: 'center',
-                headerAlign: 'center'
-            },{
-                field: 'action',
-                headerName: 'Action',
-                flex: 6,
-                filterable: false,
-                sortable: false
-            },
-            ]
+                disableColumnMenu: true,
+                headerAlign: 'center',
+                renderCell: params => {
+                    const data: ModLogEntry = params.row;
+                    return (<Box display="flex" flexDirection="column">
+                        <Typography variant="body1" flex="1">
+                            <Typography component="span" fontWeight="bold">{data.mod}</Typography>
+                            {' '}
+                            <Typography component="span">{modActions[data.action] ?? data.action}</Typography>
+                            {(data.target?.length ?? 0) > 0 ?
+                                <Typography component="span" fontStyle="italic"> "{data.target}"</Typography> : <></>}
+                        </Typography>
+                        {data.description.length > 0 ? <Typography variant="subtitle1">
+                            <Typography component="span" fontStyle="italic" fontSize="smaller"
+                                        lineHeight="1">{data.description}</Typography>
+                        </Typography> : <></>}
+                        <Typography variant="caption" color="text.secondary">
+                            {convertDateTime(data.timestamp)}
+                        </Typography>
+                    </Box>)
+                }
+            }]
     } else {
         columns = [
             {
                 field: 'mod',
                 headerName: 'Mod',
-                flex: 2,
+                flex: 1,
                 filterable: false,
                 sortable: false,
-            },{
+            }, {
                 field: 'action',
                 headerName: 'Action',
                 flex: 2,
                 filterable: false,
-                sortable: false
-            },
-            {
-                field: 'details',
-                headerName: 'Details',
-                flex: 2,
-                filterable: false,
                 sortable: false,
-                align: 'center',
-                headerAlign: 'center'
-            },{
-                field: 'description',
-                headerName: 'Desc',
-                flex: 2,
-                filterable: false,
-                sortable: false,
-                align: 'center',
-                headerAlign: 'center'
-            },
-            {
+                valueGetter: value => modActions[value] ?? value
+            }, {
                 field: 'timestamp',
                 headerName: 'Timestamp',
                 flex: 2,
@@ -113,17 +104,66 @@ export default function ModlogPage() {
                 sortable: false,
                 align: 'center',
                 headerAlign: 'center',
-                renderCell: (params: GridRenderCellParams) => (
-                    convertDateTime(params.value)
-                )
+                valueGetter: value =>convertDateTime(value)
             },
+            {
+                field: 'description',
+                headerName: 'Desc',
+                flex: 2,
+                filterable: false,
+                sortable: false,
+                align: 'center',
+                headerAlign: 'center',
+            },
+            {
+                field: 'details',
+                headerName: 'Detail',
+                flex: 2,
+                filterable: false,
+                sortable: false,
+                align: 'center',
+                headerAlign: 'center',
+                valueGetter: value => modlogDetails[value] ?? value
+            }, {
+                field: 'target',
+                headerName: 'Link',
+                flex: 2,
+                filterable: false,
+                sortable: false,
+                align: 'center',
+                headerAlign: 'center',
+                renderCell: params => {
+                    if (params.value) {
+                        return (<Link href={`https://www.reddit.com/user/${params.value}/`}
+                                      target="_blank">{params.value}</Link>)
+                    }
+                    const data: ModLogEntry = params.row;
+                    if (data.postid && data.commentid) {
+                        return (<Link
+                            href={`https://www.reddit.com/r/hockey/comments/${data.postid}/comment/${data.commentid}/`}
+                            target="_blank">Comment Link</Link>)
+                    }
+                    if (data.postid) {
+                        return (<Link href={`https://www.reddit.com/r/hockey/comments/${data.postid}/`}
+                                      target="_blank">Post Link</Link>)
+                    }
+                    return ''
+                }
+            },
+
         ];
     }
 
+    const mobileDataGridProps: DataGridProps = {
+        columns: []
+    }
+
+    if (isMobile) {
+        mobileDataGridProps.rowHeight = 75
+    }
 
     return (
-        <Box sx={{height: 500, padding: 2}}>
-            <CssBaseline />
+        <Box sx={{padding: 2}}>
             <TextField
                 label="Filter"
                 placeholder="Filter by title, author or flair"
@@ -134,6 +174,7 @@ export default function ModlogPage() {
                 sx={{mb: 2}}
             />
             <DataGrid
+                {...mobileDataGridProps}
                 rows={rows}
                 getRowId={(row: ModLogEntry) => row.modlogentryid}
                 columns={columns}

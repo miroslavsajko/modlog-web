@@ -47,7 +47,7 @@ export default function PostsPage() {
 
     useEffect(() => {
         fetchData()
-    }, [fetchData, filter, pagination]);
+    }, [fetchData]);
 
     let columns: GridColDef[] = []
 
@@ -80,9 +80,6 @@ export default function PostsPage() {
                 flex: 6,
                 filterable: false,
                 sortable: false,
-                renderCell: (params: GridRenderCellParams) =>
-                    (<Link href={`https://www.reddit.com/r/Slovakia/comments/${params.row.postid}/`}
-                           target="_blank">{params.value}</Link>)
             },
             {
                 field: 'author',
@@ -131,13 +128,24 @@ export default function PostsPage() {
                 sortable: false,
                 align: 'center',
                 headerAlign: 'center'
-            },
+            },{
+                field: 'postid',
+                headerName: '',
+                flex: 1,
+                filterable: false,
+                sortable: false,
+                align: 'center',
+                renderCell: (params:GridRenderCellParams) =>
+                    (<Link href={`https://www.reddit.com/r/Slovakia/comments/${params.row.postid}/`}
+                          target="_blank">Link</Link>)
+
+            }
         ];
     }
 
 
     return (
-        <Box sx={{height: 500, padding: 2}}>
+        <Box sx={{padding: 2}}>
             <TextField
                 label="Filter"
                 placeholder="Filter by title, author or flair"
@@ -156,7 +164,7 @@ export default function PostsPage() {
                 paginationModel={pagination}
                 onPaginationModelChange={setPagination}
                 loading={loading}
-                pageSizeOptions={[10, 20, 50]}
+                pageSizeOptions={[10, 20, 40]}
             />
         </Box>
     );
