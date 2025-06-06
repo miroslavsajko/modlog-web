@@ -153,7 +153,7 @@ export default function PostsPage() {
     }
 
     return (
-        <Box sx={{padding: 2}}>
+        <Box>
             <TextField
                 label="Filter"
                 placeholder="Filter by title, author or flair"

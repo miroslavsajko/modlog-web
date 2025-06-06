@@ -63,18 +63,38 @@ export default function ModlogPage() {
                 headerAlign: 'center',
                 renderCell: params => {
                     const data: ModLogEntry = params.row;
-                    return (<Box display="flex" flexDirection="column">
-                        <Typography variant="body1" flex="1">
+                    return (<Box display="flex" flexDirection="column" sx={{
+                        height: '100%',
+                        justifyContent: 'center',
+                        whiteSpace: 'normal',
+                    }}>
+                        <Typography variant="body1" sx={{
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            width: '100%',
+                        }}>
                             <Typography component="span" fontWeight="bold">{data.mod}</Typography>
                             {' '}
                             <Typography component="span">{modActions[data.action] ?? data.action}</Typography>
                             {(data.target?.length ?? 0) > 0 ?
                                 <Typography component="span" fontStyle="italic"> "{data.target}"</Typography> : <></>}
                         </Typography>
-                        {data.description.length > 0 ? <Typography variant="subtitle1">
-                            <Typography component="span" fontStyle="italic" fontSize="smaller"
-                                        lineHeight="1">{data.description}</Typography>
-                        </Typography> : <></>}
+                        {/*{data.description.length > 0 ?*/}
+                        {/*    <Typography variant="subtitle1" sx={{*/}
+                        {/*        whiteSpace: 'nowrap',*/}
+                        {/*        overflow: 'hidden',*/}
+                        {/*        textOverflow: 'ellipsis',*/}
+                        {/*        width: '100%',*/}
+                        {/*    }}>*/}
+                        {/*        <Typography component="span" fontStyle="italic"*/}
+                        {/*                    fontSize="smaller" lineHeight="1">*/}
+                        {/*            {data.description}*/}
+                        {/*        </Typography>*/}
+                        {/*    </Typography> : <Box sx={{*/}
+                        {/*        marginY: 'auto'*/}
+                        {/*    }}></Box>*/}
+                        {/*}*/}
                         <Typography variant="caption" color="text.secondary">
                             {convertDateTime(data.timestamp)}
                         </Typography>
@@ -156,12 +176,12 @@ export default function ModlogPage() {
     }
 
     if (isMobile) {
-        mobileDataGridProps.rowHeight = 75
+        // mobileDataGridProps.rowHeight = 65
         mobileDataGridProps.columnHeaderHeight = 1
     }
 
     return (
-        <Box sx={{padding: 2}}>
+        <Box>
             <TextField
                 label="Filter"
                 placeholder="Filter by mod, action or reason"
