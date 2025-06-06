@@ -1,6 +1,5 @@
 import {useCallback, useEffect, useMemo, useState} from 'react';
 import {TextField, Box, Link, debounce, useMediaQuery, Typography} from '@mui/material';
-import OpenInNewOutlinedIcon from '@mui/icons-material/OpenInNewOutlined';
 import {
     DataGrid, DataGridProps,
     GridColDef, GridPaginationModel,
@@ -10,6 +9,7 @@ import {ModLogEntry} from "../types/interfaces.ts";
 import {convertDateTime} from "../util/dateTimeConverter.ts";
 import {modActions, modlogDetails} from "../types/translations.ts";
 import {getUrlForModLogEntry} from "../util/util.ts";
+import OpenInNewOutlinedIcon from '@mui/icons-material/OpenInNewOutlined';
 
 const defaultPagination: GridPaginationModel = {page: 0, pageSize: 20};
 
@@ -61,6 +61,7 @@ export default function ModlogPage() {
                 flex: 1,
                 filterable: false,
                 sortable: false,
+                resizable: false,
                 disableColumnMenu: true,
                 headerAlign: 'center',
                 renderCell: params => {
@@ -94,6 +95,7 @@ export default function ModlogPage() {
                 filterable: false,
                 sortable: false,
                 align: 'center',
+                resizable: false,
                 disableColumnMenu: true,
                 renderCell: params => {
                     const data: ModLogEntry = params.row;
@@ -123,7 +125,6 @@ export default function ModlogPage() {
                         return <></>
                     }
                 }
-
             }]
     } else {
         columns = [
@@ -198,7 +199,9 @@ export default function ModlogPage() {
     }
 
     if (isMobile) {
-        // mobileDataGridProps.rowHeight = 65
+        mobileDataGridProps.getRowHeight = () => 'auto'
+        mobileDataGridProps.sx = {'& .MuiDataGrid-columnSeparator': {display: 'none'}}
+        mobileDataGridProps.columnHeaderHeight = 0
     }
 
     return (
@@ -216,9 +219,6 @@ export default function ModlogPage() {
                 {...mobileDataGridProps}
                 rows={rows}
                 getRowId={(row: ModLogEntry) => row.modlogentryid}
-                slots={{
-                    columnHeaders: () => null
-                }}
                 columns={columns}
                 rowCount={rowCount}
                 paginationMode="server"
