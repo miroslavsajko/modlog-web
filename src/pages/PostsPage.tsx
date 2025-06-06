@@ -52,35 +52,36 @@ export default function PostsPage() {
     let columns: GridColDef[] = []
 
     if (isMobile) {
-        columns = [
-            {
-                field: 'title',
-                headerName: 'Name',
-                flex: 6,
-                filterable: false,
-                sortable: false,
-                renderCell: (params: GridRenderCellParams) =>
-                    (<Link href={`https://www.reddit.com/r/Slovakia/comments/${params.row.postid}/`}
-                           target="_blank">{params.value}</Link>)
-            },
-            {
-                field: 'author',
-                headerName: 'Author',
-                flex: 2,
-                filterable: false,
-                sortable: false,
-                align: 'center',
-                headerAlign: 'center'
-            }]
+        columns = [{
+            field: 'title',
+            headerName: 'Name',
+            flex: 6,
+            filterable: false,
+            sortable: false,
+            resizable: false,
+            disableColumnMenu: true,
+            renderCell: (params: GridRenderCellParams) =>
+                (<Link href={`https://www.reddit.com/r/Slovakia/comments/${params.row.postid}/`}
+                       target="_blank">{params.value}</Link>)
+        }, {
+            field: 'author',
+            headerName: 'Author',
+            flex: 2,
+            filterable: false,
+            sortable: false,
+            align: 'center',
+            headerAlign: 'center',
+            resizable: false,
+            disableColumnMenu: true,
+        }]
     } else {
-        columns = [
-            {
-                field: 'title',
-                headerName: 'Name',
-                flex: 6,
-                filterable: false,
-                sortable: false,
-            },
+        columns = [{
+            field: 'title',
+            headerName: 'Name',
+            flex: 6,
+            filterable: false,
+            sortable: false,
+        },
             {
                 field: 'author',
                 headerName: 'Author',
@@ -139,8 +140,7 @@ export default function PostsPage() {
                 renderCell: (params: GridRenderCellParams) =>
                     (<Link href={`https://www.reddit.com/r/Slovakia/comments/${params.row.postid}/`}
                            target="_blank">Link</Link>)
-            }
-        ];
+            }];
     }
 
     const mobileDataGridProps: DataGridProps = {
@@ -148,8 +148,9 @@ export default function PostsPage() {
     }
 
     if (isMobile) {
-        mobileDataGridProps.rowHeight = 75
-        mobileDataGridProps.columnHeaderHeight = 1
+        mobileDataGridProps.getRowHeight = () => 'auto'
+        mobileDataGridProps.sx = {'& .MuiDataGrid-columnSeparator': {display: 'none'}}
+        mobileDataGridProps.columnHeaderHeight = 0
     }
 
     return (

@@ -54,144 +54,141 @@ export default function ModlogPage() {
     let columns: GridColDef[] = []
 
     if (isMobile) {
-        columns = [
-            {
-                field: 'modlogentryid',
-                headerName: '',
-                flex: 1,
-                filterable: false,
-                sortable: false,
-                resizable: false,
-                disableColumnMenu: true,
-                headerAlign: 'center',
-                renderCell: params => {
-                    const data: ModLogEntry = params.row;
-                    return (<Box display="flex" flexDirection="column" sx={{
-                        height: '100%',
-                        justifyContent: 'center',
-                        whiteSpace: 'normal',
+        columns = [{
+            field: 'modlogentryid',
+            headerName: '',
+            flex: 1,
+            filterable: false,
+            sortable: false,
+            resizable: false,
+            disableColumnMenu: true,
+            headerAlign: 'center',
+            renderCell: params => {
+                const data: ModLogEntry = params.row;
+                return (<Box display="flex" flexDirection="column" sx={{
+                    height: '100%',
+                    justifyContent: 'center',
+                    whiteSpace: 'normal',
+                }}>
+                    <Typography variant="body1" sx={{
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        width: '100%',
                     }}>
-                        <Typography variant="body1" sx={{
-                            whiteSpace: 'nowrap',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            width: '100%',
-                        }}>
-                            <Typography component="span" fontWeight="bold">{data.mod}</Typography>
-                            {' '}
-                            <Typography component="span">{modActions[data.action] ?? data.action}</Typography>
-                            {(data.target?.length ?? 0) > 0 ?
-                                <Typography component="span" fontStyle="italic"> "{data.target}"</Typography> : <></>}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                            {convertDateTime(data.timestamp)}
-                        </Typography>
-                    </Box>)
+                        <Typography component="span" fontWeight="bold">{data.mod}</Typography>
+                        {' '}
+                        <Typography component="span">{modActions[data.action] ?? data.action}</Typography>
+                        {(data.target?.length ?? 0) > 0 ?
+                            <Typography component="span" fontStyle="italic"> "{data.target}"</Typography> : <></>}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                        {convertDateTime(data.timestamp)}
+                    </Typography>
+                </Box>)
+            }
+        }, {
+            field: 'action',
+            headerName: '',
+            width: 20,
+            filterable: false,
+            sortable: false,
+            align: 'center',
+            resizable: false,
+            disableColumnMenu: true,
+            renderCell: params => {
+                const data: ModLogEntry = params.row;
+                const url = getUrlForModLogEntry(data);
+                if (url) {
+                    return (<Box
+                        sx={{
+                            height: '100%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}
+                    ><Link
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 4,
+                            color: 'inherit',
+                        }}
+                    >
+                        <OpenInNewOutlinedIcon fontSize="small"/>
+                    </Link></Box>)
+                } else {
+                    return <></>
                 }
-            }, {
-                field: 'action',
-                headerName: '',
-                width: 20,
-                filterable: false,
-                sortable: false,
-                align: 'center',
-                resizable: false,
-                disableColumnMenu: true,
-                renderCell: params => {
-                    const data: ModLogEntry = params.row;
-                    const url = getUrlForModLogEntry(data);
-                    if (url) {
-                        return (<Box
-                            sx={{
-                                height: '100%',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                            }}
-                        ><Link
-                            href={url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 4,
-                                color: 'inherit',
-                            }}
-                        >
-                            <OpenInNewOutlinedIcon fontSize="small"/>
-                        </Link></Box>)
-                    } else {
-                        return <></>
-                    }
-                }
-            }]
+            }
+        }]
     } else {
-        columns = [
-            {
-                field: 'mod',
-                headerName: 'Mod',
-                flex: 1,
-                filterable: false,
-                sortable: false,
-            }, {
-                field: 'action',
-                headerName: 'Action',
-                flex: 1,
-                filterable: false,
-                sortable: false,
-                valueGetter: value => modActions[value] ?? value
-            }, {
-                field: 'timestamp',
-                headerName: 'Timestamp',
-                flex: 1,
-                filterable: false,
-                sortable: false,
-                align: 'center',
-                headerAlign: 'center',
-                valueGetter: value => convertDateTime(value)
-            }, {
-                field: 'description',
-                headerName: 'Details',
-                flex: 2,
-                filterable: false,
-                sortable: false,
-                align: 'center',
-                headerAlign: 'center',
-                valueGetter: (_value, row: ModLogEntry) => {
-                    const description = row.description;
-                    const details = modlogDetails[row.details] ?? row.details;
-                    let middle = ''
-                    if (description.length > 0 && details.length > 0) {
-                        middle = ' - '
-                    }
-                    return `${description}${middle}${details}`;
+        columns = [{
+            field: 'mod',
+            headerName: 'Mod',
+            flex: 1,
+            filterable: false,
+            sortable: false,
+        }, {
+            field: 'action',
+            headerName: 'Action',
+            flex: 1,
+            filterable: false,
+            sortable: false,
+            valueGetter: value => modActions[value] ?? value
+        }, {
+            field: 'timestamp',
+            headerName: 'Timestamp',
+            flex: 1,
+            filterable: false,
+            sortable: false,
+            align: 'center',
+            headerAlign: 'center',
+            valueGetter: value => convertDateTime(value)
+        }, {
+            field: 'description',
+            headerName: 'Details',
+            flex: 2,
+            filterable: false,
+            sortable: false,
+            align: 'center',
+            headerAlign: 'center',
+            valueGetter: (_value, row: ModLogEntry) => {
+                const description = row.description;
+                const details = modlogDetails[row.details] ?? row.details;
+                let middle = ''
+                if (description.length > 0 && details.length > 0) {
+                    middle = ' - '
                 }
-            }, {
-                field: 'target',
-                headerName: 'Link',
-                flex: 1,
-                filterable: false,
-                sortable: false,
-                align: 'center',
-                headerAlign: 'center',
-                renderCell: params => {
-                    const data: ModLogEntry = params.row;
-                    const url = getUrlForModLogEntry(data);
-                    if (data.target) {
-                        return (<Link href={url} target="_blank" rel="noopener noreferrer">{data.target}</Link>)
-                    }
-                    if (data.postid && data.commentid) {
-                        return (<Link
-                            href={url} target="_blank" rel="noopener noreferrer">Comment Link</Link>)
-                    }
-                    if (data.postid) {
-                        return (<Link href={url} target="_blank" rel="noopener noreferrer">Post Link</Link>)
-                    }
-                    return ''
+                return `${description}${middle}${details}`;
+            }
+        }, {
+            field: 'target',
+            headerName: 'Link',
+            flex: 1,
+            filterable: false,
+            sortable: false,
+            align: 'center',
+            headerAlign: 'center',
+            renderCell: params => {
+                const data: ModLogEntry = params.row;
+                const url = getUrlForModLogEntry(data);
+                if (data.target) {
+                    return (<Link href={url} target="_blank" rel="noopener noreferrer">{data.target}</Link>)
                 }
-            },
-        ];
+                if (data.postid && data.commentid) {
+                    return (<Link
+                        href={url} target="_blank" rel="noopener noreferrer">Comment Link</Link>)
+                }
+                if (data.postid) {
+                    return (<Link href={url} target="_blank" rel="noopener noreferrer">Post Link</Link>)
+                }
+                return ''
+            }
+        }];
     }
 
     const mobileDataGridProps: DataGridProps = {
@@ -225,7 +222,7 @@ export default function ModlogPage() {
                 paginationModel={pagination}
                 onPaginationModelChange={setPagination}
                 loading={loading}
-                pageSizeOptions={[10, 20, 50]}
+                pageSizeOptions={[10, 20, 40]}
             />
         </Box>
     );
