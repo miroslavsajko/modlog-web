@@ -1,7 +1,6 @@
 import {
     AppBar,
     Box,
-    CssBaseline,
     Divider,
     Drawer,
     IconButton,
@@ -14,15 +13,15 @@ import {
     useMediaQuery,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import { useState } from 'react';
+import {useState} from 'react';
 import {Link, Outlet, useLocation} from 'react-router-dom';
 
-const drawerWidth = 240;
+const drawerWidth = 220;
 
 const navItems = [
-    { label: 'Modlog', path: '/' },
-    { label: 'Modlog by Posts', path: '/modlog-posts' },
-    { label: 'Charts', path: '/charts' },
+    {label: 'Modlog', path: '/'},
+    {label: 'Modlog by Posts', path: '/modlog-posts'},
+    {label: 'Charts', path: '/charts'},
 ];
 
 export default function Layout() {
@@ -36,11 +35,12 @@ export default function Layout() {
             <Toolbar>
                 <Typography variant="h6">My App</Typography>
             </Toolbar>
-            <Divider />
+            <Divider/>
             <List>
                 {navItems.map((item) => (
                     <ListItem key={item.label} disablePadding>
-                        <ListItemButton component={Link} to={item.path} selected={location.pathname === item.path} onClick={() => setMobileOpen(false)}>
+                        <ListItemButton component={Link} to={item.path} selected={location.pathname === item.path}
+                                        onClick={() => setMobileOpen(false)}>
                             <ListItemText primary={item.label}/>
                         </ListItemButton>
                     </ListItem>
@@ -50,15 +50,13 @@ export default function Layout() {
     );
 
     return (
-        <Box sx={{ display: 'flex' }}>
-            <CssBaseline />
+        <Box sx={{display: 'flex'}}>
 
-            {/* Top AppBar */}
-            <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+            <AppBar position="fixed" sx={{zIndex: (theme) => theme.zIndex.drawer + 1}}>
                 <Toolbar>
                     {isMobile && (
                         <IconButton color="inherit" edge="start" onClick={() => setMobileOpen(!mobileOpen)}>
-                            <MenuIcon />
+                            <MenuIcon/>
                         </IconButton>
                     )}
                     <Typography variant="h6" noWrap component="div">
@@ -67,12 +65,11 @@ export default function Layout() {
                 </Toolbar>
             </AppBar>
 
-            {/* Left Drawer */}
             <Drawer
                 variant={isMobile ? 'temporary' : 'permanent'}
                 open={isMobile ? mobileOpen : true}
                 onClose={() => setMobileOpen(false)}
-                ModalProps={{ keepMounted: true }}
+                ModalProps={{keepMounted: true}}
                 sx={{
                     width: drawerWidth,
                     flexShrink: 0,
@@ -85,10 +82,15 @@ export default function Layout() {
                 {drawer}
             </Drawer>
 
-            {/* Main Content */}
-            <Box component="main" sx={{ flexGrow: 1, p: 3/*, ml: isMobile ? { sm: `${drawerWidth}px` } : undefined */}}>
-                <Toolbar />
-                <Outlet />
+            <Box component="main"
+                 sx={{
+                     flexGrow: 1,
+                     p: 3,
+                     // ml: isMobile ? {sm: `${drawerWidth}px`} : undefined
+                 }}
+            >
+                <Toolbar/>
+                <Outlet/>
             </Box>
         </Box>
     );

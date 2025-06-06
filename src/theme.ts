@@ -1,8 +1,8 @@
 // src/theme.ts
-import { createTheme } from '@mui/material/styles';
+import {createTheme} from '@mui/material/styles';
 import {responsiveFontSizes} from "@mui/material";
 
-export const darkTheme = responsiveFontSizes( createTheme({
+export const darkTheme = responsiveFontSizes(createTheme({
     palette: {
         mode: 'dark',
         background: {
@@ -15,6 +15,20 @@ export const darkTheme = responsiveFontSizes( createTheme({
         },
     },
     components: {
+        MuiCssBaseline: {
+            styleOverrides: {
+                html: {
+                    width: '100%',
+                },
+                body: {
+                    width: '100%',
+                    overflowX: 'hidden', // prevent horizontal scrollbars
+                },
+                '#root': {
+                    width: '100%',
+                },
+            }
+        },
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error
         MuiDataGrid: {

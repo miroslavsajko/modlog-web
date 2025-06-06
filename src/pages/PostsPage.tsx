@@ -107,8 +107,8 @@ export default function PostsPage() {
                 sortable: false,
                 align: 'center',
                 headerAlign: 'center',
-                renderCell: (params: GridRenderCellParams) => (
-                    convertDateTime(params.value)
+                valueGetter: (value) => (
+                    convertDateTime(value)
                 )
             },
             {
@@ -130,15 +130,15 @@ export default function PostsPage() {
                 headerAlign: 'center'
             }, {
                 field: 'postid',
-                headerName: '',
+                headerName: 'Link',
                 flex: 1,
                 filterable: false,
                 sortable: false,
                 align: 'center',
+                headerAlign: 'center',
                 renderCell: (params: GridRenderCellParams) =>
                     (<Link href={`https://www.reddit.com/r/Slovakia/comments/${params.row.postid}/`}
                            target="_blank">Link</Link>)
-
             }
         ];
     }
