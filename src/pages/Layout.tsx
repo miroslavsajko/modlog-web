@@ -26,7 +26,7 @@ const navItems = [
 
 export default function Layout() {
     const [mobileOpen, setMobileOpen] = useState(false);
-    const isMobile = useMediaQuery('(max-width:600px)');
+    const isMobile = useMediaQuery('(max-width:800px)');
 
     const location = useLocation();
 

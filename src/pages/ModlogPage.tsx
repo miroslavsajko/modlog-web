@@ -1,5 +1,6 @@
 import {useCallback, useEffect, useMemo, useState} from 'react';
 import {TextField, Box, Link, debounce, useMediaQuery, Typography} from '@mui/material';
+import OpenInNewOutlinedIcon from '@mui/icons-material/OpenInNewOutlined';
 import {
     DataGrid, DataGridProps,
     GridColDef, GridPaginationModel,
@@ -8,6 +9,7 @@ import {fetchModEntries} from "../api/api.ts";
 import {ModLogEntry} from "../types/interfaces.ts";
 import {convertDateTime} from "../util/dateTimeConverter.ts";
 import {modActions, modlogDetails} from "../types/translations.ts";
+import {getUrlForModLogEntry} from "../util/util.ts";
 
 const defaultPagination: GridPaginationModel = {page: 0, pageSize: 20};
 
@@ -54,7 +56,7 @@ export default function ModlogPage() {
     if (isMobile) {
         columns = [
             {
-                field: 'mod',
+                field: 'modlogentryid',
                 headerName: '',
                 flex: 1,
                 filterable: false,
@@ -80,26 +82,48 @@ export default function ModlogPage() {
                             {(data.target?.length ?? 0) > 0 ?
                                 <Typography component="span" fontStyle="italic"> "{data.target}"</Typography> : <></>}
                         </Typography>
-                        {/*{data.description.length > 0 ?*/}
-                        {/*    <Typography variant="subtitle1" sx={{*/}
-                        {/*        whiteSpace: 'nowrap',*/}
-                        {/*        overflow: 'hidden',*/}
-                        {/*        textOverflow: 'ellipsis',*/}
-                        {/*        width: '100%',*/}
-                        {/*    }}>*/}
-                        {/*        <Typography component="span" fontStyle="italic"*/}
-                        {/*                    fontSize="smaller" lineHeight="1">*/}
-                        {/*            {data.description}*/}
-                        {/*        </Typography>*/}
-                        {/*    </Typography> : <Box sx={{*/}
-                        {/*        marginY: 'auto'*/}
-                        {/*    }}></Box>*/}
-                        {/*}*/}
                         <Typography variant="caption" color="text.secondary">
                             {convertDateTime(data.timestamp)}
                         </Typography>
                     </Box>)
                 }
+            }, {
+                field: 'action',
+                headerName: '',
+                width: 20,
+                filterable: false,
+                sortable: false,
+                align: 'center',
+                disableColumnMenu: true,
+                renderCell: params => {
+                    const data: ModLogEntry = params.row;
+                    const url = getUrlForModLogEntry(data);
+                    if (url) {
+                        return (<Box
+                            sx={{
+                                height: '100%',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            }}
+                        ><Link
+                            href={url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 4,
+                                color: 'inherit',
+                            }}
+                        >
+                            <OpenInNewOutlinedIcon fontSize="small"/>
+                        </Link></Box>)
+                    } else {
+                        return <></>
+                    }
+                }
+
             }]
     } else {
         columns = [
@@ -151,19 +175,17 @@ export default function ModlogPage() {
                 align: 'center',
                 headerAlign: 'center',
                 renderCell: params => {
-                    if (params.value) {
-                        return (<Link href={`https://www.reddit.com/user/${params.value}/`}
-                                      target="_blank">{params.value}</Link>)
-                    }
                     const data: ModLogEntry = params.row;
+                    const url = getUrlForModLogEntry(data);
+                    if (data.target) {
+                        return (<Link href={url} target="_blank" rel="noopener noreferrer">{data.target}</Link>)
+                    }
                     if (data.postid && data.commentid) {
                         return (<Link
-                            href={`https://www.reddit.com/r/hockey/comments/${data.postid}/comment/${data.commentid}/`}
-                            target="_blank">Comment Link</Link>)
+                            href={url} target="_blank" rel="noopener noreferrer">Comment Link</Link>)
                     }
                     if (data.postid) {
-                        return (<Link href={`https://www.reddit.com/r/hockey/comments/${data.postid}/`}
-                                      target="_blank">Post Link</Link>)
+                        return (<Link href={url} target="_blank" rel="noopener noreferrer">Post Link</Link>)
                     }
                     return ''
                 }
@@ -177,7 +199,6 @@ export default function ModlogPage() {
 
     if (isMobile) {
         // mobileDataGridProps.rowHeight = 65
-        mobileDataGridProps.columnHeaderHeight = 1
     }
 
     return (
@@ -195,6 +216,9 @@ export default function ModlogPage() {
                 {...mobileDataGridProps}
                 rows={rows}
                 getRowId={(row: ModLogEntry) => row.modlogentryid}
+                slots={{
+                    columnHeaders: () => null
+                }}
                 columns={columns}
                 rowCount={rowCount}
                 paginationMode="server"
