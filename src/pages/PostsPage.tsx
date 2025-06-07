@@ -1,13 +1,15 @@
 import {useCallback, useEffect, useMemo, useState} from 'react';
-import {TextField, Box, debounce, Link, useMediaQuery} from '@mui/material';
+import {TextField, Box, debounce, Link, useMediaQuery, Typography} from '@mui/material';
 import {
     DataGrid, DataGridProps,
     GridColDef, GridPaginationModel,
     GridRenderCellParams,
 } from '@mui/x-data-grid';
 import {fetchPosts} from "../api/api.ts";
-import {Post} from "../types/interfaces.ts";
+import {ModLogEntry, Post} from "../types/interfaces.ts";
 import {convertDateTime} from "../util/dateTimeConverter.ts";
+import {getUrlForModLogEntry} from "../util/util.ts";
+import OpenInNewOutlinedIcon from "@mui/icons-material/OpenInNewOutlined";
 
 const defaultPagination: GridPaginationModel = {page: 0, pageSize: 20};
 
@@ -18,7 +20,7 @@ export default function PostsPage() {
     const [filter, setFilter] = useState<string>('');
     const [pagination, setPagination] = useState<GridPaginationModel>(defaultPagination);
     const [rowCount, setRowCount] = useState<number>(0);
-    const isMobile = useMediaQuery('(max-width:800px)');
+    const isTablet = useMediaQuery('(max-width:800px)');
 
     const fetchData = useCallback(async () => {
         setLoading(true);
@@ -51,7 +53,7 @@ export default function PostsPage() {
 
     let columns: GridColDef[] = []
 
-    if (isMobile) {
+    if (isTablet) {
         columns = [{
             field: 'title',
             headerName: 'Name',
@@ -60,19 +62,73 @@ export default function PostsPage() {
             sortable: false,
             resizable: false,
             disableColumnMenu: true,
-            renderCell: (params: GridRenderCellParams) =>
-                (<Link href={`https://www.reddit.com/r/Slovakia/comments/${params.row.postid}/`}
-                       target="_blank">{params.value}</Link>)
+            renderCell: (params: GridRenderCellParams) => {
+                console.info(params.row)
+                const data: Post = params.row;
+                return (<Box display="flex" flexDirection="column" sx={{
+                    height: '100%',
+                    justifyContent: 'center',
+                    whiteSpace: 'normal',
+                }}>
+                    <Typography variant="body1" component="span"
+                                fontWeight="bold"
+                                sx={{
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        // width: '100%',
+                    }}>
+                        {data.title}
+                    </Typography>
+                    <Typography variant="caption" color="textSecondary" component="span" >
+                        {'at '}
+                        <Typography  variant="caption" fontWeight="bold">
+                            {convertDateTime(data.timestamp)}
+                        </Typography>
+                        {' by '}
+                        <Typography component="span"   variant="caption" fontWeight="bold">
+                            {data.author}
+                        </Typography>
+                    </Typography>
+                </Box>)
+            }
         }, {
-            field: 'author',
-            headerName: 'Author',
-            flex: 2,
+            field: 'action',
+            headerName: '',
+            width: 20,
             filterable: false,
             sortable: false,
             align: 'center',
-            headerAlign: 'center',
             resizable: false,
             disableColumnMenu: true,
+            renderCell: params => {
+                const data: ModLogEntry = params.row;
+                const url = getUrlForModLogEntry(data);
+                if (url) {
+                    return (<Box
+                        sx={{
+                            height: '100%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}
+                    ><Link
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 4,
+                            color: 'inherit',
+                        }}
+                    >
+                        <OpenInNewOutlinedIcon fontSize="small"/>
+                    </Link></Box>)
+                } else {
+                    return <></>
+                }
+            }
         }]
     } else {
         columns = [{
@@ -143,14 +199,14 @@ export default function PostsPage() {
             }];
     }
 
-    const mobileDataGridProps: DataGridProps = {
+    const tabletDataGridProps: DataGridProps = {
         columns: []
     }
 
-    if (isMobile) {
-        mobileDataGridProps.getRowHeight = () => 'auto'
-        mobileDataGridProps.sx = {'& .MuiDataGrid-columnSeparator': {display: 'none'}}
-        mobileDataGridProps.columnHeaderHeight = 0
+    if (isTablet) {
+        tabletDataGridProps.getRowHeight = () => 'auto'
+        tabletDataGridProps.sx = {'& .MuiDataGrid-columnSeparator': {display: 'none'}}
+        tabletDataGridProps.columnHeaderHeight = 0
     }
 
     return (
@@ -165,7 +221,7 @@ export default function PostsPage() {
                 sx={{mb: 2}}
             />
             <DataGrid
-                {...mobileDataGridProps}
+                {...tabletDataGridProps}
                 rows={rows}
                 getRowId={(row: Post) => row.postid}
                 columns={columns}

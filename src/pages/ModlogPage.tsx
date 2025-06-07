@@ -20,7 +20,7 @@ export default function ModlogPage() {
     const [filter, setFilter] = useState<string>('');
     const [pagination, setPagination] = useState<GridPaginationModel>(defaultPagination);
     const [rowCount, setRowCount] = useState<number>(0);
-    const isMobile = useMediaQuery('(max-width:800px)');
+    const isTablet = useMediaQuery('(max-width:800px)');
 
     const fetchData = useCallback(async () => {
         setLoading(true);
@@ -53,7 +53,7 @@ export default function ModlogPage() {
 
     let columns: GridColDef[] = []
 
-    if (isMobile) {
+    if (isTablet) {
         columns = [{
             field: 'modlogentryid',
             headerName: '',
@@ -82,8 +82,11 @@ export default function ModlogPage() {
                         {(data.target?.length ?? 0) > 0 ?
                             <Typography component="span" fontStyle="italic"> "{data.target}"</Typography> : <></>}
                     </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                        {convertDateTime(data.timestamp)}
+                    <Typography variant="caption" color="textSecondary" component="span" >
+                        {'at '}
+                        <Typography  variant="caption" fontWeight="bold">
+                            {convertDateTime(data.timestamp)}
+                        </Typography>
                     </Typography>
                 </Box>)
             }
@@ -191,14 +194,14 @@ export default function ModlogPage() {
         }];
     }
 
-    const mobileDataGridProps: DataGridProps = {
+    const targetDataGridProps: DataGridProps = {
         columns: []
     }
 
-    if (isMobile) {
-        mobileDataGridProps.getRowHeight = () => 'auto'
-        mobileDataGridProps.sx = {'& .MuiDataGrid-columnSeparator': {display: 'none'}}
-        mobileDataGridProps.columnHeaderHeight = 0
+    if (isTablet) {
+        targetDataGridProps.getRowHeight = () => 'auto'
+        targetDataGridProps.sx = {'& .MuiDataGrid-columnSeparator': {display: 'none'}}
+        targetDataGridProps.columnHeaderHeight = 0
     }
 
     return (
@@ -213,7 +216,7 @@ export default function ModlogPage() {
                 sx={{mb: 2}}
             />
             <DataGrid
-                {...mobileDataGridProps}
+                {...targetDataGridProps}
                 rows={rows}
                 getRowId={(row: ModLogEntry) => row.modlogentryid}
                 columns={columns}
