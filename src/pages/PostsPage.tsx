@@ -30,7 +30,6 @@ export default function PostsPage() {
     const [pagination, setPagination] = useState<GridPaginationModel>(defaultPagination);
     const [rowCount, setRowCount] = useState<number>(0);
     const isTablet = useMediaQuery('(max-width:800px)');
-    console.info('posts page')
     const [selectedPostId, setselectedPostId] = useState<string | null>(null);
 
     const handleClose = () => setselectedPostId(null);
@@ -64,206 +63,57 @@ export default function PostsPage() {
         fetchGridPostData()
     }, [fetchGridPostData]);
 
-
-    let columns: GridColDef[] = []
-
-    if (isTablet) {
-        columns = [{
-            field: 'title',
-            headerName: 'Name',
-            flex: 6,
-            filterable: false,
-            sortable: false,
-            resizable: false,
-            disableColumnMenu: true,
-            renderCell: (params: GridRenderCellParams) => {
-                const data: Post = params.row;
-                return <Box
-                    display="flex"
-                    flexDirection="column"
-                    sx={{
-                        height: '100%',
-                        justifyContent: 'center',
-                        width: '100%', maxWidth: '100%',
-                        overflow: 'hidden',
-                        overflowWrap: 'break-word',
-                    }}
-                >
-                    <Typography
-                        variant="body2"
-                        fontWeight="bold"
-                        noWrap
-                        sx={{
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            width: '100%'
-                        }}
-                    >
-                        {data.title}
-                    </Typography>
-                    <Typography variant="caption" fontStyle="italic">
-                        {data.author}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                        {convertDateTime(data.timestamp)}
-                    </Typography>
-                </Box>
-
-            }
-        }, {
-            field: 'action',
-            headerName: '',
-            width: 20,
-            filterable: false,
-            sortable: false,
-            align: 'center',
-            resizable: false,
-            disableColumnMenu: true,
-            renderCell: params => {
-                const data: Post = params.row;
-                const url = getUrlForPost(data.postid);
-                if (url) {
-                    return (<Box
-                        paddingX={'2px'}
-                        sx={{
-                            height: '100%',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                        }}
-                    >
-                        <Link
-                            marginRight={'8px'}
-                            gap={4}
-                            sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                color: 'inherit'
-                            }}
-                            onClick={() => {
-                                setselectedPostId(data.postid)
-                            }}
-                        >
-                            <SearchOutlinedIcon fontSize="small"/>
-                        </Link>
-                        <Link
-                            href={url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            marginRight={'4px'}
-                            gap={4}
-                            sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                color: 'inherit'
-                            }}
-                        >
-                            <OpenInNewOutlinedIcon fontSize="small"/>
-                        </Link>
-                    </Box>)
-                } else {
-                    return <></>
-                }
-            }
-        }]
-    } else {
-        columns = [{
-            field: 'title',
-            headerName: 'Name',
-            flex: 6,
-            filterable: false,
-            sortable: false,
-        },
-            {
-                field: 'author',
-                headerName: 'Author',
-                flex: 2,
+    const columns = useMemo(() => {
+        if (isTablet) {
+            return [{
+                field: 'title',
+                headerName: 'Name',
+                flex: 6,
                 filterable: false,
                 sortable: false,
-                align: 'center',
-                headerAlign: 'center'
-            },
-            {
-                field: 'flair',
-                headerName: 'Flair',
-                flex: 2,
-                filterable: false,
-                sortable: false,
-                align: 'center',
-                headerAlign: 'center'
-            },
-            {
-                field: 'timestamp',
-                headerName: 'Timestamp',
-                flex: 2,
-                filterable: false,
-                sortable: false,
-                align: 'center',
-                headerAlign: 'center',
-                valueGetter: (value) => (
-                    convertDateTime(value)
-                )
-            },
-            {
-                field: 'score',
-                headerName: 'Score',
-                flex: 1,
-                filterable: false,
-                sortable: false,
-                align: 'center',
-                headerAlign: 'center'
-            },
-            {
-                field: 'comments',
-                headerName: 'Comments',
-                flex: 1,
-                filterable: false,
-                sortable: false,
-                align: 'center',
-                headerAlign: 'center'
-            }, {
-                field: 'details',
-                headerName: 'More',
-                width: 60,
-                filterable: false,
-                sortable: false,
-                align: 'center',
-                headerAlign: 'center',
                 resizable: false,
                 disableColumnMenu: true,
-                renderCell: params => {
+                renderCell: (params: GridRenderCellParams) => {
                     const data: Post = params.row;
-                    return (<Box
+                    return <Box
+                        display="flex"
+                        flexDirection="column"
                         sx={{
                             height: '100%',
-                            display: 'flex',
-                            alignItems: 'center',
                             justifyContent: 'center',
+                            width: '100%', maxWidth: '100%',
+                            overflow: 'hidden',
+                            overflowWrap: 'break-word',
                         }}
                     >
-                        <Link
-                            gap={4}
+                        <Typography
+                            variant="body2"
+                            fontWeight="bold"
+                            noWrap
                             sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                color: 'inherit'
-                            }}
-                            onClick={() => {
-                                setselectedPostId(data.postid)
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                width: '100%'
                             }}
                         >
-                            <SearchOutlinedIcon fontSize="small"/>
-                        </Link>
-                    </Box>)
+                            {data.title}
+                        </Typography>
+                        <Typography variant="caption" fontStyle="italic">
+                            {data.author}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary">
+                            {convertDateTime(data.timestamp)}
+                        </Typography>
+                    </Box>
+
                 }
             }, {
-                field: 'link',
-                headerName: 'Link',
-                width: 60,
+                field: 'action',
+                headerName: '',
+                width: 20,
                 filterable: false,
                 sortable: false,
                 align: 'center',
-                headerAlign: 'center',
                 resizable: false,
                 disableColumnMenu: true,
                 renderCell: params => {
@@ -271,6 +121,7 @@ export default function PostsPage() {
                     const url = getUrlForPost(data.postid);
                     if (url) {
                         return (<Box
+                            paddingX={'2px'}
                             sx={{
                                 height: '100%',
                                 display: 'flex',
@@ -279,9 +130,24 @@ export default function PostsPage() {
                             }}
                         >
                             <Link
+                                marginRight={'8px'}
+                                gap={4}
+                                sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    color: 'inherit'
+                                }}
+                                onClick={() => {
+                                    setselectedPostId(data.postid)
+                                }}
+                            >
+                                <SearchOutlinedIcon fontSize="small"/>
+                            </Link>
+                            <Link
                                 href={url}
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                marginRight={'4px'}
                                 gap={4}
                                 sx={{
                                     display: 'flex',
@@ -296,22 +162,169 @@ export default function PostsPage() {
                         return <></>
                     }
                 }
-            }];
-    }
+            }] as GridColDef[]
+        } else {
+           return [{
+                field: 'title',
+                headerName: 'Name',
+                flex: 6,
+                filterable: false,
+                sortable: false,
+            },
+                {
+                    field: 'author',
+                    headerName: 'Author',
+                    flex: 2,
+                    filterable: false,
+                    sortable: false,
+                    align: 'center',
+                    headerAlign: 'center'
+                },
+                {
+                    field: 'flair',
+                    headerName: 'Flair',
+                    flex: 2,
+                    filterable: false,
+                    sortable: false,
+                    align: 'center',
+                    headerAlign: 'center'
+                },
+                {
+                    field: 'timestamp',
+                    headerName: 'Timestamp',
+                    flex: 2,
+                    filterable: false,
+                    sortable: false,
+                    align: 'center',
+                    headerAlign: 'center',
+                    valueGetter: (value) => (
+                        convertDateTime(value)
+                    )
+                },
+                {
+                    field: 'score',
+                    headerName: 'Score',
+                    flex: 1,
+                    filterable: false,
+                    sortable: false,
+                    align: 'center',
+                    headerAlign: 'center'
+                },
+                {
+                    field: 'comments',
+                    headerName: 'Comments',
+                    flex: 1,
+                    filterable: false,
+                    sortable: false,
+                    align: 'center',
+                    headerAlign: 'center'
+                }, {
+                    field: 'details',
+                    headerName: 'More',
+                    width: 60,
+                    filterable: false,
+                    sortable: false,
+                    align: 'center',
+                    headerAlign: 'center',
+                    resizable: false,
+                    disableColumnMenu: true,
+                    renderCell: params => {
+                        const data: Post = params.row;
+                        return (<Box
+                            sx={{
+                                height: '100%',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            }}
+                        >
+                            <Link
+                                gap={4}
+                                sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    color: 'inherit'
+                                }}
+                                onClick={() => {
+                                    setselectedPostId(data.postid)
+                                }}
+                            >
+                                <SearchOutlinedIcon fontSize="small"/>
+                            </Link>
+                        </Box>)
+                    }
+                }, {
+                    field: 'link',
+                    headerName: 'Link',
+                    width: 60,
+                    filterable: false,
+                    sortable: false,
+                    align: 'center',
+                    headerAlign: 'center',
+                    resizable: false,
+                    disableColumnMenu: true,
+                    renderCell: params => {
+                        const data: Post = params.row;
+                        const url = getUrlForPost(data.postid);
+                        if (url) {
+                            return (<Box
+                                sx={{
+                                    height: '100%',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                }}
+                            >
+                                <Link
+                                    href={url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    gap={4}
+                                    sx={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        color: 'inherit'
+                                    }}
+                                >
+                                    <OpenInNewOutlinedIcon fontSize="small"/>
+                                </Link>
+                            </Box>)
+                        } else {
+                            return <></>
+                        }
+                    }
+                }] as GridColDef[] ;
+        }
+    }, [isTablet]);
 
     const dialog = useMemo(() => {
         return <ModlogEntriesDialog postId={selectedPostId} onCloseHandler={handleClose}/>
     }, [selectedPostId]);
 
-    const tabletDataGridProps: DataGridProps = {
-        columns: []
-    }
+    const grid = useMemo(() => {
+        const tabletDataGridProps: DataGridProps = {
+            columns: []
+        }
 
-    if (isTablet) {
-        tabletDataGridProps.getRowHeight = () => 'auto'
-        tabletDataGridProps.sx = {'& .MuiDataGrid-columnSeparator': {display: 'none'}}
-        tabletDataGridProps.columnHeaderHeight = 0
-    }
+        if (isTablet) {
+            tabletDataGridProps.getRowHeight = () => 'auto'
+            tabletDataGridProps.sx = {'& .MuiDataGrid-columnSeparator': {display: 'none'}}
+            tabletDataGridProps.columnHeaderHeight = 0
+        }
+        return <DataGrid
+            {...tabletDataGridProps}
+            rows={rows}
+            getRowId={(row: Post) => row.postid}
+            columns={columns}
+            rowCount={rowCount}
+            paginationMode="server"
+            paginationModel={pagination}
+            onPaginationModelChange={setPagination}
+            loading={loading}
+            pageSizeOptions={[10, 20, 40]}
+            disableRowSelectionOnClick
+        />
+    }, [columns, isTablet, loading, pagination, rowCount, rows]);
 
     return (
         <Box>
@@ -324,19 +337,7 @@ export default function PostsPage() {
                 fullWidth
                 sx={{mb: 2}}
             />
-            <DataGrid
-                {...tabletDataGridProps}
-                rows={rows}
-                getRowId={(row: Post) => row.postid}
-                columns={columns}
-                rowCount={rowCount}
-                paginationMode="server"
-                paginationModel={pagination}
-                onPaginationModelChange={setPagination}
-                loading={loading}
-                pageSizeOptions={[10, 20, 40]}
-                disableRowSelectionOnClick
-            />
+            {grid}
             {dialog}
         </Box>
     );

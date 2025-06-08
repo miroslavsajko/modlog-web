@@ -34,11 +34,11 @@ export interface ModEntry {
 }
 
 export interface ModEntriesAPIResponse {
-	modEntries: ModEntry[];
+	modEntries: ModLogEntry[];
 }
 
 export type ModLogEntry = {
-	modlogentryid: string;
+	modentryid: string;
 	action: string;
 	mod: string;
 	details: string;

@@ -80,14 +80,12 @@ export default function ModlogPage() {
                         <Typography component="span" fontWeight="bold">{data.mod}</Typography>
                         {' '}
                         <Typography component="span">{modActions[data.action] ?? data.action}</Typography>
-                        {(data.target?.length ?? 0) > 0 ?
-                            <Typography component="span" fontStyle="italic"> "{data.target}"</Typography> : <></>}
                     </Typography>
-                    <Typography variant="caption" color="textSecondary" component="span" >
-                        {'at '}
-                        <Typography  variant="caption" fontWeight="bold">
-                            {convertDateTime(data.timestamp)}
-                        </Typography>
+                    <Typography variant="caption" fontStyle="italic">
+                        {data.target ?? '--author--'}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary" >
+                        {convertDateTime(data.timestamp)}
                     </Typography>
                 </Box>)
             }
@@ -275,7 +273,7 @@ export default function ModlogPage() {
             <DataGrid
                 {...targetDataGridProps}
                 rows={rows}
-                getRowId={(row: ModLogEntry) => row.modlogentryid}
+                getRowId={(row: ModLogEntry) => row.modentryid}
                 columns={columns}
                 rowCount={rowCount}
                 paginationMode="server"
