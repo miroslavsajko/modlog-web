@@ -1,10 +1,10 @@
-import {BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer} from 'recharts';
+// import {BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer} from 'recharts';
 
-const data = [
-    {name: 'Page A', value: 400},
-    {name: 'Page B', value: 300},
-    {name: 'Page C', value: 200},
-];
+// const data = [
+//     {name: 'Page A', value: 400},
+//     {name: 'Page B', value: 300},
+//     {name: 'Page C', value: 200},
+// ];
 
 export default function ChartPage() {
     return (
