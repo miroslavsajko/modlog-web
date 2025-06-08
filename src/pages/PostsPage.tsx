@@ -243,7 +243,8 @@ export default function PostsPage() {
                                 sx={{
                                     display: 'flex',
                                     alignItems: 'center',
-                                    color: 'inherit'
+                                    color: 'inherit',
+                                    cursor: 'pointer'
                                 }}
                                 onClick={() => {
                                     setselectedPostId(data.postid)
