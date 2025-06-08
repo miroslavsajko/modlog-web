@@ -8,7 +8,11 @@ export const getUrlForModLogEntry = (data: ModLogEntry) => {
         return `https://www.reddit.com/r/hockey/comments/${data.postid}/comment/${data.commentid}/`
     }
     if (data.postid) {
-        return `https://www.reddit.com/r/hockey/comments/${data.postid}/`
+        return getUrlForPost(data.postid)
     }
     return ''
+}
+
+export const getUrlForPost = (postId: string) => {
+    return `https://www.reddit.com/r/hockey/comments/${postId}/`
 }

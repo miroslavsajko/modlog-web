@@ -1,15 +1,24 @@
 import {useCallback, useEffect, useMemo, useState} from 'react';
-import {TextField, Box, debounce, Link, useMediaQuery, Typography} from '@mui/material';
+import {
+    TextField,
+    Box,
+    debounce,
+    Link,
+    useMediaQuery,
+    Typography,
+} from '@mui/material';
 import {
     DataGrid, DataGridProps,
     GridColDef, GridPaginationModel,
     GridRenderCellParams,
 } from '@mui/x-data-grid';
-import {fetchPosts} from "../api/api.ts";
-import {ModLogEntry, Post} from "../types/interfaces.ts";
+import {fetchModEntriesForPost, fetchPosts} from "../api/api.ts";
+import {ModEntry, Post} from "../types/interfaces.ts";
 import {convertDateTime} from "../util/dateTimeConverter.ts";
-import {getUrlForModLogEntry} from "../util/util.ts";
+import {getUrlForPost} from "../util/util.ts";
 import OpenInNewOutlinedIcon from "@mui/icons-material/OpenInNewOutlined";
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+import ModlogEntriesDialog from "../components/ModlogEntriesDialog.tsx";
 
 const defaultPagination: GridPaginationModel = {page: 0, pageSize: 20};
 
@@ -22,7 +31,14 @@ export default function PostsPage() {
     const [rowCount, setRowCount] = useState<number>(0);
     const isTablet = useMediaQuery('(max-width:800px)');
 
-    const fetchData = useCallback(async () => {
+    const [selectedPostId, setselectedPostId] = useState<string | null>(null);
+    const [fetchedModlogEntries, setFetchedModlogEntries] = useState<Record<string, ModEntry[] | null>>(
+        {}
+    );
+
+    const handleClose = () => setselectedPostId(null);
+
+    const fetchGridPostData = useCallback(async () => {
         setLoading(true);
         const data = await fetchPosts({
             page: pagination.page,
@@ -33,6 +49,26 @@ export default function PostsPage() {
         setRows(data.posts);
         setLoading(false);
     }, [filter, pagination]);
+
+    const dialogModlogData = useMemo(() => {
+        if (selectedPostId === null) {
+            return null;
+        }
+        return fetchedModlogEntries[selectedPostId];
+    }, [fetchedModlogEntries, selectedPostId]);
+
+    const fetchDialogModlogData = useCallback(async () => {
+        if (selectedPostId === null) {
+            return;
+        }
+        const modEntries = await fetchModEntriesForPost(selectedPostId);
+        setFetchedModlogEntries(prevState => {
+            return {
+                ...prevState,
+                [selectedPostId]: modEntries,
+            };
+        })
+    }, [selectedPostId])
 
     const debouncedSetFilter = useMemo(
         () =>
@@ -48,8 +84,12 @@ export default function PostsPage() {
     };
 
     useEffect(() => {
-        fetchData()
-    }, [fetchData]);
+        fetchGridPostData()
+    }, [fetchGridPostData]);
+
+    useEffect(() => {
+        fetchDialogModlogData()
+    }, [fetchDialogModlogData]);
 
     let columns: GridColDef[] = []
 
@@ -63,34 +103,38 @@ export default function PostsPage() {
             resizable: false,
             disableColumnMenu: true,
             renderCell: (params: GridRenderCellParams) => {
-                console.info(params.row)
                 const data: Post = params.row;
-                return (<Box display="flex" flexDirection="column" sx={{
-                    height: '100%',
-                    justifyContent: 'center',
-                    whiteSpace: 'normal',
-                }}>
-                    <Typography variant="body1" component="span"
-                                fontWeight="bold"
-                                sx={{
-                        whiteSpace: 'nowrap',
+                return <Box
+                    display="flex"
+                    flexDirection="column"
+                    sx={{
+                        height: '100%',
+                        justifyContent: 'center',
+                        width: '100%', maxWidth: '100%',
                         overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        // width: '100%',
-                    }}>
+                        overflowWrap: 'break-word',
+                    }}
+                >
+                    <Typography
+                        variant="body2"
+                        fontWeight="bold"
+                        noWrap
+                        sx={{
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            width: '100%'
+                        }}
+                    >
                         {data.title}
                     </Typography>
-                    <Typography variant="caption" color="textSecondary" component="span" >
-                        {'at '}
-                        <Typography  variant="caption" fontWeight="bold">
-                            {convertDateTime(data.timestamp)}
-                        </Typography>
-                        {' by '}
-                        <Typography component="span"   variant="caption" fontWeight="bold">
-                            {data.author}
-                        </Typography>
+                    <Typography variant="caption" fontStyle="italic">
+                        {data.author}
                     </Typography>
-                </Box>)
+                    <Typography variant="caption" color="text.secondary">
+                        {convertDateTime(data.timestamp)}
+                    </Typography>
+                </Box>
+
             }
         }, {
             field: 'action',
@@ -102,29 +146,50 @@ export default function PostsPage() {
             resizable: false,
             disableColumnMenu: true,
             renderCell: params => {
-                const data: ModLogEntry = params.row;
-                const url = getUrlForModLogEntry(data);
+                const data: Post = params.row;
+                const url = getUrlForPost(data.postid);
                 if (url) {
                     return (<Box
+                        paddingX={'2px'}
                         sx={{
                             height: '100%',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
                         }}
-                    ><Link
-                        href={url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 4,
-                            color: 'inherit',
-                        }}
                     >
-                        <OpenInNewOutlinedIcon fontSize="small"/>
-                    </Link></Box>)
+                        <Link
+                            // href={url}
+                            // target="_blank"
+                            // rel="noopener noreferrer"
+                            marginRight={'8px'}
+                            gap={4}
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                color: 'inherit'
+                            }}
+                            onClick={() => {
+                                setselectedPostId(data.postid)
+                            }}
+                        >
+                            <SearchOutlinedIcon fontSize="small"/>
+                        </Link>
+                        <Link
+                            href={url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            marginRight={'4px'}
+                            gap={4}
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                color: 'inherit'
+                            }}
+                        >
+                            <OpenInNewOutlinedIcon fontSize="small"/>
+                        </Link>
+                    </Box>)
                 } else {
                     return <></>
                 }
@@ -185,17 +250,89 @@ export default function PostsPage() {
                 sortable: false,
                 align: 'center',
                 headerAlign: 'center'
-            }, {
-                field: 'postid',
-                headerName: 'Link',
-                flex: 1,
+            },{
+                field: 'details',
+                headerName: 'More',
+                width: 60,
                 filterable: false,
                 sortable: false,
                 align: 'center',
                 headerAlign: 'center',
-                renderCell: (params: GridRenderCellParams) =>
-                    (<Link href={`https://www.reddit.com/r/Slovakia/comments/${params.row.postid}/`}
-                           target="_blank">Link</Link>)
+                resizable: false,
+                disableColumnMenu: true,
+                renderCell: params => {
+                    const data: Post = params.row;
+                    const url = getUrlForPost(data.postid);
+                    if (url) {
+                        return (<Box
+                            sx={{
+                                height: '100%',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            }}
+                        >
+                            <Link
+                                // href={url}
+                                // target="_blank"
+                                // rel="noopener noreferrer"
+                                gap={4}
+                                sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    color: 'inherit'
+                                }}
+                                onClick={() => {
+                                    setselectedPostId(data.postid)
+                                }}
+                            >
+                                <SearchOutlinedIcon fontSize="small"/>
+                            </Link>
+                        </Box>)
+                    } else {
+                        return <></>
+                    }
+                }
+            },{
+                field: 'link',
+                headerName: 'Link',
+                width: 60,
+                filterable: false,
+                sortable: false,
+                align: 'center',
+                headerAlign: 'center',
+                resizable: false,
+                disableColumnMenu: true,
+                renderCell: params => {
+                    const data: Post = params.row;
+                    const url = getUrlForPost(data.postid);
+                    if (url) {
+                        return (<Box
+                            sx={{
+                                height: '100%',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            }}
+                        >
+                            <Link
+                                href={url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                gap={4}
+                                sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    color: 'inherit'
+                                }}
+                            >
+                                <OpenInNewOutlinedIcon fontSize="small"/>
+                            </Link>
+                        </Box>)
+                    } else {
+                        return <></>
+                    }
+                }
             }];
     }
 
@@ -231,7 +368,9 @@ export default function PostsPage() {
                 onPaginationModelChange={setPagination}
                 loading={loading}
                 pageSizeOptions={[10, 20, 40]}
+                disableRowSelectionOnClick
             />
+            <ModlogEntriesDialog postId={selectedPostId} data={dialogModlogData} onCloseHandler={handleClose}/>
         </Box>
     );
 }
