@@ -9,14 +9,15 @@ const data = [
 export default function ChartPage() {
     return (
         <div style={{width: '100%', height: 400, padding: 20}}>
-            <ResponsiveContainer>
-                <BarChart data={data}>
-                    <XAxis dataKey="name"/>
-                    <YAxis/>
-                    <Tooltip/>
-                    <Bar dataKey="value" fill="#1976d2"/>
-                </BarChart>
-            </ResponsiveContainer>
+            Coming soon...
+            {/*<ResponsiveContainer>*/}
+            {/*    <BarChart data={data}>*/}
+            {/*        <XAxis dataKey="name"/>*/}
+            {/*        <YAxis/>*/}
+            {/*        <Tooltip/>*/}
+            {/*        <Bar dataKey="value" fill="#1976d2"/>*/}
+            {/*    </BarChart>*/}
+            {/*</ResponsiveContainer>*/}
         </div>
     );
 }
