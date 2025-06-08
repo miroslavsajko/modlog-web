@@ -1,6 +1,6 @@
 import {Box, Dialog, DialogContent, DialogTitle, Typography, useMediaQuery} from "@mui/material";
 import {ModLogEntry} from "../types/interfaces.ts";
-import {DataGrid, DataGridProps, GridColDef} from "@mui/x-data-grid";
+import {DataGrid, DataGridProps, GridColDef, GridPaginationModel} from "@mui/x-data-grid";
 import {modActions, modlogDetails} from "../types/translations.ts";
 import {convertDateTime} from "../util/dateTimeConverter.ts";
 import {useCallback, useEffect, useMemo, useState} from "react";
@@ -14,6 +14,11 @@ export default function ModlogEntriesDialog({postId, onCloseHandler}: Readonly<{
     const [fetchedModlogEntries, setFetchedModlogEntries] = useState<Record<string, ModLogEntry[] | null>>(
         {}
     );
+    const defaultPagination = useMemo(() => {
+        return {page: 0, pageSize: isTablet ? 5 : 10}
+    }, [isTablet]);
+    const [pagination, setPagination] = useState<GridPaginationModel>(defaultPagination);
+
     const data = useMemo(() => {
         if (postId === null) {
             return null;
@@ -26,14 +31,14 @@ export default function ModlogEntriesDialog({postId, onCloseHandler}: Readonly<{
             return;
         }
         const modEntries = await fetchModEntriesForPost(postId);
-        console.info('fetched')
+        setPagination(defaultPagination)
         setFetchedModlogEntries(prevState => {
             return {
                 ...prevState,
                 [postId]: modEntries,
             };
         })
-    }, [postId])
+    }, [defaultPagination, postId])
 
     useEffect(() => {
         fetchDialogModlogData()
@@ -52,7 +57,6 @@ export default function ModlogEntriesDialog({postId, onCloseHandler}: Readonly<{
                 headerAlign: 'center',
                 renderCell: params => {
                     const data: ModLogEntry = params.row;
-                    console.info(data)
                     return (<Box display="flex" flexDirection="column" sx={{
                         height: '100%',
                         justifyContent: 'center',
@@ -69,7 +73,7 @@ export default function ModlogEntriesDialog({postId, onCloseHandler}: Readonly<{
                             <Typography component="span">{modActions[data.action] ?? data.action}</Typography>
                         </Typography>
                         <Typography variant="caption" fontStyle="italic">
-                            {data.target ?? '--author--'}
+                            {data.target ?? data.author ?? ''}
                         </Typography>
                         <Typography variant="caption" color="text.secondary">
                             {convertDateTime(data.timestamp)}
@@ -148,10 +152,11 @@ export default function ModlogEntriesDialog({postId, onCloseHandler}: Readonly<{
             loading={!data}
             paginationMode={'client'}
             pageSizeOptions={[pageSize]}
-            paginationModel={{page: 0, pageSize: pageSize}}
+            paginationModel={pagination}
+            onPaginationModelChange={setPagination}
             disableRowSelectionOnClick
         />);
-    }, [columns, data, isTablet]);
+    }, [columns, data, isTablet, pagination]);
 
     return <Dialog open={postId !== null}
                    onClose={onCloseHandler}

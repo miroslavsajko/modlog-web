@@ -10,7 +10,7 @@ import {convertDateTime} from "../util/dateTimeConverter.ts";
 import {modActions, modlogDetails} from "../types/translations.ts";
 import {getUrlForModLogEntry} from "../util/util.ts";
 import OpenInNewOutlinedIcon from '@mui/icons-material/OpenInNewOutlined';
-import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+// import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 
 const defaultPagination: GridPaginationModel = {page: 0, pageSize: 20};
 
@@ -31,7 +31,7 @@ export default function ModlogPage() {
             filter: filter
         })
         setRowCount(data.page.totalElements);
-        setRows(data.posts);
+        setRows(data.entries);
         setLoading(false);
     }, [filter, pagination]);
 
@@ -82,7 +82,7 @@ export default function ModlogPage() {
                         <Typography component="span">{modActions[data.action] ?? data.action}</Typography>
                     </Typography>
                     <Typography variant="caption" fontStyle="italic">
-                        {data.target ?? '--author--'}
+                        {data.target ?? data.author ?? ''}
                     </Typography>
                     <Typography variant="caption" color="text.secondary" >
                         {convertDateTime(data.timestamp)}
@@ -148,7 +148,7 @@ export default function ModlogPage() {
             filterable: false,
             sortable: false,
             valueGetter: (_value, row: ModLogEntry) =>
-                row.target ?? '--author--'
+                row.target ?? row.author ?? ''
         }, {
             field: 'timestamp',
             headerName: 'Timestamp',

@@ -21,7 +21,7 @@ export interface PostsAPIResponse {
 }
 
 export interface ModlogAPIResponse {
-	posts: ModLogEntry[];
+	entries: ModLogEntry[];
 	page: Page;
 }
 
@@ -47,4 +47,5 @@ export type ModLogEntry = {
 	commentid?: string;
 	postid?: string;
 	target?: string;
+	author?: string;
 };
