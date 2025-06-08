@@ -149,6 +149,7 @@ export default function ModlogEntriesDialog({postId, onCloseHandler}: Readonly<{
             paginationMode={'client'}
             pageSizeOptions={[pageSize]}
             paginationModel={{page: 0, pageSize: pageSize}}
+            disableRowSelectionOnClick
         />);
     }, [columns, data, isTablet]);
 

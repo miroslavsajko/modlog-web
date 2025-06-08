@@ -140,10 +140,15 @@ export default function ModlogPage() {
             flex: 1,
             filterable: false,
             sortable: false,
-            valueGetter: (value, row:ModLogEntry) => {
-                const values = [modActions[value] ?? value, row.target];
-                return values.filter(a => a).join(' ')
-            }
+            valueGetter: (value) => modActions[value] ?? value
+        }, {
+            field: 'author',
+            headerName: 'Author/Target',
+            flex: 1,
+            filterable: false,
+            sortable: false,
+            valueGetter: (_value, row: ModLogEntry) =>
+                row.target ?? '--author--'
         }, {
             field: 'timestamp',
             headerName: 'Timestamp',
@@ -168,45 +173,45 @@ export default function ModlogPage() {
                 return values.filter(a => a).join(' - ')
             }
         }, {
-            field: 'details',
-            headerName: 'More',
-            width: 60,
-            filterable: false,
-            sortable: false,
-            align: 'center',
-            headerAlign: 'center',
-            resizable: false,
-            disableColumnMenu: true,
-            renderCell: params => {
-                const data: ModLogEntry = params.row;
-                if (data.postid) {
-                    return (<Box
-                        sx={{
-                            height: '100%',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                        }}
-                    >
-                        <Link
-                            gap={4}
-                            sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                color: 'inherit'
-                            }}
-                            onClick={() => {
-                                // TODO
-                            }}
-                        >
-                            <SearchOutlinedIcon fontSize="small"/>
-                        </Link>
-                    </Box>)
-                } else {
-                    return <></>
-                }
-            }
-        }, {
+            // field: 'details',
+            // headerName: 'More',
+            // width: 60,
+            // filterable: false,
+            // sortable: false,
+            // align: 'center',
+            // headerAlign: 'center',
+            // resizable: false,
+            // disableColumnMenu: true,
+            // renderCell: params => {
+            //     const data: ModLogEntry = params.row;
+            //     if (data.postid) {
+            //         return (<Box
+            //             sx={{
+            //                 height: '100%',
+            //                 display: 'flex',
+            //                 alignItems: 'center',
+            //                 justifyContent: 'center',
+            //             }}
+            //         >
+            //             <Link
+            //                 gap={4}
+            //                 sx={{
+            //                     display: 'flex',
+            //                     alignItems: 'center',
+            //                     color: 'inherit'
+            //                 }}
+            //                 onClick={() => {
+            //                     // TODO
+            //                 }}
+            //             >
+            //                 <SearchOutlinedIcon fontSize="small"/>
+            //             </Link>
+            //         </Box>)
+            //     } else {
+            //         return <></>
+            //     }
+            // }
+        // }, {
             field: 'link',
             headerName: 'Link',
             width: 60,
@@ -281,6 +286,7 @@ export default function ModlogPage() {
                 onPaginationModelChange={setPagination}
                 loading={loading}
                 pageSizeOptions={[10, 20, 40]}
+                disableRowSelectionOnClick
             />
         </Box>
     );
