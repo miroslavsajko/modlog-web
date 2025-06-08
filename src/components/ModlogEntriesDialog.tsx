@@ -101,7 +101,6 @@ export default function ModlogEntriesDialog({postId, onCloseHandler}: Readonly<{
                 flex: 3,
                 filterable: false,
                 sortable: false,
-                valueGetter: () => '--author--'
             }, {
                 field: 'timestamp',
                 headerName: 'Timestamp',
