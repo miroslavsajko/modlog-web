@@ -3,14 +3,41 @@ import {ModEntry, ModLogEntry} from "../types/interfaces.ts";
 import {DataGrid, DataGridProps, GridColDef} from "@mui/x-data-grid";
 import {modActions, modlogDetails} from "../types/translations.ts";
 import {convertDateTime} from "../util/dateTimeConverter.ts";
+import {useCallback, useEffect, useMemo, useState} from "react";
+import {fetchModEntriesForPost} from "../api/api.ts";
 
-export default function ModlogEntriesDialog({postId, data, onCloseHandler}: Readonly<{
+export default function ModlogEntriesDialog({postId, onCloseHandler}: Readonly<{
     postId: string | null,
-    data: ModEntry[] | null,
     onCloseHandler: () => void
 }>) {
-
     const isTablet = useMediaQuery('(max-width:800px)');
+    const [fetchedModlogEntries, setFetchedModlogEntries] = useState<Record<string, ModEntry[] | null>>(
+        {}
+    );
+    const data = useMemo(() => {
+        if (postId === null) {
+            return null;
+        }
+        return fetchedModlogEntries[postId];
+    }, [fetchedModlogEntries, postId]);
+
+    const fetchDialogModlogData = useCallback(async () => {
+        if (postId === null) {
+            return;
+        }
+        const modEntries = await fetchModEntriesForPost(postId);
+        console.info('fetched')
+        setFetchedModlogEntries(prevState => {
+            return {
+                ...prevState,
+                [postId]: modEntries,
+            };
+        })
+    }, [postId])
+
+    useEffect(() => {
+        fetchDialogModlogData()
+    }, [fetchDialogModlogData]);
 
     let columns: GridColDef[]
 
@@ -45,9 +72,9 @@ export default function ModlogEntriesDialog({postId, data, onCloseHandler}: Read
                             <Typography component="span" fontStyle="italic"> "{data.target}"</Typography> : <></>}
 
                     </Typography>
-                    {/*<Typography variant="caption" fontStyle="italic">*/}
-                    {/*    --author--*/}
-                    {/*</Typography>*/}
+                    <Typography variant="caption" fontStyle="italic">
+                        --author--
+                    </Typography>
                     <Typography variant="caption" color="text.secondary">
                         {convertDateTime(data.timestamp)}
                     </Typography>
@@ -58,20 +85,27 @@ export default function ModlogEntriesDialog({postId, data, onCloseHandler}: Read
         columns = [{
             field: 'mod',
             headerName: 'Mod',
-            flex: 1,
+            flex: 2,
             filterable: false,
             sortable: false,
         }, {
             field: 'action',
             headerName: 'Action',
-            flex: 1,
+            flex: 3,
             filterable: false,
             sortable: false,
             valueGetter: value => modActions[value] ?? value
         }, {
+           field: 'author',
+           headerName: 'Author',
+           flex: 3,
+           filterable: false,
+           sortable: false,
+           valueGetter: () => '--author--'
+        }, {
             field: 'timestamp',
             headerName: 'Timestamp',
-            flex: 1,
+            flex: 3,
             filterable: false,
             sortable: false,
             align: 'center',
@@ -80,7 +114,7 @@ export default function ModlogEntriesDialog({postId, data, onCloseHandler}: Read
         }, {
             field: 'description',
             headerName: 'Details',
-            flex: 2,
+            flex: 4,
             filterable: false,
             sortable: false,
             align: 'center',
@@ -115,15 +149,18 @@ export default function ModlogEntriesDialog({postId, data, onCloseHandler}: Read
                    maxWidth="lg">
         <DialogTitle>Mod actions</DialogTitle>
         <DialogContent>
-            <DataGrid   {...tabletDataGridProps}
-                        columns={columns}
-                        rows={data ?? undefined}
-                        getRowId={(row: ModEntry) => row.timestamp}
-                        loading={!data}
-                        paginationMode={'client'}
-                        pageSizeOptions={[pageSize]}
-                        paginationModel={{page: 0, pageSize: pageSize}}
-            />
+            <Box flex="1" minHeight="100">
+                <DataGrid
+                    {...tabletDataGridProps}
+                    columns={columns}
+                    rows={data ?? undefined}
+                    getRowId={(row: ModEntry) => row.timestamp}
+                    loading={!data}
+                    paginationMode={'client'}
+                    pageSizeOptions={[pageSize]}
+                    paginationModel={{page: 0, pageSize: pageSize}}
+                />
+            </Box>
         </DialogContent>
     </Dialog>
 }

@@ -12,8 +12,8 @@ import {
     GridColDef, GridPaginationModel,
     GridRenderCellParams,
 } from '@mui/x-data-grid';
-import {fetchModEntriesForPost, fetchPosts} from "../api/api.ts";
-import {ModEntry, Post} from "../types/interfaces.ts";
+import {fetchPosts} from "../api/api.ts";
+import {Post} from "../types/interfaces.ts";
 import {convertDateTime} from "../util/dateTimeConverter.ts";
 import {getUrlForPost} from "../util/util.ts";
 import OpenInNewOutlinedIcon from "@mui/icons-material/OpenInNewOutlined";
@@ -30,11 +30,8 @@ export default function PostsPage() {
     const [pagination, setPagination] = useState<GridPaginationModel>(defaultPagination);
     const [rowCount, setRowCount] = useState<number>(0);
     const isTablet = useMediaQuery('(max-width:800px)');
-
+    console.info('posts page')
     const [selectedPostId, setselectedPostId] = useState<string | null>(null);
-    const [fetchedModlogEntries, setFetchedModlogEntries] = useState<Record<string, ModEntry[] | null>>(
-        {}
-    );
 
     const handleClose = () => setselectedPostId(null);
 
@@ -49,26 +46,6 @@ export default function PostsPage() {
         setRows(data.posts);
         setLoading(false);
     }, [filter, pagination]);
-
-    const dialogModlogData = useMemo(() => {
-        if (selectedPostId === null) {
-            return null;
-        }
-        return fetchedModlogEntries[selectedPostId];
-    }, [fetchedModlogEntries, selectedPostId]);
-
-    const fetchDialogModlogData = useCallback(async () => {
-        if (selectedPostId === null) {
-            return;
-        }
-        const modEntries = await fetchModEntriesForPost(selectedPostId);
-        setFetchedModlogEntries(prevState => {
-            return {
-                ...prevState,
-                [selectedPostId]: modEntries,
-            };
-        })
-    }, [selectedPostId])
 
     const debouncedSetFilter = useMemo(
         () =>
@@ -87,9 +64,6 @@ export default function PostsPage() {
         fetchGridPostData()
     }, [fetchGridPostData]);
 
-    useEffect(() => {
-        fetchDialogModlogData()
-    }, [fetchDialogModlogData]);
 
     let columns: GridColDef[] = []
 
@@ -159,9 +133,6 @@ export default function PostsPage() {
                         }}
                     >
                         <Link
-                            // href={url}
-                            // target="_blank"
-                            // rel="noopener noreferrer"
                             marginRight={'8px'}
                             gap={4}
                             sx={{
@@ -250,7 +221,7 @@ export default function PostsPage() {
                 sortable: false,
                 align: 'center',
                 headerAlign: 'center'
-            },{
+            }, {
                 field: 'details',
                 headerName: 'More',
                 width: 60,
@@ -273,9 +244,6 @@ export default function PostsPage() {
                             }}
                         >
                             <Link
-                                // href={url}
-                                // target="_blank"
-                                // rel="noopener noreferrer"
                                 gap={4}
                                 sx={{
                                     display: 'flex',
@@ -293,7 +261,7 @@ export default function PostsPage() {
                         return <></>
                     }
                 }
-            },{
+            }, {
                 field: 'link',
                 headerName: 'Link',
                 width: 60,
@@ -336,6 +304,10 @@ export default function PostsPage() {
             }];
     }
 
+    const dialog = useMemo(() => {
+        return <ModlogEntriesDialog postId={selectedPostId} onCloseHandler={handleClose}/>
+    }, [selectedPostId]);
+
     const tabletDataGridProps: DataGridProps = {
         columns: []
     }
@@ -370,7 +342,7 @@ export default function PostsPage() {
                 pageSizeOptions={[10, 20, 40]}
                 disableRowSelectionOnClick
             />
-            <ModlogEntriesDialog postId={selectedPostId} data={dialogModlogData} onCloseHandler={handleClose}/>
+            {dialog}
         </Box>
     );
 }
