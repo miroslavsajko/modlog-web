@@ -7,7 +7,7 @@ export const modActions: Translation = {
     addremovalreason: 'added a removal reason',
     approvecomment: 'approved a comment',
     approvelink: 'approved a post',
-    banuser: 'banned a user',
+    banuser: 'banned user',
     community_welcome_page: 'edited the community welcome page',
     community_widgets: 'edited the community widgets',
     distinguish: 'distinguished a post or comment',

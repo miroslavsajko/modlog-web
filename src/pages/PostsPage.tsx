@@ -233,33 +233,28 @@ export default function PostsPage() {
                 disableColumnMenu: true,
                 renderCell: params => {
                     const data: Post = params.row;
-                    const url = getUrlForPost(data.postid);
-                    if (url) {
-                        return (<Box
+                    return (<Box
+                        sx={{
+                            height: '100%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        <Link
+                            gap={4}
                             sx={{
-                                height: '100%',
                                 display: 'flex',
                                 alignItems: 'center',
-                                justifyContent: 'center',
+                                color: 'inherit'
+                            }}
+                            onClick={() => {
+                                setselectedPostId(data.postid)
                             }}
                         >
-                            <Link
-                                gap={4}
-                                sx={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    color: 'inherit'
-                                }}
-                                onClick={() => {
-                                    setselectedPostId(data.postid)
-                                }}
-                            >
-                                <SearchOutlinedIcon fontSize="small"/>
-                            </Link>
-                        </Box>)
-                    } else {
-                        return <></>
-                    }
+                            <SearchOutlinedIcon fontSize="small"/>
+                        </Link>
+                    </Box>)
                 }
             }, {
                 field: 'link',

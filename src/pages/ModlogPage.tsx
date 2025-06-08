@@ -10,6 +10,7 @@ import {convertDateTime} from "../util/dateTimeConverter.ts";
 import {modActions, modlogDetails} from "../types/translations.ts";
 import {getUrlForModLogEntry} from "../util/util.ts";
 import OpenInNewOutlinedIcon from '@mui/icons-material/OpenInNewOutlined';
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 
 const defaultPagination: GridPaginationModel = {page: 0, pageSize: 20};
 
@@ -141,7 +142,10 @@ export default function ModlogPage() {
             flex: 1,
             filterable: false,
             sortable: false,
-            valueGetter: value => modActions[value] ?? value
+            valueGetter: (value, row:ModLogEntry) => {
+                const values = [modActions[value] ?? value, row.target];
+                return values.filter(a => a).join(' ')
+            }
         }, {
             field: 'timestamp',
             headerName: 'Timestamp',
@@ -162,34 +166,87 @@ export default function ModlogPage() {
             valueGetter: (_value, row: ModLogEntry) => {
                 const description = row.description;
                 const details = modlogDetails[row.details] ?? row.details;
-                let middle = ''
-                if (description.length > 0 && details.length > 0) {
-                    middle = ' - '
-                }
-                return `${description}${middle}${details}`;
+                const values = [description, details]
+                return values.filter(a => a).join(' - ')
             }
         }, {
-            field: 'target',
-            headerName: 'Link',
-            flex: 1,
+            field: 'details',
+            headerName: 'More',
+            width: 60,
             filterable: false,
             sortable: false,
             align: 'center',
             headerAlign: 'center',
+            resizable: false,
+            disableColumnMenu: true,
+            renderCell: params => {
+                const data: ModLogEntry = params.row;
+                if (data.postid) {
+                    return (<Box
+                        sx={{
+                            height: '100%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        <Link
+                            gap={4}
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                color: 'inherit'
+                            }}
+                            onClick={() => {
+                                // TODO
+                            }}
+                        >
+                            <SearchOutlinedIcon fontSize="small"/>
+                        </Link>
+                    </Box>)
+                } else {
+                    return <></>
+                }
+            }
+        }, {
+            field: 'link',
+            headerName: 'Link',
+            width: 60,
+            filterable: false,
+            sortable: false,
+            align: 'center',
+            headerAlign: 'center',
+            resizable: false,
+            disableColumnMenu: true,
             renderCell: params => {
                 const data: ModLogEntry = params.row;
                 const url = getUrlForModLogEntry(data);
-                if (data.target) {
-                    return (<Link href={url} target="_blank" rel="noopener noreferrer">{data.target}</Link>)
+                if (url) {
+                    return (<Box
+                        sx={{
+                            height: '100%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        <Link
+                            href={url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            gap={4}
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                color: 'inherit'
+                            }}
+                        >
+                            <OpenInNewOutlinedIcon fontSize="small"/>
+                        </Link>
+                    </Box>)
+                } else {
+                    return <></>
                 }
-                if (data.postid && data.commentid) {
-                    return (<Link
-                        href={url} target="_blank" rel="noopener noreferrer">Comment Link</Link>)
-                }
-                if (data.postid) {
-                    return (<Link href={url} target="_blank" rel="noopener noreferrer">Post Link</Link>)
-                }
-                return ''
             }
         }];
     }
