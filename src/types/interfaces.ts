@@ -49,3 +49,8 @@ export type ModLogEntry = {
 	target?: string;
 	author?: string;
 };
+
+export interface ChartData {
+	mod: string,
+	[key: string]: string
+}

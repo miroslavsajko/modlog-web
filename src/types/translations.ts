@@ -31,6 +31,37 @@ export const modActions: Translation = {
     wikirevise: 'revised a wiki page',
 };
 
+export const modActionColors: Record<string, string> = {
+    acceptmoderatorinvite: '#3366CC',
+    addcontributor: '#DC3912',
+    addremovalreason: '#FF9900',
+    approvecomment: '#109618',
+    approvelink: '#990099',
+    banuser: '#0099C6',
+    community_welcome_page: '#DD4477',
+    community_widgets: '#66AA00',
+    distinguish: '#B82E2E',
+    editflair: '#316395',
+    editsettings: '#994499',
+    ignorereports: '#22AA99',
+    invitemoderator: '#AAAA11',
+    lock: '#6633CC',
+    marknsfw: '#E67300',
+    muteuser: '#8B0707',
+    removecomment: '#329262',
+    removelink: '#CD486B',
+    spamcomment: '#FF5722',
+    spamlink: '#607D8B',
+    sticky: '#9C27B0',
+    submit_scheduled_post: '#3F51B5',
+    unbanuser: '#00BCD4',
+    unlock: '#4CAF50',
+    unsticky: '#795548',
+    wikipagelisted: '#FFC107',
+    wikirevise: '#8BC34A'
+};
+
+
 export const modlogDetails: Translation  = {
     confirm_ham: 'Not spam',
     unspam: 'Not spam',

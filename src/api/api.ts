@@ -1,5 +1,5 @@
 import axios from "axios";
-import {ModEntriesAPIResponse, ModlogAPIResponse, PostsAPIResponse} from "../types/interfaces.ts";
+import {ChartData, ModEntriesAPIResponse, ModlogAPIResponse, PostsAPIResponse} from "../types/interfaces.ts";
 export const API_URL: string = import.meta.env.VITE_API_URL;
 const DEBUG_MODE = import.meta.env.VITE_IS_DEV ?? 0;
 
@@ -63,6 +63,22 @@ export const fetchModEntriesForPost = async (postId: string) => {
 	
 	return await axios.get<ModEntriesAPIResponse>(modEntriesApiUrl).then(response =>
 		response.data.modEntries
+	);
+}
+
+export const fetchChartData = async (period:string) => {
+	const baseUrl = new URL(`${API_URL}/charts/actions`);
+	const urlSearchParams = new URLSearchParams();
+	urlSearchParams.set('period', period)
+	baseUrl.search = urlSearchParams.toString()
+
+	const chartActionsUrl = baseUrl.toString();
+
+	if (DEBUG_MODE)
+		console.info(chartActionsUrl);
+
+	return await axios.get<ChartData[]>(chartActionsUrl).then(response =>
+		response.data
 	);
 }
 
