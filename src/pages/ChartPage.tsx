@@ -1,6 +1,5 @@
 import {
     Accordion, AccordionDetails, AccordionSummary,
-    Box,
     Checkbox,
     FormControl, FormControlLabel, FormGroup,
     InputLabel,
@@ -48,23 +47,23 @@ export default function ChartPage() {
     const totalPerMod = useMemo(() => {
         return barData
             .map((data) => {
-            return {
-                mod: data.mod,
-                total: Object.entries(data).reduce((previousValue, currentValue) => {
-                    if (!selectedModActionFilters[currentValue[0]]) {
-                        // if filtered out, do not count it
-                        return previousValue
-                    }
-                    const numericalCurrentValue = Number(currentValue[1]);
-                    return previousValue + (isNaN(numericalCurrentValue) ? 0 : numericalCurrentValue)
-                }, 0)
-            }
-        }).sort((a, b) => {
-            if (a.total < b.total) return 1
-            if (a.total > b.total) return -1
-            return 0
-        })
-    }, [barData]);
+                return {
+                    mod: data.mod,
+                    total: Object.entries(data).reduce((previousValue, currentValue) => {
+                        if (!selectedModActionFilters[currentValue[0]]) {
+                            // if filtered out, do not count it
+                            return previousValue
+                        }
+                        const numericalCurrentValue = Number(currentValue[1]);
+                        return previousValue + (isNaN(numericalCurrentValue) ? 0 : numericalCurrentValue)
+                    }, 0)
+                }
+            }).sort((a, b) => {
+                if (a.total < b.total) return 1
+                if (a.total > b.total) return -1
+                return 0
+            })
+    }, [barData, selectedModActionFilters]);
 
     const calcMaxDomain = useMemo(() => {
         if (totalPerMod.length === 0) {
@@ -134,7 +133,7 @@ export default function ChartPage() {
 
     return (
         <>
-            <FormControl sx={{mb: 4, minWidth: 200}}>
+            <FormControl sx={{minWidth: 200}}>
                 <InputLabel id="action-select-label">Timeframe</InputLabel>
                 <Select
                     labelId="action-select-label"
@@ -149,8 +148,8 @@ export default function ChartPage() {
                 </Select>
             </FormControl>
 
-            <Typography variant="subtitle1" sx={{mt: 4, mb: 1}}>
-                Total Actions Per Moderator
+            <Typography variant="h6" sx={{mt: 2, mb: 2}}>
+                Actions Per Moderator
             </Typography>
             <ResponsiveContainer width="100%" height={500}>
                 <BarChart layout="vertical" data={barData}>
@@ -162,52 +161,50 @@ export default function ChartPage() {
                     {bars}
                 </BarChart>
             </ResponsiveContainer>
-            <Box sx={{/*maxHeight: 400,*/ overflow: 'auto', p: 2}}>
-                <Typography variant="h6" gutterBottom>
-                    Filter by Mod Action
-                </Typography>
-                <FormGroup>
-                    {getModActionCategories().map((category: Category) => {
-                        const modActionsForCategory = getModActionsForCategory(category);
-                        if (modActionsForCategory.length === 0) return <></>
+            <Typography variant="h6" sx={{mt: 2, mb: 2}}>
+                Filter by Mod Action
+            </Typography>
+            <FormGroup>
+                {getModActionCategories().map((category: Category) => {
+                    const modActionsForCategory = getModActionsForCategory(category);
+                    if (modActionsForCategory.length === 0) return <></>
 
-                        return <Accordion key={'accordion-' + category}>
-                            <AccordionSummary
-                                expandIcon={<ExpandMoreIcon/>}
-                                aria-controls={category + "-content"}
-                                id={category + "-header"}
-                            >
-                                <Typography component="span">{getCategoryLabel(category)}</Typography>
-                            </AccordionSummary>
-                            <AccordionDetails sx={{
-                                display: 'flex',
-                                flexDirection: isTablet ? 'column' : 'row',
-                                overflowX: 'auto',
-                                p: 2,
-                                whiteSpace: 'nowrap',
-                            }}>
-                                {modActionsForCategory.map((modAction) => {
-                                    const color = getModActionColor(modAction)
-                                    return (
-                                        <FormControlLabel
-                                            key={modAction}
-                                            control={
-                                                <Checkbox
-                                                    checked={selectedModActionFilters[modAction]}
-                                                    onChange={() => handleChange(modAction)}
-                                                    sx={{color, '&.Mui-checked': {color}}}
-                                                />
-                                            }
-                                            label={getModActionLabel(modAction)}
-                                            sx={{flex: '0 0 auto'}} // prevent shrinking
-                                        />
-                                    )
-                                })}
-                            </AccordionDetails>
-                        </Accordion>
-                    })}
-                </FormGroup>
-            </Box>
+                    return <Accordion key={'accordion-' + category}>
+                        <AccordionSummary
+                            expandIcon={<ExpandMoreIcon/>}
+                            aria-controls={category + "-content"}
+                            id={category + "-header"}
+                        >
+                            <Typography component="span">{getCategoryLabel(category)}</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails sx={{
+                            display: 'flex',
+                            flexDirection: isTablet ? 'column' : 'row',
+                            overflowX: 'auto',
+                            p: 2,
+                            whiteSpace: 'nowrap',
+                        }}>
+                            {modActionsForCategory.map((modAction) => {
+                                const color = getModActionColor(modAction)
+                                return (
+                                    <FormControlLabel
+                                        key={modAction}
+                                        control={
+                                            <Checkbox
+                                                checked={selectedModActionFilters[modAction]}
+                                                onChange={() => handleChange(modAction)}
+                                                sx={{color, '&.Mui-checked': {color}}}
+                                            />
+                                        }
+                                        label={getModActionLabel(modAction)}
+                                        sx={{flex: '0 0 auto'}} // prevent shrinking
+                                    />
+                                )
+                            })}
+                        </AccordionDetails>
+                    </Accordion>
+                })}
+            </FormGroup>
         </>
     );
 }
