@@ -1,7 +1,7 @@
 import {Box, Dialog, DialogContent, DialogTitle, Typography, useMediaQuery} from "@mui/material";
 import {ModLogEntry} from "../types/interfaces.ts";
 import {DataGrid, DataGridProps, GridColDef, GridPaginationModel} from "@mui/x-data-grid";
-import {modActions, modlogDetails} from "../types/translations.ts";
+import {getModActionLabel, modlogDetails} from "../types/translations.ts";
 import {convertDateTime} from "../util/dateTimeConverter.ts";
 import {useCallback, useEffect, useMemo, useState} from "react";
 import {fetchModEntriesForPost} from "../api/api.ts";
@@ -70,7 +70,7 @@ export default function ModlogEntriesDialog({postId, onCloseHandler}: Readonly<{
                         }}>
                             <Typography component="span" fontWeight="bold">{data.mod}</Typography>
                             {' '}
-                            <Typography component="span">{modActions[data.action] ?? data.action}</Typography>
+                            <Typography component="span">{getModActionLabel(data.action)}</Typography>
                         </Typography>
                         <Typography variant="caption" fontStyle="italic">
                             {data.target ?? data.author ?? ''}
@@ -94,7 +94,7 @@ export default function ModlogEntriesDialog({postId, onCloseHandler}: Readonly<{
                 flex: 3,
                 filterable: false,
                 sortable: false,
-                valueGetter: value => modActions[value] ?? value
+                valueGetter: value => getModActionLabel(value)
             }, {
                 field: 'author',
                 headerName: 'Author',

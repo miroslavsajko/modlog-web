@@ -1,68 +1,75 @@
-type Translation = {
-    [key: string]: string;
-};
-export const modActions: Translation = {
-    acceptmoderatorinvite: 'accepted moderator invite',
-    addcontributor: 'added a contributor',
-    addremovalreason: 'added a removal reason',
-    approvecomment: 'approved a comment',
-    approvelink: 'approved a post',
-    banuser: 'banned user',
-    community_welcome_page: 'edited the community welcome page',
-    community_widgets: 'edited the community widgets',
-    distinguish: 'distinguished a post or comment',
-    editflair: 'edited post flair',
-    editsettings: 'changed community settings',
-    ignorereports: 'ignored reports',
-    invitemoderator: 'invited a moderator',
-    lock: 'locked a post',
-    marknsfw: 'marked as nsfw',
-    muteuser: 'muted a user',
-    removecomment: 'removed a comment',
-    removelink: 'removed a post',
-    spamcomment: 'marked a comment as spam',
-    spamlink: 'marked a post as spam',
-    sticky: 'stickied a post or comment',
-    submit_scheduled_post: 'submitted a scheduled post',
-    unbanuser: 'unbanned a user',
-    unlock: 'unlocked a post or comment',
-    unsticky: 'unstickied a post or comment',
-    wikipagelisted: 'listed a wiki page',
-    wikirevise: 'revised a wiki page',
+export function getModActionLabel(modAction: string): string {
+    return modActions[modAction]?.label ?? modAction
+}
+
+export function getModActionColor(modAction: string): string {
+    return modActions[modAction]?.color ?? '#DDDDDD'
+}
+
+export function getModActionsForCategory(category: Category): string[] {
+    return Object.entries(modActions)
+        // entry[1] == value
+        .filter((entry) => entry[1].category === category)
+        // entry[0] == key
+        .map((entry) => entry[0])
+}
+
+export function getModActions(): string[] {
+    return Object.keys(modActions)
+}
+
+export function getModActionCategories(): Category[] {
+    return Object.values(categoryValues)
+}
+
+export function getCategoryLabel(category:Category): string {
+    return categoryLabels[category] ?? category
+}
+
+const categoryValues = [
+    'GENERAL',
+    'POST_OR_COMMENT',
+    'POST',
+    'COMMENT',
+    'USER',
+    'SUBREDDIT',
+    'MODERATOR',
+    'WIKI',
+] as const;
+
+export type Category = typeof categoryValues[number];
+
+const modActions: Record<string, { label: string; color: string; category: Category }> = {
+    acceptmoderatorinvite: {label: 'accepted moderator invite', color: '#3366CC', category: 'MODERATOR'},
+    addcontributor: {label: 'added a contributor', color: '#DC3912', category: 'MODERATOR'},
+    addremovalreason: {label: 'added a removal reason', color: '#FF9900', category: 'POST_OR_COMMENT'},
+    approvecomment: {label: 'approved a comment', color: '#109618', category: 'COMMENT'},
+    approvelink: {label: 'approved a post', color: '#990099', category: 'POST'},
+    banuser: {label: 'banned user', color: '#0099C6', category: 'USER'},
+    community_welcome_page: {label: 'edited the community welcome page', color: '#DD4477', category: 'SUBREDDIT'},
+    community_widgets: {label: 'edited the community widgets', color: '#66AA00', category: 'SUBREDDIT'},
+    distinguish: {label: 'distinguished a post or comment', color: '#B82E2E', category: 'POST_OR_COMMENT'},
+    editflair: {label: 'edited post flair', color: '#316395', category: 'MODERATOR'},
+    editsettings: {label: 'changed community settings', color: '#994499', category: 'SUBREDDIT'},
+    ignorereports: {label: 'ignored reports', color: '#22AA99', category: 'POST_OR_COMMENT'},
+    invitemoderator: {label: 'invited a moderator', color: '#AAAA11', category: 'MODERATOR'},
+    lock: {label: 'locked a post or comment', color: '#6633CC', category: 'POST_OR_COMMENT'},
+    marknsfw: {label: 'marked as nsfw', color: '#E67300', category: 'POST'},
+    muteuser: {label: 'muted a user', color: '#8B0707', category: 'USER'},
+    removecomment: {label: 'removed a comment', color: '#329262', category: 'COMMENT'},
+    removelink: {label: 'removed a post', color: '#CD486B', category: 'POST'},
+    spamcomment: {label: 'marked a comment as spam', color: '#FF5722', category: 'COMMENT'},
+    spamlink: {label: 'marked a post as spam', color: '#607D8B', category: 'POST'},
+    sticky: {label: 'stickied a post', color: '#9C27B0', category: 'POST'},
+    submit_scheduled_post: {label: 'submitted a scheduled post', color: '#3F51B5', category: 'SUBREDDIT'},
+    unbanuser: {label: 'unbanned a user', color: '#00BCD4', category: 'USER'},
+    unlock: {label: 'unlocked a post or comment', color: '#4CAF50', category: 'POST_OR_COMMENT'},
+    unsticky: {label: 'unstickied a post', color: '#795548', category: 'POST'},
+    wikipagelisted: {label: 'listed a wiki page', color: '#FFC107', category: 'WIKI'},
+    wikirevise: {label: 'revised a wiki page', color: '#8BC34A', category: 'WIKI'},
 };
 
-export const modActionColors: Record<string, string> = {
-    acceptmoderatorinvite: '#3366CC',
-    addcontributor: '#DC3912',
-    addremovalreason: '#FF9900',
-    approvecomment: '#109618',
-    approvelink: '#990099',
-    banuser: '#0099C6',
-    community_welcome_page: '#DD4477',
-    community_widgets: '#66AA00',
-    distinguish: '#B82E2E',
-    editflair: '#316395',
-    editsettings: '#994499',
-    ignorereports: '#22AA99',
-    invitemoderator: '#AAAA11',
-    lock: '#6633CC',
-    marknsfw: '#E67300',
-    muteuser: '#8B0707',
-    removecomment: '#329262',
-    removelink: '#CD486B',
-    spamcomment: '#FF5722',
-    spamlink: '#607D8B',
-    sticky: '#9C27B0',
-    submit_scheduled_post: '#3F51B5',
-    unbanuser: '#00BCD4',
-    unlock: '#4CAF50',
-    unsticky: '#795548',
-    wikipagelisted: '#FFC107',
-    wikirevise: '#8BC34A'
-};
-
-
-export const modlogDetails: Translation  = {
+export const modlogDetails: Record<string, string>  = {
     confirm_ham: 'Not spam',
     unspam: 'Not spam',
     remove: 'Remove',
@@ -85,4 +92,15 @@ export const modlogDetails: Translation  = {
     9: '',
     10: '',
     11: '',
+}
+
+const categoryLabels: Record<Category,string> = {
+    'GENERAL': 'General',
+    'POST_OR_COMMENT': 'Post&Comment',
+    'POST': 'Post',
+    'COMMENT': 'Comment',
+    'USER': 'User',
+    'SUBREDDIT': 'Subreddit',
+    'MODERATOR': 'Moderator',
+    'WIKI': 'Wiki',
 }

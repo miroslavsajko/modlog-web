@@ -7,10 +7,9 @@ import {
 import {fetchModEntries} from "../api/api.ts";
 import {ModLogEntry} from "../types/interfaces.ts";
 import {convertDateTime} from "../util/dateTimeConverter.ts";
-import {modActions, modlogDetails} from "../types/translations.ts";
+import {getModActionLabel, modlogDetails} from "../types/translations.ts";
 import {getUrlForModLogEntry} from "../util/util.ts";
 import OpenInNewOutlinedIcon from '@mui/icons-material/OpenInNewOutlined';
-// import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 
 const defaultPagination: GridPaginationModel = {page: 0, pageSize: 20};
 
@@ -79,7 +78,7 @@ export default function ModlogPage() {
                     }}>
                         <Typography component="span" fontWeight="bold">{data.mod}</Typography>
                         {' '}
-                        <Typography component="span">{modActions[data.action] ?? data.action}</Typography>
+                        <Typography component="span">{getModActionLabel(data.action)}</Typography>
                     </Typography>
                     <Typography variant="caption" fontStyle="italic">
                         {data.target ?? data.author ?? ''}
@@ -140,7 +139,7 @@ export default function ModlogPage() {
             flex: 1,
             filterable: false,
             sortable: false,
-            valueGetter: (value) => modActions[value] ?? value
+            valueGetter: (value) => getModActionLabel(value)
         }, {
             field: 'author',
             headerName: 'Author/Target',

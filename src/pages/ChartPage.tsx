@@ -1,5 +1,8 @@
 import {
-    FormControl,
+    Accordion, AccordionDetails, AccordionSummary,
+    Box,
+    Checkbox,
+    FormControl, FormControlLabel, FormGroup,
     InputLabel,
     MenuItem,
     Select,
@@ -17,24 +20,46 @@ import {
 } from 'recharts';
 import {fetchChartData} from "../api/api.ts";
 import {ChartData} from "../types/interfaces.ts";
-import {modActionColors, modActions} from "../types/translations.ts";
 import {Props} from "recharts/types/component/Label";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import {
+    Category, getCategoryLabel,
+    getModActionCategories,
+    getModActionColor,
+    getModActionLabel,
+    getModActions, getModActionsForCategory
+} from "../types/translations.ts";
 
 export default function ChartPage() {
     const [barData, setBarData] = useState<ChartData[]>([]);
     const [period, setPeriod] = useState<string>('7d')
     const isTablet = useMediaQuery('(max-width:800px)');
+    const [selectedModActionFilters, setSelectedModActionFilters] = useState<Record<string, boolean>>(
+        Object.fromEntries(getModActions().map((modAction) => [modAction, true]))
+    );
+
+    const handleChange = (key: string) => {
+        setSelectedModActionFilters((prev) => ({
+            ...prev,
+            [key]: !prev[key],
+        }));
+    };
 
     const totalPerMod = useMemo(() => {
-        return barData.map((data) => {
+        return barData
+            .map((data) => {
             return {
                 mod: data.mod,
-                total: Object.values(data).reduce((previousValue, currentValue) => {
-                    const numericalCurrentValue = Number(currentValue);
+                total: Object.entries(data).reduce((previousValue, currentValue) => {
+                    if (!selectedModActionFilters[currentValue[0]]) {
+                        // if filtered out, do not count it
+                        return previousValue
+                    }
+                    const numericalCurrentValue = Number(currentValue[1]);
                     return previousValue + (isNaN(numericalCurrentValue) ? 0 : numericalCurrentValue)
                 }, 0)
             }
-        }).sort((a,b) => {
+        }).sort((a, b) => {
             if (a.total < b.total) return 1
             if (a.total > b.total) return -1
             return 0
@@ -53,12 +78,12 @@ export default function ChartPage() {
     }, [totalPerMod]);
 
     // Custom label renderer
-    const dynamicPositionLabel = useCallback((props:Props) => {
+    const dynamicPositionLabel = useCallback((props: Props) => {
         const x = Number(props.x)
         const y = Number(props.y)
         const width = Number(props.width)
         const height = Number(props.height)
-        const total = totalPerMod.find((val)=> val.mod === props.value)?.total ?? 0;
+        const total = totalPerMod.find((val) => val.mod === props.value)?.total ?? 0;
         const percent = total / calcMaxDomain;
 
         const isLarge = percent > 0.75;
@@ -93,15 +118,15 @@ export default function ChartPage() {
         actionNames.delete('mod')
 
         return Array.from(actionNames.values()).sort((a, b) => -a.localeCompare(b))
-            .map((value, index, arr) => (
-                // (hiddenActions.includes(value) ? <></> :
-                    <Bar key={'bar' + index} dataKey={value} name={modActions[value]} stackId="a"
-                         fill={modActionColors[value]}>
-                        {index === arr.length - 1 ?
-                            <LabelList dataKey="mod"  content={dynamicPositionLabel}/> : <></>}
-                    </Bar>)
+            .filter(modAction => selectedModActionFilters[modAction])
+            .map((modAction, index, arr) => (
+                <Bar key={'bar' + index} dataKey={modAction} name={getModActionLabel(modAction)} stackId="a"
+                     fill={getModActionColor(modAction)}>
+                    {index === arr.length - 1 ?
+                        <LabelList dataKey="mod" content={dynamicPositionLabel}/> : <></>}
+                </Bar>)
             )
-    }, [barData, dynamicPositionLabel]);
+    }, [barData, dynamicPositionLabel, selectedModActionFilters]);
 
     const handleActionChange = (event: SelectChangeEvent) => {
         setPeriod(event.target.value);
@@ -129,9 +154,7 @@ export default function ChartPage() {
             </Typography>
             <ResponsiveContainer width="100%" height={500}>
                 <BarChart layout="vertical" data={barData}>
-                    <XAxis type="number"
-                           // domain={[() => 0, (dataMax: number) => Math.ceil((dataMax * 1.25) / 200) * 200]}
-                    />
+                    <XAxis type="number"/>
                     <YAxis dataKey="mod" type="category" width={0}/>
                     <Tooltip
                         labelStyle={{color: 'black', textDecoration: 'underline'}}
@@ -139,6 +162,52 @@ export default function ChartPage() {
                     {bars}
                 </BarChart>
             </ResponsiveContainer>
+            <Box sx={{/*maxHeight: 400,*/ overflow: 'auto', p: 2}}>
+                <Typography variant="h6" gutterBottom>
+                    Filter by Mod Action
+                </Typography>
+                <FormGroup>
+                    {getModActionCategories().map((category: Category) => {
+                        const modActionsForCategory = getModActionsForCategory(category);
+                        if (modActionsForCategory.length === 0) return <></>
+
+                        return <Accordion key={'accordion-' + category}>
+                            <AccordionSummary
+                                expandIcon={<ExpandMoreIcon/>}
+                                aria-controls={category + "-content"}
+                                id={category + "-header"}
+                            >
+                                <Typography component="span">{getCategoryLabel(category)}</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails sx={{
+                                display: 'flex',
+                                flexDirection: isTablet ? 'column' : 'row',
+                                overflowX: 'auto',
+                                p: 2,
+                                whiteSpace: 'nowrap',
+                            }}>
+                                {modActionsForCategory.map((modAction) => {
+                                    const color = getModActionColor(modAction)
+                                    return (
+                                        <FormControlLabel
+                                            key={modAction}
+                                            control={
+                                                <Checkbox
+                                                    checked={selectedModActionFilters[modAction]}
+                                                    onChange={() => handleChange(modAction)}
+                                                    sx={{color, '&.Mui-checked': {color}}}
+                                                />
+                                            }
+                                            label={getModActionLabel(modAction)}
+                                            sx={{flex: '0 0 auto'}} // prevent shrinking
+                                        />
+                                    )
+                                })}
+                            </AccordionDetails>
+                        </Accordion>
+                    })}
+                </FormGroup>
+            </Box>
         </>
     );
 }
