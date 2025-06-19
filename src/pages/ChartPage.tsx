@@ -22,9 +22,9 @@ import {ChartData} from "../types/interfaces.ts";
 import {Props} from "recharts/types/component/Label";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
-    Category, getCategoryLabel,
-    getModActionCategories,
-    getModActionColor,
+    Group, getGroupLabel,
+    getModActionGroups,
+    getModActionChartColor,
     getModActionLabel,
     getModActions, getModActionsForCategory
 } from "../types/translations.ts";
@@ -120,7 +120,7 @@ export default function ChartPage() {
             .filter(modAction => selectedModActionFilters[modAction])
             .map((modAction, index, arr) => (
                 <Bar key={'bar' + index} dataKey={modAction} name={getModActionLabel(modAction)} stackId="a"
-                     fill={getModActionColor(modAction)}>
+                     fill={getModActionChartColor(modAction)}>
                     {index === arr.length - 1 ?
                         <LabelList dataKey="mod" content={dynamicPositionLabel}/> : <></>}
                 </Bar>)
@@ -165,7 +165,7 @@ export default function ChartPage() {
                 Filter by Mod Action
             </Typography>
             <FormGroup>
-                {getModActionCategories().map((category: Category) => {
+                {getModActionGroups().map((category: Group) => {
                     const modActionsForCategory = getModActionsForCategory(category);
                     if (modActionsForCategory.length === 0) return <></>
 
@@ -175,7 +175,7 @@ export default function ChartPage() {
                             aria-controls={category + "-content"}
                             id={category + "-header"}
                         >
-                            <Typography component="span">{getCategoryLabel(category)}</Typography>
+                            <Typography component="span">{getGroupLabel(category)}</Typography>
                         </AccordionSummary>
                         <AccordionDetails sx={{
                             display: 'flex',
@@ -185,7 +185,7 @@ export default function ChartPage() {
                             whiteSpace: 'nowrap',
                         }}>
                             {modActionsForCategory.map((modAction) => {
-                                const color = getModActionColor(modAction)
+                                const color = getModActionChartColor(modAction)
                                 return (
                                     <FormControlLabel
                                         key={modAction}

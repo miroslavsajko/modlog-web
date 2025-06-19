@@ -1,7 +1,7 @@
 import {Box, Dialog, DialogContent, DialogTitle, Typography, useMediaQuery} from "@mui/material";
 import {ModLogEntry} from "../types/interfaces.ts";
 import {DataGrid, DataGridProps, GridColDef, GridPaginationModel} from "@mui/x-data-grid";
-import {getModActionLabel, modlogDetails} from "../types/translations.ts";
+import {getModActionDetailLabel, getModActionLabel} from "../types/translations.ts";
 import {convertDateTime} from "../util/dateTimeConverter.ts";
 import {useCallback, useEffect, useMemo, useState} from "react";
 import {fetchModEntriesForPost} from "../api/api.ts";
@@ -120,7 +120,7 @@ export default function ModlogEntriesDialog({postId, onCloseHandler}: Readonly<{
                 headerAlign: 'center',
                 valueGetter: (_value, row: ModLogEntry) => {
                     const description = row.description;
-                    const details = modlogDetails[row.details] ?? row.details;
+                    const details = getModActionDetailLabel(row.details);
                     let middle = ''
                     if (description.length > 0 && details.length > 0) {
                         middle = ' - '

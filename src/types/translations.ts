@@ -2,14 +2,14 @@ export function getModActionLabel(modAction: string): string {
     return modActions[modAction]?.label ?? modAction
 }
 
-export function getModActionColor(modAction: string): string {
-    return modActions[modAction]?.color ?? '#DDDDDD'
+export function getModActionChartColor(modAction: string): string {
+    return modActions[modAction]?.chartColor ?? '#DDDDDD'
 }
 
-export function getModActionsForCategory(category: Category): string[] {
+export function getModActionsForCategory(group: Group): string[] {
     return Object.entries(modActions)
         // entry[1] == value
-        .filter((entry) => entry[1].category === category)
+        .filter((entry) => entry[1].group === group)
         // entry[0] == key
         .map((entry) => entry[0])
 }
@@ -18,15 +18,26 @@ export function getModActions(): string[] {
     return Object.keys(modActions)
 }
 
-export function getModActionCategories(): Category[] {
-    return Object.values(categoryValues)
+export function getModActionGroups(): Group[] {
+    return Object.values(groups)
 }
 
-export function getCategoryLabel(category:Category): string {
-    return categoryLabels[category] ?? category
+export function getGroupLabel(group: Group): string {
+    return groupLabels[group] ?? group
 }
 
-const categoryValues = [
+export function getModActionCategoryColor(modAction: string): string {
+    return categoryColors[modActions[modAction]?.category] ?? 'grey'
+}
+
+export function getModActionDetailLabel(modActionDetail: string, modActionDescription: string) : string {
+    if (modActionDescription?.length > 1) return modActionDescription
+    const resolvedModlogDetail = modlogDetails[modActionDetail];
+    if (resolvedModlogDetail?.length > 0) return resolvedModlogDetail
+    return modActionDetail
+}
+
+const groups = [
     'GENERAL',
     'POST_OR_COMMENT',
     'POST',
@@ -37,39 +48,73 @@ const categoryValues = [
     'WIKI',
 ] as const;
 
-export type Category = typeof categoryValues[number];
+export type Group = typeof groups[number];
 
-const modActions: Record<string, { label: string; color: string; category: Category }> = {
-    acceptmoderatorinvite: {label: 'accepted moderator invite', color: '#3366CC', category: 'MODERATOR'},
-    addcontributor: {label: 'added a contributor', color: '#DC3912', category: 'MODERATOR'},
-    addremovalreason: {label: 'added a removal reason', color: '#FF9900', category: 'POST_OR_COMMENT'},
-    approvecomment: {label: 'approved a comment', color: '#109618', category: 'COMMENT'},
-    approvelink: {label: 'approved a post', color: '#990099', category: 'POST'},
-    banuser: {label: 'banned user', color: '#0099C6', category: 'USER'},
-    community_welcome_page: {label: 'edited the community welcome page', color: '#DD4477', category: 'SUBREDDIT'},
-    community_widgets: {label: 'edited the community widgets', color: '#66AA00', category: 'SUBREDDIT'},
-    distinguish: {label: 'distinguished a post or comment', color: '#B82E2E', category: 'POST_OR_COMMENT'},
-    editflair: {label: 'edited post flair', color: '#316395', category: 'MODERATOR'},
-    editsettings: {label: 'changed community settings', color: '#994499', category: 'SUBREDDIT'},
-    ignorereports: {label: 'ignored reports', color: '#22AA99', category: 'POST_OR_COMMENT'},
-    invitemoderator: {label: 'invited a moderator', color: '#AAAA11', category: 'MODERATOR'},
-    lock: {label: 'locked a post or comment', color: '#6633CC', category: 'POST_OR_COMMENT'},
-    marknsfw: {label: 'marked as nsfw', color: '#E67300', category: 'POST'},
-    muteuser: {label: 'muted a user', color: '#8B0707', category: 'USER'},
-    removecomment: {label: 'removed a comment', color: '#329262', category: 'COMMENT'},
-    removelink: {label: 'removed a post', color: '#CD486B', category: 'POST'},
-    spamcomment: {label: 'marked a comment as spam', color: '#FF5722', category: 'COMMENT'},
-    spamlink: {label: 'marked a post as spam', color: '#607D8B', category: 'POST'},
-    sticky: {label: 'stickied a post', color: '#9C27B0', category: 'POST'},
-    submit_scheduled_post: {label: 'submitted a scheduled post', color: '#3F51B5', category: 'SUBREDDIT'},
-    unbanuser: {label: 'unbanned a user', color: '#00BCD4', category: 'USER'},
-    unlock: {label: 'unlocked a post or comment', color: '#4CAF50', category: 'POST_OR_COMMENT'},
-    unsticky: {label: 'unstickied a post', color: '#795548', category: 'POST'},
-    wikipagelisted: {label: 'listed a wiki page', color: '#FFC107', category: 'WIKI'},
-    wikirevise: {label: 'revised a wiki page', color: '#8BC34A', category: 'WIKI'},
+const categories = ['APPROVAL', 'REMOVAL', 'BAN', 'UNBAN', 'SUBREDDIT_META', 'NEUTRAL'] as const
+
+export type Category = typeof categories[number];
+
+const modActions: Record<string, { label: string; chartColor: string; group: Group; category: Category }> = {
+    acceptmoderatorinvite: {
+        label: 'accepted moderator invite',
+        chartColor: '#3366CC',
+        group: 'MODERATOR',
+        category: "SUBREDDIT_META"
+    },
+    addcontributor: {label: 'added a contributor', chartColor: '#DC3912', group: 'MODERATOR', category: "SUBREDDIT_META"},
+    addremovalreason: {
+        label: 'added a removal reason',
+        chartColor: '#FF9900',
+        group: 'POST_OR_COMMENT',
+        category: "REMOVAL"
+    },
+    approvecomment: {label: 'approved a comment', chartColor: '#109618', group: 'COMMENT', category: "APPROVAL"},
+    approvelink: {label: 'approved a post', chartColor: '#990099', group: 'POST', category: "APPROVAL"},
+    banuser: {label: 'banned user', chartColor: '#0099C6', group: 'USER', category: "BAN"},
+    community_welcome_page: {
+        label: 'edited the community welcome page',
+        chartColor: '#DD4477',
+        group: 'SUBREDDIT',
+        category: "SUBREDDIT_META"
+    },
+    community_widgets: {
+        label: 'edited the community widgets',
+        chartColor: '#66AA00',
+        group: 'SUBREDDIT',
+        category: "SUBREDDIT_META"
+    },
+    distinguish: {
+        label: 'distinguished a post or comment',
+        chartColor: '#B82E2E',
+        group: 'POST_OR_COMMENT',
+        category: "NEUTRAL"
+    },
+    editflair: {label: 'edited post flair', chartColor: '#316395', group: 'MODERATOR', category: "APPROVAL"},
+    editsettings: {label: 'changed community settings', chartColor: '#994499', group: 'SUBREDDIT', category: "APPROVAL"},
+    ignorereports: {label: 'ignored reports', chartColor: '#22AA99', group: 'POST_OR_COMMENT', category: "NEUTRAL"},
+    invitemoderator: {label: 'invited a moderator', chartColor: '#AAAA11', group: 'MODERATOR', category: "SUBREDDIT_META"},
+    lock: {label: 'locked a post or comment', chartColor: '#6633CC', group: 'POST_OR_COMMENT', category: "REMOVAL"},
+    marknsfw: {label: 'marked as nsfw', chartColor: '#E67300', group: 'POST', category: "NEUTRAL"},
+    muteuser: {label: 'muted a user', chartColor: '#8B0707', group: 'USER', category: "REMOVAL"},
+    removecomment: {label: 'removed a comment', chartColor: '#329262', group: 'COMMENT', category: "REMOVAL"},
+    removelink: {label: 'removed a post', chartColor: '#CD486B', group: 'POST', category: "REMOVAL"},
+    spamcomment: {label: 'marked a comment as spam', chartColor: '#FF5722', group: 'COMMENT', category: "REMOVAL"},
+    spamlink: {label: 'marked a post as spam', chartColor: '#607D8B', group: 'POST', category: "REMOVAL"},
+    sticky: {label: 'stickied a post', chartColor: '#9C27B0', group: 'POST', category: "NEUTRAL"},
+    submit_scheduled_post: {
+        label: 'submitted a scheduled post',
+        chartColor: '#3F51B5',
+        group: 'SUBREDDIT',
+        category: "NEUTRAL"
+    },
+    unbanuser: {label: 'unbanned a user', chartColor: '#00BCD4', group: 'USER', category: "UNBAN"},
+    unlock: {label: 'unlocked a post or comment', chartColor: '#4CAF50', group: 'POST_OR_COMMENT', category: "APPROVAL"},
+    unsticky: {label: 'unstickied a post', chartColor: '#795548', group: 'POST', category: "NEUTRAL"},
+    wikipagelisted: {label: 'listed a wiki page', chartColor: '#FFC107', group: 'WIKI', category: "SUBREDDIT_META"},
+    wikirevise: {label: 'revised a wiki page', chartColor: '#8BC34A', group: 'WIKI', category: "SUBREDDIT_META"},
 };
 
-export const modlogDetails: Record<string, string>  = {
+const modlogDetails: Record<string, string> = {
     confirm_ham: 'Not spam',
     unspam: 'Not spam',
     remove: 'Remove',
@@ -94,7 +139,7 @@ export const modlogDetails: Record<string, string>  = {
     11: '',
 }
 
-const categoryLabels: Record<Category,string> = {
+const groupLabels: Record<Group, string> = {
     'GENERAL': 'General',
     'POST_OR_COMMENT': 'Post&Comment',
     'POST': 'Post',
@@ -103,4 +148,13 @@ const categoryLabels: Record<Category,string> = {
     'SUBREDDIT': 'Subreddit',
     'MODERATOR': 'Moderator',
     'WIKI': 'Wiki',
+}
+
+const categoryColors: Record<Category, string> = {
+    'APPROVAL': 'darkgreen',
+    'REMOVAL': 'darkred',
+    'BAN': 'darkred',
+    'UNBAN': 'darkgreen',
+    'SUBREDDIT_META': 'goldenrod',
+    'NEUTRAL': 'darkgrey'
 }

@@ -44,10 +44,13 @@ export type ModLogEntry = {
 	details: string;
 	description: string;
 	timestamp: string;
-	commentid?: string;
 	postid?: string;
+	commentid: string;
 	target?: string;
 	author?: string;
+	title?: string;
+	body?: string;
+	flair?: string;
 };
 
 export interface ChartData {
