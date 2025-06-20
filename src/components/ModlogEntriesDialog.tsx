@@ -120,7 +120,7 @@ export default function ModlogEntriesDialog({postId, onCloseHandler}: Readonly<{
                 headerAlign: 'center',
                 valueGetter: (_value, row: ModLogEntry) => {
                     const description = row.description;
-                    const details = getModActionDetailLabel(row.details);
+                    const details = getModActionDetailLabel(row.details, '');
                     let middle = ''
                     if (description.length > 0 && details.length > 0) {
                         middle = ' - '

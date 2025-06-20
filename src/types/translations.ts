@@ -31,7 +31,7 @@ export function getModActionCategoryColor(modAction: string): string {
 }
 
 export function getModActionDetailLabel(modActionDetail: string, modActionDescription: string) : string {
-    if (modActionDescription?.length > 1) return modActionDescription
+    if (modActionDescription?.length > 0) return modActionDescription
     const resolvedModlogDetail = modlogDetails[modActionDetail];
     if (resolvedModlogDetail?.length > 0) return resolvedModlogDetail
     return modActionDetail
