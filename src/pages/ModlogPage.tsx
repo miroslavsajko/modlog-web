@@ -17,15 +17,22 @@ const defaultPagination: GridPaginationModel = {page: 0, pageSize: 20};
 
 const getCellContentText = (rowData: ModLogEntry) => {
     if (rowData.commentid) {
-        return rowData.body;
+        let body = rowData.body;
+        if (body?.length === 100) {
+            body += '...'
+        }
+        return body;
     }
     if (rowData.postid) {
-        return rowData.title;
+        return rowData.flair + ' ' + rowData.title;
     }
     if (rowData.target) {
         return rowData.target
     }
-    return 'Unknown!'
+    if (rowData.details) {
+        return rowData.details
+    }
+    return 'Unexpected content!'
 }
 
 export default function ModlogPage() {
@@ -227,7 +234,7 @@ export default function ModlogPage() {
                         >
                             <Box display="flex" flexDirection="row" justifyContent="space-between">
                                 <Typography variant="caption">
-                                    {row.target ?? row.author ?? ''}
+                                    {'/u/' + (row.target ?? row.author ?? '')}
                                 </Typography>
                                 <Typography variant="caption">
                                     {convertDateTime(row.timestamp)}
