@@ -24,7 +24,7 @@ const getCellContentText = (rowData: ModLogEntry) => {
         return body;
     }
     if (rowData.postid) {
-        return rowData.flair + ' ' + rowData.title;
+        return rowData.title;
     }
     if (rowData.target) {
         return rowData.target
@@ -234,13 +234,15 @@ export default function ModlogPage() {
                         >
                             <Box display="flex" flexDirection="row" justifyContent="space-between">
                                 <Typography variant="caption">
-                                    {'/u/' + (row.target ?? row.author ?? '')}
+                                    {(row.author ? '/u/' + row.author : '')}
                                 </Typography>
                                 <Typography variant="caption">
                                     {convertDateTime(row.timestamp)}
                                 </Typography>
                             </Box>
-
+                            {row.type === 'POST' ? <Typography variant="caption">
+                                {row.flair}
+                            </Typography> : <></>}
                             <Typography variant="body1" component="span" overflow="hidden"
                                         whiteSpace="nowrap" textOverflow="ellipsis" width="100%"
                             >

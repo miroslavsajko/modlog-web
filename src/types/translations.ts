@@ -6,7 +6,7 @@ export function getModActionChartColor(modAction: string): string {
     return modActions[modAction]?.chartColor ?? '#DDDDDD'
 }
 
-export function getModActionsForCategory(group: Group): string[] {
+export function getModActionsForGroup(group: ActionGroup): string[] {
     return Object.entries(modActions)
         // entry[1] == value
         .filter((entry) => entry[1].group === group)
@@ -18,19 +18,23 @@ export function getModActions(): string[] {
     return Object.keys(modActions)
 }
 
-export function getModActionGroups(): Group[] {
+export function getModActionGroups(): ActionGroup[] {
     return Object.values(groups)
 }
 
-export function getGroupLabel(group: Group): string {
+export function getActionGroupLabel(group: ActionGroup): string {
     return groupLabels[group] ?? group
+}
+
+export function getActionGroupForModAction(modAction: string): ActionGroup | undefined {
+    return modActions[modAction].group
 }
 
 export function getModActionCategoryColor(modAction: string): string {
     return categoryColors[modActions[modAction]?.category] ?? 'grey'
 }
 
-export function getModActionDetailLabel(modActionDetail: string, modActionDescription: string) : string {
+export function getModActionDetailLabel(modActionDetail: string, modActionDescription: string): string {
     if (modActionDescription?.length > 0) return modActionDescription
     const resolvedModlogDetail = modlogDetails[modActionDetail];
     if (resolvedModlogDetail?.length > 0) return resolvedModlogDetail
@@ -48,20 +52,23 @@ const groups = [
     'WIKI',
 ] as const;
 
-export type Group = typeof groups[number];
+export type ActionGroup = typeof groups[number];
 
-const categories = ['APPROVAL', 'REMOVAL', 'BAN', 'UNBAN', 'SUBREDDIT_META', 'NEUTRAL'] as const
+export type Category = 'APPROVAL' | 'REMOVAL' | 'BAN' | 'UNBAN' | 'SUBREDDIT_META' | 'NEUTRAL';
 
-export type Category = typeof categories[number];
-
-const modActions: Record<string, { label: string; chartColor: string; group: Group; category: Category }> = {
+const modActions: Record<string, { label: string; chartColor: string; group: ActionGroup; category: Category }> = {
     acceptmoderatorinvite: {
         label: 'accepted moderator invite',
         chartColor: '#3366CC',
         group: 'MODERATOR',
         category: "SUBREDDIT_META"
     },
-    addcontributor: {label: 'added a contributor', chartColor: '#DC3912', group: 'MODERATOR', category: "SUBREDDIT_META"},
+    addcontributor: {
+        label: 'added a contributor',
+        chartColor: '#DC3912',
+        group: 'MODERATOR',
+        category: "SUBREDDIT_META"
+    },
     addremovalreason: {
         label: 'added a removal reason',
         chartColor: '#FF9900',
@@ -89,10 +96,20 @@ const modActions: Record<string, { label: string; chartColor: string; group: Gro
         group: 'POST_OR_COMMENT',
         category: "NEUTRAL"
     },
-    editflair: {label: 'edited post flair', chartColor: '#316395', group: 'MODERATOR', category: "APPROVAL"},
-    editsettings: {label: 'changed community settings', chartColor: '#994499', group: 'SUBREDDIT', category: "APPROVAL"},
+    editflair: {label: 'edited post flair', chartColor: '#316395', group: 'POST', category: "APPROVAL"},
+    editsettings: {
+        label: 'changed community settings',
+        chartColor: '#994499',
+        group: 'SUBREDDIT',
+        category: "APPROVAL"
+    },
     ignorereports: {label: 'ignored reports', chartColor: '#22AA99', group: 'POST_OR_COMMENT', category: "NEUTRAL"},
-    invitemoderator: {label: 'invited a moderator', chartColor: '#AAAA11', group: 'MODERATOR', category: "SUBREDDIT_META"},
+    invitemoderator: {
+        label: 'invited a moderator',
+        chartColor: '#AAAA11',
+        group: 'MODERATOR',
+        category: "SUBREDDIT_META"
+    },
     lock: {label: 'locked a post or comment', chartColor: '#6633CC', group: 'POST_OR_COMMENT', category: "REMOVAL"},
     marknsfw: {label: 'marked as nsfw', chartColor: '#E67300', group: 'POST', category: "NEUTRAL"},
     muteuser: {label: 'muted a user', chartColor: '#8B0707', group: 'USER', category: "REMOVAL"},
@@ -108,7 +125,12 @@ const modActions: Record<string, { label: string; chartColor: string; group: Gro
         category: "NEUTRAL"
     },
     unbanuser: {label: 'unbanned a user', chartColor: '#00BCD4', group: 'USER', category: "UNBAN"},
-    unlock: {label: 'unlocked a post or comment', chartColor: '#4CAF50', group: 'POST_OR_COMMENT', category: "APPROVAL"},
+    unlock: {
+        label: 'unlocked a post or comment',
+        chartColor: '#4CAF50',
+        group: 'POST_OR_COMMENT',
+        category: "APPROVAL"
+    },
     unsticky: {label: 'unstickied a post', chartColor: '#795548', group: 'POST', category: "NEUTRAL"},
     wikipagelisted: {label: 'listed a wiki page', chartColor: '#FFC107', group: 'WIKI', category: "SUBREDDIT_META"},
     wikirevise: {label: 'revised a wiki page', chartColor: '#8BC34A', group: 'WIKI', category: "SUBREDDIT_META"},
@@ -139,7 +161,7 @@ const modlogDetails: Record<string, string> = {
     11: '',
 }
 
-const groupLabels: Record<Group, string> = {
+const groupLabels: Record<ActionGroup, string> = {
     'GENERAL': 'General',
     'POST_OR_COMMENT': 'Post&Comment',
     'POST': 'Post',

@@ -1,3 +1,5 @@
+import {ActionGroup} from "./translations.ts";
+
 export interface Post {
 	title: string;
 	author: string;
@@ -51,6 +53,7 @@ export type ModLogEntry = {
 	title?: string;
 	body?: string;
 	flair?: string;
+	type: ActionGroup
 };
 
 export interface ChartData {

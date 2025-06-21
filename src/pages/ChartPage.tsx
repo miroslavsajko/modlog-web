@@ -22,11 +22,11 @@ import {ChartData} from "../types/interfaces.ts";
 import {Props} from "recharts/types/component/Label";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
-    Group, getGroupLabel,
+    ActionGroup, getActionGroupLabel,
     getModActionGroups,
     getModActionChartColor,
     getModActionLabel,
-    getModActions, getModActionsForCategory
+    getModActions, getModActionsForGroup
 } from "../types/translations.ts";
 
 export default function ChartPage() {
@@ -165,9 +165,9 @@ export default function ChartPage() {
                 Filter by Mod Action
             </Typography>
             <FormGroup>
-                {getModActionGroups().map((category: Group) => {
-                    const modActionsForCategory = getModActionsForCategory(category);
-                    if (modActionsForCategory.length === 0) return <></>
+                {getModActionGroups().map((category: ActionGroup) => {
+                    const modActionsForGroup = getModActionsForGroup(category);
+                    if (modActionsForGroup.length === 0) return <></>
 
                     return <Accordion key={'accordion-' + category}>
                         <AccordionSummary
@@ -175,7 +175,7 @@ export default function ChartPage() {
                             aria-controls={category + "-content"}
                             id={category + "-header"}
                         >
-                            <Typography component="span">{getGroupLabel(category)}</Typography>
+                            <Typography component="span">{getActionGroupLabel(category)}</Typography>
                         </AccordionSummary>
                         <AccordionDetails sx={{
                             display: 'flex',
@@ -184,7 +184,7 @@ export default function ChartPage() {
                             p: 2,
                             whiteSpace: 'nowrap',
                         }}>
-                            {modActionsForCategory.map((modAction) => {
+                            {modActionsForGroup.map((modAction) => {
                                 const color = getModActionChartColor(modAction)
                                 return (
                                     <FormControlLabel
