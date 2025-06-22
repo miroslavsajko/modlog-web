@@ -27,18 +27,18 @@ export function getActionGroupLabel(group: ActionGroup): string {
 }
 
 export function getActionGroupForModAction(modAction: string): ActionGroup | undefined {
-    return modActions[modAction].group
+    return modActions[modAction]?.group
 }
 
 export function getModActionCategoryColor(modAction: string): string {
     return categoryColors[modActions[modAction]?.category] ?? 'grey'
 }
 
-export function getModActionDetailLabel(modActionDetail: string, modActionDescription: string): string {
+export function getModActionDetailLabel(modActionDetail: string, modActionDescription: string): string|null {
     if (modActionDescription?.length > 0) return modActionDescription
     const resolvedModlogDetail = modlogDetails[modActionDetail];
     if (resolvedModlogDetail?.length > 0) return resolvedModlogDetail
-    return modActionDetail
+    return null
 }
 
 const groups = [
@@ -137,28 +137,28 @@ const modActions: Record<string, { label: string; chartColor: string; group: Act
 };
 
 const modlogDetails: Record<string, string> = {
-    confirm_ham: 'Not spam',
+    // confirm_ham: 'Not spam',
     unspam: 'Not spam',
-    remove: 'Remove',
-    flair_edit: 'Edit flair',
+    // remove: '', // 'Remove',
+    // flair_edit: 'Edit flair',
     confirm_spam: 'Confirm spam',
-    replaced: 'Replaced',
+    // replaced: 'Replaced',
     edit_widget: 'Edit widget',
     removed_widget: 'Remove widget',
     public_description: 'Public description',
     flair_add: 'Add flair',
     flair_template: 'Template flair',
-    1: '',
-    2: '',
-    3: '',
-    4: '',
-    5: '',
-    6: '',
-    7: '',
-    8: '',
-    9: '',
-    10: '',
-    11: '',
+    // 1: '',
+    // 2: '',
+    // 3: '',
+    // 4: '',
+    // 5: '',
+    // 6: '',
+    // 7: '',
+    // 8: '',
+    // 9: '',
+    // 10: '',
+    // 11: '',
 }
 
 const groupLabels: Record<ActionGroup, string> = {
