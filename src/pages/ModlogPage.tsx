@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useMemo, useState} from 'react';
-import {TextField, Box, Link, debounce,  Typography} from '@mui/material';
+import {TextField, Box, Link, debounce, Typography, useMediaQuery} from '@mui/material';
 import {
     DataGrid, GridPaginationModel,
 } from '@mui/x-data-grid';
@@ -15,7 +15,7 @@ import OpenInNewOutlinedIcon from '@mui/icons-material/OpenInNewOutlined';
 
 const defaultPagination: GridPaginationModel = {page: 0, pageSize: 20};
 
-const getCellContentText = (rowData: ModLogEntry) => {
+const getCellContentLabel = (rowData: ModLogEntry) => {
     if (rowData.commentid) {
         let body = rowData.body;
         if (body?.length === 100) {
@@ -38,6 +38,16 @@ const getCellContentText = (rowData: ModLogEntry) => {
     return 'Unexpected content!'
 }
 
+const getCellHeaderLabel = (rowData: ModLogEntry) => {
+    if (rowData.author && rowData.author.length > 0) {
+        return '/u/' + rowData.author
+    }
+    if (rowData.target && rowData.target.length > 0) {
+        return '/u/' + rowData.target
+    }
+    return '/r/Slovakia'
+}
+
 export default function ModlogPage() {
     const [rows, setRows] = useState<ModLogEntry[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
@@ -45,7 +55,7 @@ export default function ModlogPage() {
     const [filter, setFilter] = useState<string>('');
     const [pagination, setPagination] = useState<GridPaginationModel>(defaultPagination);
     const [rowCount, setRowCount] = useState<number>(0);
-    // const isTablet = useMediaQuery('(max-width:800px)');
+    const isTablet = useMediaQuery('(max-width:800px)');
 
     const fetchData = useCallback(async () => {
         setLoading(true);
@@ -101,32 +111,40 @@ export default function ModlogPage() {
                     headerAlign: 'center',
                     renderCell: ({row}) =>
                         <Box display="flex" flexDirection="column" justifyContent="center"
-                             whiteSpace="normal" height="100%" padding="4px"
+                             whiteSpace="normal" height="100%" padding="0.25rem"
                         >
                             <Box display="flex" flexDirection="row" justifyContent="space-between">
                                 <Typography variant="caption">
-                                    {(row.author ? '/u/' + row.author : row.target ? '/u/' + row.target : '')}
+                                    {getCellHeaderLabel(row)}
                                 </Typography>
-                                <Typography variant="caption">
+                                <Typography variant="caption" overflow="clip">
                                     {convertDateTime(row.timestamp)}
                                 </Typography>
                             </Box>
-                            {row.type === 'POST' ? <Typography variant="caption">
-                                {row.flair}
-                            </Typography> : <></>}
-                            <Typography variant="body1" component="span" overflow="hidden"
-                                        whiteSpace="nowrap" textOverflow="ellipsis" width="100%"
-                            >
-                                {getCellContentText(row)}
-                            </Typography>
+
+                            <Box display="flex" flexDirection={isTablet ? "column" : "row"} overflow="hidden"
+                                 whiteSpace="nowrap" textOverflow="ellipsis" width="100%" >
+                                {row.type === 'POST' ?
+                                    <Typography variant={isTablet ? 'caption' : 'body1'} component="span"
+                                                                   alignContent="center" marginX="0.25rem">
+                                    {row.flair}
+                                </Typography> : <></>}
+                                <Typography variant="body1" component="span" overflow="hidden"
+                                            whiteSpace="nowrap" textOverflow="ellipsis" width="100%"
+                                >
+                                    {getCellContentLabel(row)}
+                                </Typography>
+                            </Box>
 
                             <Box overflow="hidden" whiteSpace="nowrap"
                                  textOverflow="ellipsis" width="100%"
                                  paddingX="0.75rem"
                                  paddingY="0.25rem"
                                  marginY="0.5rem"
-                                 sx={{backgroundColor: getModActionCategoryColor(row.action),
-                                     borderRadius: '0.5rem'}}
+                                 sx={{
+                                     backgroundColor: getModActionCategoryColor(row.action),
+                                     borderRadius: '0.5rem'
+                                 }}
                             >
                                 <Typography variant="body2" component="span" fontWeight="bold">{row.mod}</Typography>
                                 {' '}
