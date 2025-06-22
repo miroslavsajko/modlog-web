@@ -29,6 +29,9 @@ const getCellContentText = (rowData: ModLogEntry) => {
     if (rowData.target) {
         return rowData.target
     }
+    if (rowData.description) {
+        return rowData.description
+    }
     if (rowData.details) {
         return rowData.details
     }
@@ -73,138 +76,6 @@ export default function ModlogPage() {
         fetchData()
     }, [fetchData, filter, pagination]);
 
-    // let columns: GridColDef[] = []
-    //
-    // if (isTablet) {
-    //     columns =
-    // } else {
-    //     columns = [{
-    //         field: 'mod',
-    //         headerName: 'Mod',
-    //         flex: 1,
-    //         filterable: false,
-    //         sortable: false,
-    //     }, {
-    //         field: 'action',
-    //         headerName: 'Action',
-    //         flex: 1,
-    //         filterable: false,
-    //         sortable: false,
-    //         valueGetter: (value) => getModActionLabel(value)
-    //     }, {
-    //         field: 'author',
-    //         headerName: 'Author/Target',
-    //         flex: 1,
-    //         filterable: false,
-    //         sortable: false,
-    //         valueGetter: (_value, row: ModLogEntry) =>
-    //             row.target ?? row.author ?? ''
-    //     }, {
-    //         field: 'timestamp',
-    //         headerName: 'Timestamp',
-    //         flex: 1,
-    //         filterable: false,
-    //         sortable: false,
-    //         align: 'center',
-    //         headerAlign: 'center',
-    //         valueGetter: value => convertDateTime(value)
-    //     }, {
-    //         field: 'description',
-    //         headerName: 'Details',
-    //         flex: 2,
-    //         filterable: false,
-    //         sortable: false,
-    //         align: 'center',
-    //         headerAlign: 'center',
-    //         valueGetter: (_value, row: ModLogEntry) => {
-    //             const description = row.description;
-    //             const details = modlogDetails[row.details] ?? row.details;
-    //             const values = [description, details]
-    //             return values.filter(a => a).join(' - ')
-    //         }
-    //     }, {
-    //         // field: 'details',
-    //         // headerName: 'More',
-    //         // width: 60,
-    //         // filterable: false,
-    //         // sortable: false,
-    //         // align: 'center',
-    //         // headerAlign: 'center',
-    //         // resizable: false,
-    //         // disableColumnMenu: true,
-    //         // renderCell: params => {
-    //         //     const data: ModLogEntry = params.row;
-    //         //     if (data.postid) {
-    //         //         return (<Box
-    //         //             sx={{
-    //         //                 height: '100%',
-    //         //                 display: 'flex',
-    //         //                 alignItems: 'center',
-    //         //                 justifyContent: 'center',
-    //         //             }}
-    //         //         >
-    //         //             <Link
-    //         //                 gap={4}
-    //         //                 sx={{
-    //         //                     display: 'flex',
-    //         //                     alignItems: 'center',
-    //         //                     color: 'inherit'
-    //         //                 }}
-    //         //                 onClick={() => {
-    //         //                     // TODO
-    //         //                 }}
-    //         //             >
-    //         //                 <SearchOutlinedIcon fontSize="small"/>
-    //         //             </Link>
-    //         //         </Box>)
-    //         //     } else {
-    //         //         return <></>
-    //         //     }
-    //         // }
-    //         // }, {
-    //         field: 'link',
-    //         headerName: 'Link',
-    //         width: 60,
-    //         filterable: false,
-    //         sortable: false,
-    //         align: 'center',
-    //         headerAlign: 'center',
-    //         resizable: false,
-    //         disableColumnMenu: true,
-    //         renderCell: params => {
-    //             const data: ModLogEntry = params.row;
-    //             const url = getUrlForModLogEntry(data);
-    //             if (url) {
-    //                 return (<Box
-    //                     sx={{
-    //                         height: '100%',
-    //                         display: 'flex',
-    //                         alignItems: 'center',
-    //                         justifyContent: 'center',
-    //                     }}
-    //                 >
-    //                     <Link
-    //                         href={url}
-    //                         target="_blank"
-    //                         rel="noopener noreferrer"
-    //                         gap={4}
-    //                         sx={{
-    //                             display: 'flex',
-    //                             alignItems: 'center',
-    //                             color: 'inherit'
-    //                         }}
-    //                     >
-    //                         <OpenInNewOutlinedIcon fontSize="small"/>
-    //                     </Link>
-    //                 </Box>)
-    //             } else {
-    //                 return <></>
-    //             }
-    //         }
-    //     }];
-    // }
-
-
     return (
         <Box>
             <TextField
@@ -234,7 +105,7 @@ export default function ModlogPage() {
                         >
                             <Box display="flex" flexDirection="row" justifyContent="space-between">
                                 <Typography variant="caption">
-                                    {(row.author ? '/u/' + row.author : '')}
+                                    {(row.author ? '/u/' + row.author : row.target ? '/u/' + row.target : '')}
                                 </Typography>
                                 <Typography variant="caption">
                                     {convertDateTime(row.timestamp)}
@@ -267,12 +138,6 @@ export default function ModlogPage() {
                                     // TODO handle details and descriptions, rework getModActionDetailLabel
                                 }
                             </Box>
-                            {/*<Typography variant="caption" fontStyle="italic">*/}
-                            {/*    {row.target ?? row.author ?? ''}*/}
-                            {/*</Typography>*/}
-                            {/*<Typography variant="caption" color="text.secondary">*/}
-                            {/*    {convertDateTime(row.timestamp)}*/}
-                            {/*</Typography>*/}
                         </Box>
                 }, {
                     field: 'action',
