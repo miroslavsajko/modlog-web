@@ -7,7 +7,7 @@ import {fetchModEntries} from "../api/api.ts";
 import {ModLogEntry} from "../types/interfaces.ts";
 import {convertDateTime} from "../util/dateTimeConverter.ts";
 import {
-    getModActionCategoryColor,
+    getModActionCategoryColor, getModActionDetailLabel,
     getModActionLabel,
 } from "../types/translations.ts";
 import {getUrlForModLogEntry} from "../util/util.ts";
@@ -26,16 +26,16 @@ const getCellContentLabel = (rowData: ModLogEntry) => {
     if (rowData.postid) {
         return rowData.title;
     }
-    if (rowData.target) {
-        return rowData.target
-    }
-    if (rowData.description) {
-        return rowData.description
-    }
-    if (rowData.details) {
-        return rowData.details
-    }
-    return 'Unexpected content!'
+    // if (rowData.target) {
+    //     return rowData.target
+    // }
+    // if (rowData.description) {
+    //     return rowData.description
+    // }
+    // if (rowData.details) {
+    //     return rowData.details
+    // }
+    return null
 }
 
 const getCellHeaderLabel = (rowData: ModLogEntry) => {
@@ -123,12 +123,12 @@ export default function ModlogPage() {
                             </Box>
 
                             <Box display="flex" flexDirection={isTablet ? "column" : "row"} overflow="hidden"
-                                 whiteSpace="nowrap" textOverflow="ellipsis" width="100%" >
+                                 whiteSpace="nowrap" textOverflow="ellipsis" width="100%">
                                 {row.type === 'POST' ?
                                     <Typography variant={isTablet ? 'caption' : 'body1'} component="span"
-                                                                   alignContent="center" marginX="0.25rem">
-                                    {row.flair}
-                                </Typography> : <></>}
+                                                alignContent="center" marginX="0.25rem">
+                                        {row.flair}
+                                    </Typography> : <></>}
                                 <Typography variant="body1" component="span" overflow="hidden"
                                             whiteSpace="nowrap" textOverflow="ellipsis" width="100%"
                                 >
@@ -153,8 +153,11 @@ export default function ModlogPage() {
                                     {getModActionLabel(row.action)}
                                 </Typography>
                                 {
-                                    // TODO handle details and descriptions, rework getModActionDetailLabel
+                                    // TODO kind of works, needs improvement
                                 }
+                                {': '}
+                                {isTablet ? <br/> : <></>}
+                                {getModActionDetailLabel(row.details, row.description)}
                             </Box>
                         </Box>
                 }, {

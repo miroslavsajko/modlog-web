@@ -1,7 +1,6 @@
 import {
     AppBar,
     Box,
-    Divider,
     Drawer,
     IconButton,
     List,
@@ -32,10 +31,6 @@ export default function Layout() {
 
     const drawer = (
         <div>
-            <Toolbar>
-                <Typography variant="h6">My App</Typography>
-            </Toolbar>
-            <Divider/>
             <List>
                 {navItems.map((item) => (
                     <ListItem key={item.label} disablePadding>
@@ -50,9 +45,10 @@ export default function Layout() {
     );
 
     return (
-        <Box sx={{display: 'flex'}}>
+        <Box display="flex" flexDirection="column">
 
-            <AppBar position="fixed" sx={{zIndex: (theme) => theme.zIndex.drawer + 1}}>
+            {/*<AppBar position="fixed" sx={{zIndex: (theme) => theme.zIndex.drawer + 1}}>*/}
+            <AppBar component="nav" position="sticky">
                 <Toolbar>
                     {isMobile && (
                         <IconButton color="inherit" edge="start" onClick={() => setMobileOpen(!mobileOpen)}>
@@ -65,33 +61,38 @@ export default function Layout() {
                 </Toolbar>
             </AppBar>
 
-            <Drawer
-                variant={isMobile ? 'temporary' : 'permanent'}
-                open={isMobile ? mobileOpen : true}
-                onClose={() => setMobileOpen(false)}
-                ModalProps={{keepMounted: true}}
-                sx={{
-                    width: drawerWidth,
-                    flexShrink: 0,
-                    '& .MuiDrawer-paper': {
-                        width: drawerWidth,
-                        boxSizing: 'border-box',
-                    },
-                }}
-            >
-                {drawer}
-            </Drawer>
+            <Box display="flex" flexDirection="row">
 
-            <Box component="main"
-                 sx={{
-                     flexGrow: 1,
-                     p: 3,
-                     // ml: isMobile ? {sm: `${drawerWidth}px`} : undefined
-                 }}
-            >
-                <Toolbar/>
-                <Outlet/>
+                {isMobile ?
+                    <Drawer
+                        variant={isMobile ? 'temporary' : 'permanent'}
+                        open={isMobile ? mobileOpen : true}
+                        onClose={() => setMobileOpen(false)}
+                        ModalProps={{keepMounted: true}}
+                        sx={{
+                            width: drawerWidth,
+                            flexShrink: 0,
+                            '& .MuiDrawer-paper': {
+                                width: drawerWidth,
+                                boxSizing: 'border-box',
+                            },
+                        }}
+                    >
+                        {drawer}
+                    </Drawer> :
+                    <Box width={drawerWidth}>
+                        {drawer}
+                    </Box>
+                }
+
+                <Box component="main"
+                     flexGrow="1"
+                    margin="1rem"
+                >
+                    <Outlet/>
+                </Box>
             </Box>
+
         </Box>
     );
 }
