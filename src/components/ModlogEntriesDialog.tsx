@@ -122,7 +122,7 @@ export default function ModlogEntriesDialog({postId, onCloseHandler}: Readonly<{
                     const description = row.description;
                     const details = getModActionDetailLabel(row.details, '');
                     let middle = ''
-                    if (description.length > 0 && details.length > 0) {
+                    if (description.length > 0 && details && details.length > 0) {
                         middle = ' - '
                     }
                     return `${description}${middle}${details}`;
