@@ -34,7 +34,7 @@ export function getModActionCategoryColor(modAction: string): string {
     return categoryColors[modActions[modAction]?.category] ?? 'grey'
 }
 
-export function getModActionDetailLabel(modActionDetail: string, modActionDescription: string): string|null {
+export function getModActionDetailLabel(modActionDetail: string, modActionDescription: string): string | null {
     if (modActionDescription?.length > 0) return modActionDescription
     const resolvedModlogDetail = modlogDetails[modActionDetail];
     if (resolvedModlogDetail?.length > 0) return resolvedModlogDetail
