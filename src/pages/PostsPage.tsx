@@ -30,9 +30,9 @@ export default function PostsPage() {
     const [pagination, setPagination] = useState<GridPaginationModel>(defaultPagination);
     const [rowCount, setRowCount] = useState<number>(0);
     const isTablet = useMediaQuery('(max-width:800px)');
-    const [selectedPostId, setselectedPostId] = useState<string | null>(null);
+    const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
 
-    const handleClose = () => setselectedPostId(null);
+    const handleClose = () => setSelectedPostId(null);
 
     const fetchGridPostData = useCallback(async () => {
         setLoading(true);
@@ -138,7 +138,7 @@ export default function PostsPage() {
                                     color: 'inherit'
                                 }}
                                 onClick={() => {
-                                    setselectedPostId(data.postid)
+                                    setSelectedPostId(data.postid)
                                 }}
                             >
                                 <SearchOutlinedIcon fontSize="small"/>
@@ -247,7 +247,7 @@ export default function PostsPage() {
                                     cursor: 'pointer'
                                 }}
                                 onClick={() => {
-                                    setselectedPostId(data.postid)
+                                    setSelectedPostId(data.postid)
                                 }}
                             >
                                 <SearchOutlinedIcon fontSize="small"/>

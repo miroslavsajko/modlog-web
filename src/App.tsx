@@ -3,7 +3,6 @@ import PostsPage from "./pages/PostsPage.tsx";
 import ChartPage from "./pages/ChartPage.tsx";
 import ModlogPage from "./pages/ModlogPage.tsx";
 import Layout from "./pages/Layout.tsx";
-// import "./App.scss"
 
 function App() {
 	return (
