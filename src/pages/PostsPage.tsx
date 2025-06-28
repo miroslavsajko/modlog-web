@@ -30,9 +30,9 @@ export default function PostsPage() {
     const [pagination, setPagination] = useState<GridPaginationModel>(defaultPagination);
     const [rowCount, setRowCount] = useState<number>(0);
     const isTablet = useMediaQuery('(max-width:800px)');
-    const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
+    const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
-    const handleClose = () => setSelectedPostId(null);
+    const handleClose = () => setSelectedPost(null);
 
     const fetchGridPostData = useCallback(async () => {
         setLoading(true);
@@ -138,7 +138,7 @@ export default function PostsPage() {
                                     color: 'inherit'
                                 }}
                                 onClick={() => {
-                                    setSelectedPostId(data.postid)
+                                    setSelectedPost(data)
                                 }}
                             >
                                 <SearchOutlinedIcon fontSize="small"/>
@@ -229,7 +229,7 @@ export default function PostsPage() {
                                     cursor: 'pointer'
                                 }}
                                 onClick={() => {
-                                    setSelectedPostId(data.postid)
+                                    setSelectedPost(data)
                                 }}
                             >
                                 <SearchOutlinedIcon fontSize="small"/>
@@ -281,8 +281,8 @@ export default function PostsPage() {
     }, [isTablet]);
 
     const dialog = useMemo(() => {
-        return <ModlogEntriesDialog postId={selectedPostId} onCloseHandler={handleClose}/>
-    }, [selectedPostId]);
+        return <ModlogEntriesDialog post={selectedPost} onCloseHandler={handleClose}/>
+    }, [selectedPost]);
 
     const grid = useMemo(() => {
         const tabletDataGridProps: DataGridProps = {
