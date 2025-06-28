@@ -1,6 +1,6 @@
 import {
     Accordion, AccordionDetails, AccordionSummary,
-    Checkbox,
+    Checkbox, CircularProgress,
     FormControl, FormControlLabel, FormGroup,
     InputLabel,
     MenuItem,
@@ -31,6 +31,7 @@ import {
 
 export default function ChartPage() {
     const [barData, setBarData] = useState<ChartData[]>([]);
+    const [loading, setLoading] = useState<boolean>(false)
     const [period, setPeriod] = useState<string>('7d')
     const isTablet = useMediaQuery('(max-width:800px)');
     const [selectedModActionFilters, setSelectedModActionFilters] = useState<Record<string, boolean>>(
@@ -103,9 +104,11 @@ export default function ChartPage() {
     }, [calcMaxDomain, isTablet, totalPerMod]);
 
     useEffect(() => {
+        setLoading(true)
         fetchChartData(period)
             .then((data) => {
                 setBarData(data)
+                setLoading(false)
             });
     }, [period]);
 
@@ -151,16 +154,18 @@ export default function ChartPage() {
             <Typography variant="h6" sx={{mt: 2, mb: 2}}>
                 Actions Per Moderator
             </Typography>
-            <ResponsiveContainer width="100%" height={500}>
-                <BarChart layout="vertical" data={barData}>
-                    <XAxis type="number"/>
-                    <YAxis dataKey="mod" type="category" width={0}/>
-                    <Tooltip
-                        labelStyle={{color: 'black', textDecoration: 'underline'}}
-                    />
-                    {bars}
-                </BarChart>
-            </ResponsiveContainer>
+            {loading ? <CircularProgress/> :
+                <ResponsiveContainer width="100%" height={500}>
+                    <BarChart layout="vertical" data={barData}>
+                        <XAxis type="number"/>
+                        <YAxis dataKey="mod" type="category" width={0}/>
+                        <Tooltip
+                            labelStyle={{color: 'black', textDecoration: 'underline'}}
+                        />
+                        {bars}
+                    </BarChart>
+                </ResponsiveContainer>
+            }
             <Typography variant="h6" sx={{mt: 2, mb: 2}}>
                 Filter by Mod Action
             </Typography>
