@@ -20,15 +20,15 @@ export default function ModLogGridCell({modLogEntry}: Readonly<{ modLogEntry: Mo
         </Box>
 
         <Box display="flex" flexDirection="row">
-            <Box display="flex" flexDirection={isTablet ? "column" : "row"} overflow="hidden"
+            <Box display="flex" flexDirection="column" overflow="hidden"
                  whiteSpace="nowrap" textOverflow="ellipsis" width="100%">
                 {modLogEntry.type === 'POST' ?
                     <Typography variant={isTablet ? 'caption' : 'body1'} component="span"
-                                alignContent="center" marginX="0.25rem">
+                                alignContent="center" marginX="1rem" marginY="0.5rem">
                         {modLogEntry.flair}
                     </Typography> : <></>}
                 <Typography variant="body1" component="span" overflow="hidden"
-                            whiteSpace="nowrap" textOverflow="ellipsis" width="100%"
+                            whiteSpace="nowrap" textOverflow="ellipsis" width="100%"  marginBottom="0.25rem"
                 >
                     {getCellContentLabel(modLogEntry)}
                 </Typography>

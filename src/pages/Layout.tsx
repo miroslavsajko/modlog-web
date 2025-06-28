@@ -80,14 +80,15 @@ export default function Layout() {
                     >
                         {drawer}
                     </Drawer> :
-                    <Box width={drawerWidth}>
+                    <Box minWidth={drawerWidth} width={drawerWidth}>
                         {drawer}
                     </Box>
                 }
 
                 <Box component="main"
                      flexGrow="1"
-                    margin="1rem"
+                     marginY="1rem"
+                    marginX="2rem"
                 >
                     <Outlet/>
                 </Box>

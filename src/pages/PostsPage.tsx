@@ -200,24 +200,6 @@ export default function PostsPage() {
                     valueGetter: (value) => (
                         convertDateTime(value)
                     )
-                },
-                {
-                    field: 'score',
-                    headerName: 'Score',
-                    flex: 1,
-                    filterable: false,
-                    sortable: false,
-                    align: 'center',
-                    headerAlign: 'center'
-                },
-                {
-                    field: 'comments',
-                    headerName: 'Comments',
-                    flex: 1,
-                    filterable: false,
-                    sortable: false,
-                    align: 'center',
-                    headerAlign: 'center'
                 }, {
                     field: 'details',
                     headerName: 'More',
