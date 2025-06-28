@@ -4,9 +4,12 @@ import {convertDateTime} from "../util/dateTimeConverter.ts";
 
 export default function ModLogHeader({modLogEntry}: Readonly<{ modLogEntry: ModLogEntry }>) {
 
-    return <Box display="flex" flexDirection="row" justifyContent="space-between">
+    return <Box display="flex" flexDirection="row" justifyContent="space-between" marginBottom="0.5rem">
         <Typography variant="caption">
             {getCellHeaderLabel(modLogEntry)}
+        </Typography>
+        <Typography variant="caption" textTransform="capitalize">
+            {modLogEntry.type.toLowerCase()}
         </Typography>
         <Typography variant="caption" overflow="clip">
             {convertDateTime(modLogEntry.timestamp)}

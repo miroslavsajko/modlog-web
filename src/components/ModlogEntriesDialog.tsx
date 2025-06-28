@@ -82,7 +82,7 @@ export default function ModlogEntriesDialog({post, onCloseHandler}: Readonly<{
         <DialogContent sx={isTablet ? {
             padding: '0.75rem 0.75rem'
         } : {}}>
-            <Box flex="1" minHeight="100" bgcolor='#121212' padding={isTablet ? '0.5rem' : '1rem'}>
+            <Box flex="1" minHeight="100" bgcolor='#1e1e1e' padding={isTablet ? '0.5rem' : '1rem'}>
                 {dialogBody}
             </Box>
         </DialogContent>
