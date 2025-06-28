@@ -1,6 +1,6 @@
 import {
     AppBar,
-    Box,
+    Box, CircularProgress, Divider,
     Drawer,
     IconButton,
     List,
@@ -12,8 +12,10 @@ import {
     useMediaQuery,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {Link, Outlet, useLocation} from 'react-router-dom';
+import {fetchLastUpdateTimestamp} from "../api/api.ts";
+import {convertDateTime} from "../util/dateTimeConverter.ts";
 
 const drawerWidth = 220;
 
@@ -25,23 +27,37 @@ const navItems = [
 
 export default function Layout() {
     const [mobileOpen, setMobileOpen] = useState(false);
+    const [lastUpdate, setLastUpdate] = useState<string | undefined>(undefined)
     const isMobile = useMediaQuery('(max-width:800px)');
 
     const location = useLocation();
 
-    const drawer = (
-        <div>
-            <List>
-                {navItems.map((item) => (
-                    <ListItem key={item.label} disablePadding>
-                        <ListItemButton component={Link} to={item.path} selected={location.pathname === item.path}
-                                        onClick={() => setMobileOpen(false)}>
-                            <ListItemText primary={item.label}/>
-                        </ListItemButton>
-                    </ListItem>
-                ))}
-            </List>
-        </div>
+    useEffect(() => {
+        fetchLastUpdateTimestamp()
+            .then((data) => {
+                setLastUpdate(convertDateTime(data))
+            });
+    }, []);
+
+    const drawerBody = (
+        <List>
+            {navItems.map((item) => (
+                <ListItem key={item.label} disablePadding>
+                    <ListItemButton component={Link} to={item.path} selected={location.pathname === item.path}
+                                    onClick={() => setMobileOpen(false)}>
+                        <ListItemText primary={item.label}/>
+                    </ListItemButton>
+                </ListItem>
+            ))}
+            <Divider variant="middle" component="li"/>
+            <ListItem disablePadding sx={{paddingX: "1rem"}}>
+                <ListItemText primary="Last data update:"/>
+            </ListItem>
+            <ListItem disablePadding sx={{paddingX: "1rem"}}>
+                {lastUpdate ? <ListItemText secondary={lastUpdate}/>
+                    : <CircularProgress/>}
+            </ListItem>
+        </List>
     );
 
     return (
@@ -78,17 +94,17 @@ export default function Layout() {
                             },
                         }}
                     >
-                        {drawer}
+                        {drawerBody}
                     </Drawer> :
                     <Box minWidth={drawerWidth} width={drawerWidth}>
-                        {drawer}
+                        {drawerBody}
                     </Box>
                 }
 
                 <Box component="main"
                      flexGrow="1"
                      marginY="1rem"
-                    marginX="2rem"
+                     marginX="2rem"
                 >
                     <Outlet/>
                 </Box>

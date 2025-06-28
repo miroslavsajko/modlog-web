@@ -115,3 +115,15 @@ export const fetchChartData = async (period: string) => {
     );
 }
 
+export const fetchLastUpdateTimestamp = async () => {
+    const baseUrl = new URL(`${API_URL}/metadata/last-update`);
+    const chartActionsUrl = baseUrl.toString();
+
+    if (DEBUG_MODE)
+        console.info(chartActionsUrl);
+
+    return await axios.get<string>(chartActionsUrl).then(response =>
+        response.data
+    );
+}
+
