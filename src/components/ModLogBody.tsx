@@ -10,7 +10,7 @@ export default function ModLogBody({modLogEntry}: Readonly<{ modLogEntry: ModLog
              whiteSpace="nowrap" textOverflow="ellipsis" width="100%">
             {modLogEntry.type === 'POST' ?
                 <Typography variant={isTablet ? 'caption' : 'body1'} component="span"
-                            alignContent="center" marginX="1rem" marginBottom="0.25rem">
+                            alignContent="center" marginBottom="0.25rem">
                     {modLogEntry.flair}
                 </Typography> : <></>}
             <Typography variant="body1" component="span" overflow="hidden"

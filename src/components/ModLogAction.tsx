@@ -28,8 +28,7 @@ export default function ModLogAction({modLogEntry, showTimestamp = false}: Reado
         </>
     }, [isTablet, modLogEntry]);
 
-    return (<Box overflow="hidden" whiteSpace="nowrap"
-                 textOverflow="ellipsis" width="100%"
+    return (<Box width="100%"
                  paddingX="0.75rem"
                  paddingY="0.25rem"
                  marginY="0.5rem"
