@@ -1,3 +1,5 @@
+import {ActionGroup} from "./translations.ts";
+
 export interface Post {
 	title: string;
 	author: string;
@@ -20,6 +22,11 @@ export interface PostsAPIResponse {
 	page: Page;
 }
 
+export interface ModlogAPIResponse {
+	entries: ModLogEntry[];
+	page: Page;
+}
+
 export interface ModEntry {
 	action: string;
 	mod: string;
@@ -29,5 +36,27 @@ export interface ModEntry {
 }
 
 export interface ModEntriesAPIResponse {
-	modEntries: ModEntry[];
+	modEntries: ModLogEntry[];
+}
+
+export type ModLogEntry = {
+	modentryid: string;
+	action: string;
+	mod: string;
+	details: string;
+	description: string;
+	timestamp: string;
+	postid?: string;
+	commentid: string;
+	target?: string;
+	author?: string;
+	title?: string;
+	body?: string;
+	flair?: string;
+	type: ActionGroup
+};
+
+export interface ChartData {
+	mod: string,
+	[key: string]: string
 }
