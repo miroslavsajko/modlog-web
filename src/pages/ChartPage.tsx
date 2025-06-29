@@ -172,7 +172,7 @@ export default function ChartPage() {
             <FormGroup>
                 {getModActionGroups().map((category: ActionGroup) => {
                     const modActionsForGroup = getModActionsForGroup(category);
-                    if (modActionsForGroup.length === 0) return <></>
+                    if (modActionsForGroup.length === 0) return null
 
                     return <Accordion key={'accordion-' + category}>
                         <AccordionSummary
