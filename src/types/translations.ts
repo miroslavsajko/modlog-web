@@ -90,6 +90,12 @@ const modActions: Record<string, { label: string; chartColor: string; group: Act
         group: 'SUBREDDIT',
         category: "SUBREDDIT_META"
     },
+    create_scheduled_post: {
+        label: 'created a scheduled post',
+        chartColor: '#442E77',
+        group: 'SUBREDDIT',
+        category: "SUBREDDIT_META"
+    },
     distinguish: {
         label: 'distinguished a post or comment',
         chartColor: '#B82E2E',
