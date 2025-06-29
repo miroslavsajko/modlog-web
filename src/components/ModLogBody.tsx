@@ -6,7 +6,7 @@ export default function ModLogBody({modLogEntry}: Readonly<{ modLogEntry: ModLog
     const isTablet = useMediaQuery('(max-width:800px)');
 
     return  <Box display="flex" flexDirection="row" marginBottom="0.25rem">
-        <Box display="flex" flexDirection="column"
+        <Box display="flex" flexDirection="column" overflow="hidden"
              whiteSpace="nowrap" textOverflow="ellipsis" width="100%">
             {modLogEntry.type === 'POST' ?
                 <Typography variant={isTablet ? 'caption' : 'body1'} component="span"
