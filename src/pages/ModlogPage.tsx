@@ -47,7 +47,7 @@ export default function ModlogPage() {
     }, [fetchData, filter, pagination]);
 
     return (
-        <Box>
+        <Box display="flex" flexDirection="column" minHeight="250px" maxHeight="6000px">
             <TextField
                 label="Filter"
                 placeholder="Filter by mod, action or reason"
