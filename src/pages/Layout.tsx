@@ -104,7 +104,7 @@ export default function Layout() {
                 <Box component="main"
                      flexGrow="1"
                      marginY="1rem"
-                     marginX="2rem"
+                     marginX={isMobile ? "1rem" : "2rem"}
                 >
                     <Outlet/>
                 </Box>
